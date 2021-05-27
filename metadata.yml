@@ -1,0 +1,35 @@
+#name - DNS-friendly name for the workshop. This will be used when generating the hosting URL (ie. https://my-first-workshop.workshops.aws/)
+name: reliability-refarch
+#title - The title of your workshop
+title: Reliability on AWS
+#description - A short description that will be displayed in search results
+description: Help customers to build applications that could be fault-tolerant to AWS Region level issues.
+#categories - Refer to official AWS categories covered by the workshop content here
+categories: 
+  - Analytics
+  - Application Integration
+  - Compute
+  - Containers
+  - Database
+  - Front-end Web & Mobile
+  - Management & Governance
+  - Networking
+  - Security, Identity & Compliance
+  - Storage
+#services - Refer to the official AWS service names covered by the workshop content here
+services: 
+   - Api Gateway
+   - Lambda
+#level - Approximate skill level needed for this workshop
+level: 300 
+#duration - Estimated duration in minutes
+duration: 480 
+#cost - Cost in USD. If the content is offered without cost, enter 0
+cost: 0 
+#author - Amazon alias of the primary author of the content
+author: piedadel 
+#audience - Names of the personas associated with this workshop
+audience: 
+  - Solutions Architect
+  - Developer
+  - SRE

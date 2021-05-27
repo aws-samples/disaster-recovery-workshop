@@ -1,0 +1,514 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    
+    
+    "Description": "Route 53 Private Health Check",
+    
+    
+    
+    
+    
+    "Metadata": {
+        "AWS::CloudFormation::Interface": {
+            "ParameterGroups": [
+                {
+                    "Label": {
+                        "default": "Amazon Route 53 Health Check For Private Resources"
+                    },
+                    "Parameters": [
+                        "protocol",
+                        "ResourceIPaddress",
+                        "port",
+                        "path",
+                        "subnets",
+                        "vpc"
+                    ]
+                }
+            ],
+            
+            
+            "ParameterLabels": {
+                "ResourceIPaddress": {
+                    "default": "IP address or Domain Name"
+                },
+                "protocol": {
+                    "default": "Protocol"
+                },
+                "port": {
+                    "default": "Port"
+                },
+                "path": {
+                    "default": "Path / (optional)"
+                },
+                "subnets": {
+                    "default": "Lambda Subnet"
+                },
+                "vpc": {
+                    "default": "Lambda VPC"
+                }
+            }
+        }
+    },
+    
+    
+    
+    
+    
+    
+    
+    
+    "Parameters": {
+        "protocol": {
+            "Description": "Enter the protocol.",
+            "Type": "String",
+            "Default": "TCP",
+            "AllowedValues": [
+                "TCP",
+                "HTTP",
+                "HTTPS"
+            ]
+        },
+        "ResourceIPaddress": {
+            "Type": "String",
+            "Description": "Enter the IP address or Domain name of the resource."
+        },
+        "port": {
+            "Type": "Number",
+            "Description": "Enter the port number of the resource."
+        },
+        "path": {
+            "Type": "String",
+            "Description": "Enter the Path (optional). Used only with HTTP and HTTPS health checks."
+        },
+        "subnets": {
+            "Type": "AWS::EC2::Subnet::Id",
+            "Description": "The subnet must be a private subnet with access to the internet and the resource that is monitored."
+        },
+        "vpc": {
+            "Type": "AWS::EC2::VPC::Id",
+            "Description": "Select the VPC containing the Lambda subnet selected above."
+        }
+    },
+    
+    
+    
+    "Conditions": {
+        "TCP": {"Fn::Equals": [{"Ref": "protocol"},"TCP"]},
+        "HTTP": {"Fn::Equals": [{"Ref": "protocol"},"HTTP"]},
+        "HTTPS": {"Fn::Equals": [{"Ref": "protocol"},"HTTPS"]}
+    },
+    
+    "Mappings" : {
+    "Alarm" : {
+      "TCP" : { "AlarmDimension" : [{"Name": "TCP Health Check", "Value": "TCP Health Check"}] }, 
+      "HTTP" : { "AlarmDimension" : [{"Name": "HTTP Health Check", "Value": "HTTP Health Check"}]}, 
+      "HTTPS" : { "AlarmDimension" : [{"Name": "HTTPS Health Check", "Value": "HTTPS Health Check"}]}
+    }
+    
+    
+    },
+    
+    
+    "Resources": {
+        
+        
+        
+        
+        "LAMBDASECURITYGROUP": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "GroupDescription": {
+                    "Fn::Sub": "${protocol}: ${AWS::StackName}"
+                },
+                "SecurityGroupEgress": [
+                    {
+                        "IpProtocol": "-1",
+                        "FromPort": "-1",
+                        "ToPort": "-1",
+                        "CidrIp": "0.0.0.0/0"
+                    }
+                    
+                    
+                ],
+                
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": {"Ref": "AWS::StackName"}
+                    }
+                ],
+                "VpcId": {
+                    "Ref": "vpc"
+                }
+            }
+        },
+        
+        
+        
+        
+        
+        "LAMBDAEXECUTIONROLE": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "lambda.amazonaws.com"
+                                ]
+                            },
+                            "Action": [
+                                "sts:AssumeRole"
+                            ]
+                        }
+                    ]
+                },
+                
+                
+                
+                
+                
+                "Policies": [
+                    {
+                        "PolicyName": {"Ref": "AWS::StackName"},
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "logs:PutLogEvents",
+                                        "logs:CreateLogStream",
+                                        "logs:CreateLogGroup",
+                                        "logs:DescribeLogStreams",
+                                        "cloudwatch:PutMetricData",
+                                        "ec2:CreateNetworkInterface",
+                                        "ec2:DescribeNetworkInterfaces",
+                                        "ec2:DeleteNetworkInterface",
+                                        "lambda:*"
+                                    ],
+                                    "Resource": "*"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        
+        
+        "TCPFUNCTION": {
+            "Condition": "TCP",
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+                "Code": {
+                        "S3Bucket": {"Fn::Sub": "route53privatehealthcheck${AWS::Region}"},
+                        "S3Key": "tcp.zip"
+                        },
+        
+                "Environment": {
+                    "Variables" : {
+                        "cfprotocol": {"Ref": "protocol"},
+                        "cfport": {"Ref": "port"},
+                        "cfResourceIPaddress": {"Ref": "ResourceIPaddress"},
+                        "cfstackname": {"Ref": "AWS::StackName"}
+                                }
+                            },
+                "FunctionName": {
+                    "Ref": "AWS::StackName"
+                },
+                "Handler": "index.lambda_handler",
+                "Runtime": "python3.6",
+                "Timeout": "10",
+                "Role": {
+                    "Fn::GetAtt": [
+                        "LAMBDAEXECUTIONROLE",
+                        "Arn"
+                    ]
+                },
+                "VpcConfig": {
+                    "SecurityGroupIds": [
+                        {
+                            "Ref": "LAMBDASECURITYGROUP"
+                        }
+                    ],
+                    "SubnetIds": [
+                        {
+                            "Ref": "subnets"
+                        }
+                    ]
+                }
+            }
+        },
+     
+        "TCPEVENTS": {
+            "Condition": "TCP",
+            "DependsOn" : "TCPFUNCTION",
+            "Type": "AWS::Events::Rule",
+            "Properties": {
+                "Description": "Route53 Health Check",
+                "Name": {
+                            "Ref": "AWS::StackName"
+                        },
+                "ScheduleExpression": "rate(1 minute)",
+                "State": "ENABLED",
+                "Targets": [
+                    {
+                        "Id": "TCPEVENTS",
+                        "Arn": {"Fn::GetAtt": ["TCPFUNCTION","Arn"]
+                        }
+                    }
+                ]
+            }
+        },
+        
+        "TCPEVENTPERMISSION": {
+            "Condition": "TCP",
+            "DependsOn" : "TCPFUNCTION",
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+                "FunctionName": {
+                    "Ref": "AWS::StackName"
+                },
+                "Action": "lambda:InvokeFunction",
+                "Principal": "events.amazonaws.com",
+                "SourceArn": {
+                    "Fn::GetAtt": ["TCPEVENTS","Arn"]
+                }
+            }
+        },    
+     
+     
+        "HTTPFUNCTION": {
+            "Condition": "HTTP",
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+                "Code": {
+                        "S3Bucket": {"Fn::Sub": "route53privatehealthcheck${AWS::Region}"},
+                        "S3Key": "http.zip"
+                        },
+        
+                "Environment": {
+                    "Variables" : {
+                        "cfprotocol": {"Ref": "protocol"},
+                        "cfpath": {"Ref": "path"},
+                        "cfport": {"Ref": "port"},
+                        "cfResourceIPaddress": {"Ref": "ResourceIPaddress"},
+                        "cfstackname": {"Ref": "AWS::StackName"}
+                                }
+                            },
+                        
+                "FunctionName": {
+                    "Ref": "AWS::StackName"
+                },
+                "Handler": "index.lambda_handler",
+                "Runtime": "python3.6",
+                "Timeout": "10",
+                "Role": {
+                    "Fn::GetAtt": [
+                        "LAMBDAEXECUTIONROLE",
+                        "Arn"
+                    ]
+                },
+                "VpcConfig": {
+                    "SecurityGroupIds": [
+                        {
+                            "Ref": "LAMBDASECURITYGROUP"
+                        }
+                    ],
+                    "SubnetIds": [
+                        {
+                            "Ref": "subnets"
+                        }
+                    ]
+                }
+            }
+        },
+       
+       
+       "HTTPEVENTS": {
+            "Condition": "HTTP",
+            "DependsOn" : "HTTPFUNCTION",
+            "Type": "AWS::Events::Rule",
+            "Properties": {
+                "Description": "Route 53 Health Check",
+                "Name": {
+                            "Ref": "AWS::StackName"
+                        },
+                "ScheduleExpression": "rate(1 minute)",
+                "State": "ENABLED",
+                "Targets": [
+                    {
+                        "Id": "HTTPEVENTS",
+                        "Arn": {
+                            "Fn::GetAtt": [
+                                "HTTPFUNCTION",
+                                "Arn"
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        "HTTPEVENTPERMISSION": {
+            "Condition": "HTTP",
+            "DependsOn" : "HTTPFUNCTION",
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+                "FunctionName": {
+                    "Ref": "AWS::StackName"
+                },
+                "Action": "lambda:InvokeFunction",
+                "Principal": "events.amazonaws.com",
+                "SourceArn": {
+                    "Fn::GetAtt": [
+                        "HTTPEVENTS",
+                        "Arn"
+                    ]
+                }
+            }
+        },
+       
+       
+        "HTTPSFUNCTION": {
+            "Condition": "HTTPS",
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+                "Code": {
+                        "S3Bucket": {"Fn::Sub": "route53privatehealthcheck${AWS::Region}"},
+                        "S3Key": "https.zip"
+                        },
+        
+                "Environment": {
+                    "Variables" : {
+                        "cfprotocol": {"Ref": "protocol"},
+                        "cfpath": {"Ref": "path"},
+                        "cfport": {"Ref": "port"},
+                        "cfResourceIPaddress": {"Ref": "ResourceIPaddress"},
+                        "cfstackname": {"Ref": "AWS::StackName"}
+                                }
+                            },
+                "FunctionName": {
+                    "Ref": "AWS::StackName"
+                },
+                "Handler": "index.lambda_handler",
+                "Runtime": "python3.6",
+                "Timeout": "10",
+                "Role": {
+                    "Fn::GetAtt": [
+                        "LAMBDAEXECUTIONROLE",
+                        "Arn"
+                    ]
+                },
+                "VpcConfig": {
+                    "SecurityGroupIds": [
+                        {
+                            "Ref": "LAMBDASECURITYGROUP"
+                        }
+                    ],
+                    "SubnetIds": [
+                        {
+                            "Ref": "subnets"
+                        }
+                    ]
+                }
+            }
+        },
+        
+        "HTTPSEVENTS": {
+            "Condition": "HTTPS",
+            "Type": "AWS::Events::Rule",
+            "DependsOn" : "HTTPSFUNCTION",
+            "Properties": {
+                "Description": "Route 53 Health Check",
+                "Name": {
+                            "Ref": "AWS::StackName"
+                        },
+                "ScheduleExpression": "rate(1 minute)",
+                "State": "ENABLED",
+                "Targets": [
+                    {
+                        "Id": "HTTPSEVENTS",
+                        "Arn": {"Fn::GetAtt": ["HTTPSFUNCTION","Arn"]}
+                    }
+                ]
+            }
+        },
+        "HTTPSEVENTPERMISSION": {
+            "Condition": "HTTPS",
+            "Type": "AWS::Lambda::Permission",
+            "DependsOn" : "HTTPSFUNCTION",
+            "Properties": {
+                "FunctionName": {
+                    "Ref": "AWS::StackName"
+                },
+                "Action": "lambda:InvokeFunction",
+                "Principal": "events.amazonaws.com",
+                "SourceArn": {"Fn::GetAtt": ["HTTPSEVENTS","Arn"]}
+            }
+        },
+        
+        
+        "ROUTE53CLOUDWATCHALARM": {
+            "Type": "AWS::CloudWatch::Alarm",
+            "Properties": {
+                "AlarmDescription": "Alarm for Route53 Health Check",
+                "AlarmName": {
+                    "Fn::Sub": "${protocol}: ${AWS::StackName}"
+                },
+                "MetricName": {"Fn::Sub": "${protocol}: ${AWS::StackName} (Health Check for resource ${ResourceIPaddress})"},
+                
+                
+                "Namespace": "Route53PrivateHealthCheck",
+                "ComparisonOperator": "LessThanThreshold",
+                "DatapointsToAlarm" : "2",
+                "EvaluationPeriods": "2",
+                "Period": "60",
+                "Statistic": "Minimum",
+                "Threshold": "1",
+                "Dimensions": { "Fn::FindInMap" : [ "Alarm", {"Ref": "protocol"}, "AlarmDimension"]},
+                "TreatMissingData": "breaching"
+            }
+        },
+        
+        
+        
+        "ROUTE53HEALTHCHECK": {
+            "Type": "AWS::Route53::HealthCheck",
+            "DependsOn" : "ROUTE53CLOUDWATCHALARM",
+            "Properties": {
+                "HealthCheckConfig": {
+                    "AlarmIdentifier": {
+                        "Name": {
+                            "Fn::Sub": "${protocol}: ${AWS::StackName}"
+                        },
+                        "Region": {
+                            "Ref": "AWS::Region"
+                        }
+                    },
+                    "InsufficientDataHealthStatus": "Unhealthy",
+                    "Type": "CLOUDWATCH_METRIC"
+                },
+                "HealthCheckTags": [{"Key": "Name", "Value": {"Ref": "AWS::StackName"}}]
+            }
+        }
+        
+        
+        
+        
+    },
+
+    "Outputs" : {
+      "HealthCheckId" : {
+        "Description": "The ID of the Route HealthCheck",  
+        "Value" : { "Fn::GetAtt" : [ "ROUTE53HEALTHCHECK", "HealthCheckId" ]}
+      }
+    }
+
+
+    
+
+}

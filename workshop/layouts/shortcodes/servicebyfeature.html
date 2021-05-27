@@ -1,0 +1,81 @@
+
+<!-- Service by Feature html  -->
+
+<!-- TODO: https://www.w3schools.com/howto/howto_js_filter_table.asp -->
+<!-- TODO: https://pointy.netlify.app/filter/ -->
+
+<!-- <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for service names..."> -->
+
+<style>
+tbody tr:nth-child(odd) {
+    background-color: #f7f7f7;
+ }
+</style>
+
+<table border=1 width=100%> 
+    <tr>
+        <th width=120></th>
+        <th><font color=#ff9900><b>Backup & Restore</b></font></th>
+        <th><font color=#ff9900><b>Pilot Light</b></font></th>
+        <th><font color=#ff9900><b>Warm Standby</b></font></th>
+        <th><font color=#ff9900><b>Active-Active</b></font></th>
+    </tr>
+    
+    {{ range $taxonomyname, $taxonomy := .Site.Taxonomies.awsServices }}
+        {{ range $key, $value := $taxonomy}}
+            {{ if or (not (reflect.IsSlice (.Params.awsServices))) (eq (len .Params.awsServices) 1)}}
+                {{  $.Scratch.Set "serviceName"  .Params.awsServices}}  
+                {{ if reflect.IsSlice (.Params.awsServices) }}
+                  {{ $.Scratch.Set "serviceName" (index .Params.awsServices 0) }}
+                {{ end }}
+                {{$.Scratch.Set "serviceDict" (merge ($.Scratch.Get "serviceDict") (dict $taxonomyname ($.Scratch.Get "serviceName")))}}
+            {{ end }}  
+        {{ end }} 
+    {{ end }}
+
+    {{ range $taxonomyname, $taxonomy := .Site.Taxonomies.awsServices }}
+    <tr class="">
+        <td>
+            {{ if not (index ($.Scratch.Get "serviceDict") $taxonomyname) }}
+            {{ $taxonomyname}}
+            {{ else }}
+            {{ $.Scratch.Set "serviceName" (index ($.Scratch.Get "serviceDict") $taxonomyname)}} 
+            {{ $.Scratch.Get "serviceName" }}
+           {{ end}} 
+        </td>
+        <td>
+            {{ range $key, $value := $taxonomy}}
+            {{ $tags := .Params.tags }}
+                {{ if and (isset .Params "tags") (in $tags "Backup & Restore")  }}
+                    <a href="{{ .Permalink}}"> {{ .Params.menuTitle }} </a>
+                {{ end }}
+            {{ end }}
+        </td>
+        <td>
+            {{ range $key, $value := $taxonomy}}
+            {{ $tags := .Params.tags }}
+                {{ if and (isset .Params "tags") (in $tags "Pilot Light")  }}
+                    <a href="{{ .Permalink}}"> {{ .Params.menuTitle }} </a>
+                {{ end }}
+            {{ end }}                
+        </td>
+        <td>
+            {{ range $key, $value := $taxonomy}}
+            {{ $tags := .Params.tags }}
+                {{ if and (isset .Params "tags") (in $tags "Warm Standby")  }}
+                    <a href="{{ .Permalink}}"> {{ .Params.menuTitle }} </a>
+                {{ end }}
+            {{ end }}                
+        </td>
+        <td>
+            {{ range $key, $value := $taxonomy}}
+            {{ $tags := .Params.tags }}
+                {{ if and (isset .Params "tags") (in $tags "Active-Active")  }}
+                    <a href="{{ .Permalink}}"> {{ .Params.menuTitle }} </a>
+                {{ end }}
+            {{ end }}                
+        </td>
+    </tr>
+    {{ end }}
+</tr>
+</table>

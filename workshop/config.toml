@@ -1,0 +1,172 @@
+RelativeURLs=true
+CanonifyURLs=true
+languageCode = "pt-BR"
+defaultContentLanguage = "pt"
+
+title = "Disaster Recovery on AWS"
+theme = "hugo-theme-learn"
+metaDataFormat = "yaml"
+defaultContentLanguageInSubdir = true
+enableRobotsTXT = true
+
+uglyurls = false
+sectionPagesMenu = "main"
+pygmentsCodeFences = true
+pygmentsStyle = "monokai"
+
+[params]
+  description = "Reliability reference architectures for disaster recovery scenarios"
+  author = "Leonardo Piedade @ AWS"
+  disableBreadcrumb = false
+  disableNextPrev = false
+  themeVariant = "aws"
+  disableSearch = false
+  disableAssetsBusting = true
+  disableLanguageSwitchingButton = true
+  disableShortcutsTitle = false
+  disableInlineCopyToClipBoard = true
+  showVisitedLinks = true
+
+[taxonomies]
+  type = "type"
+  tags = "tags"
+  awsservices = "awsServices"
+
+[outputs]
+home = [ "HTML", "RSS", "JSON"]
+
+[privacy.youtube]
+    disable = false
+    privacyEnhanced = true
+[privacy.twitter]
+    disable = false
+    enableDNT = true
+    simple = true
+
+[markup]
+  defaultMarkdownHandler = "goldmark"
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+
+[Languages]
+[Languages.en]
+title = "Disaster Recovery on AWS"
+weight = 1
+languageName = "English"
+
+[[Languages.en.menu.shortcuts]]
+name = "<i class='fas fa-tags'></i> Tags"
+url = "/tags"
+weight = 1
+
+[[Languages.en.menu.shortcuts]]
+name = "<i style='text-indent: 15px;' class='fab fa-aws'></i> Backup & Restore"
+url = "/tags/Backup & Restore"
+weight = 2
+
+[[Languages.en.menu.shortcuts]]
+name = "<i style='text-indent: 15px;' class='fab fa-aws'></i> Pilot Light"
+url = "/tags/Pilot Light"
+weight = 3
+
+[[Languages.en.menu.shortcuts]]
+name = "<i style='text-indent: 15px;' class='fab fa-aws'></i> Warm Standby"
+url = "/tags/Warm StandBy"
+weight = 4
+
+[[Languages.en.menu.shortcuts]]
+name = "<i style='text-indent: 15px;' class='fab fa-aws'></i> Active-Active"
+url = "/tags/Active-Active"
+weight = 5
+
+[[Languages.en.menu.shortcuts]]
+name = "<i class='fas fa-chalkboard'></i> AWS Workshops"
+url = "https://workshops.aws/"
+weight = 9
+
+[[Languages.en.menu.shortcuts]]
+name = "<i class='fas fa-bookmark'></i> More resources"
+url = "/more-resources"
+weight = 10
+
+[[Languages.en.menu.shortcuts]]
+name = "<i class='fas fa-users'></i> Authors"
+url = "/authors"
+weight = 20
+
+#[[Languages.en.menu.shortcuts]]
+#name = "<i class='fab fa-github'></i> GitHub Project"
+#url = "https://github.com/lpiedade/reliability-refarch"
+#weight = 30
+
+[[Languages.en.menu.shortcuts]]
+name = "<i class='fas fa-envelope'></i> Have questions?"
+url = "mailto:aws-sa-disaster-recovery@amazon.com"
+weight = 40
+
+[[Languages.en.menu.shortcuts]]
+name = "<i class='fas fa-poll'></i> Survey"
+url = "/survey"
+weight = 50
+
+[Languages.pt]
+title = "Contingência na AWS"
+weight = 1
+languageName = "Português"
+
+
+[[Languages.pt.menu.shortcuts]]
+name = "<i class='fas fa-tags'></i> Tags"
+url = "/tags"
+weight = 1
+
+[[Languages.pt.menu.shortcuts]]
+name = "<i style='text-indent: 15px;' class='fab fa-aws'></i> Backup & Restore"
+url = "/tags/Backup & Restore"
+weight = 2
+
+[[Languages.pt.menu.shortcuts]]
+name = "<i style='text-indent: 15px;' class='fab fa-aws'></i> Pilot Light"
+url = "/tags/Pilot Light"
+weight = 3
+
+[[Languages.pt.menu.shortcuts]]
+name = "<i style='text-indent: 15px;' class='fab fa-aws'></i> Warm Standby"
+url = "/tags/Warm StandBy"
+weight = 4
+
+[[Languages.pt.menu.shortcuts]]
+name = "<i style='text-indent: 15px;' class='fab fa-aws'></i> Active-Active"
+url = "/tags/Active-Active"
+weight = 5
+
+[[Languages.pt.menu.shortcuts]]
+name = "<i class='fas fa-chalkboard'></i> AWS Workshops"
+url = "https://workshops.aws/"
+weight = 9
+
+[[Languages.pt.menu.shortcuts]]
+name = "<i class='fas fa-bookmark'></i> Mais recursos"
+url = "/more-resources"
+weight = 10
+
+[[Languages.pt.menu.shortcuts]]
+name = "<i class='fas fa-users'></i> Autores"
+url = "/authors"
+weight = 20
+
+#[[Languages.pt.menu.shortcuts]]
+#name = "<i class='fab fa-github'></i> Repositório GitHub"
+#url = "https://github.com/lpiedade/reliability-refarch"
+#weight = 30
+
+[[Languages.pt.menu.shortcuts]]
+name = "<i class='fas fa-envelope'></i> Perguntas?"
+url = "mailto:aws-sa-disaster-recovery@amazon.com"
+weight = 40
+
+[[Languages.pt.menu.shortcuts]]
+name = "<i class='fas fa-poll'></i> Pesquisa"
+url = "/survey"
+weight = 50
