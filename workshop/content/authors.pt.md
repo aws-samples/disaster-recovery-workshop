@@ -33,6 +33,7 @@ Revisores:
 - Maria Ane Dias, Solutions Architect
 - Pedro Gadelha, Solutions Architect
 - Samuel Sousa, Storage Specialist
+- Sergio Zaccarelli, Solutiions Architect
 - Thiago Morais, Solutions Architect Manager
 
 ---
