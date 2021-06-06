@@ -29,7 +29,7 @@ Esse exercício irá mostrar os passos para você configurar rapidamente suas ap
 
 **Custo Aproximado**: 3 USD
 
-![Arquitetura API Gateway](images/APIGW-lab.png)
+![Arquitetura API Gateway](/images/apigw-lab-architecture.png)
 
 ### Execução
 

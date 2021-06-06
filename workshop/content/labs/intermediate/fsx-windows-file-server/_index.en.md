@@ -18,7 +18,7 @@ Customers who have special compliance or disaster recovery requirements have ask
 ### Solution Overview
 
 
-![any](images/architecture.png)
+![any](/images/architecture.png)
 
 ### Goal
 

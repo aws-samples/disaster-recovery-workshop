@@ -20,7 +20,7 @@ Para os clientes que utilizam o Amazon FSx como local de armazenamento e que pos
 ### Visão Geral da Solução
 
 
-![any](images/architecture.png)
+![any](/images/architecture.png)
 
 ### Objetivos
 

@@ -26,7 +26,7 @@ Esse exercício irá mostrar os passos para o uso da replicação de objetos atr
 
 Esse laboratório irá guiá-lo para aumentar a resiliência das aplicações que dependem de objetos no Amazon S3. A funcionalidade de [replicação do Amazon S3 (CRR)](https://docs.aws.amazon.com/pt_br/AmazonS3/latest/dev/replication.html), permite a cópia assícrona para outra região da AWS.
 
-<img src="./images/lab-s3-bi-crr.png?width=550px" />
+![S3 Lab Architecture](/images/s3-bi-crr.png?width=550px")
 
 ### Execução
 {{< tabs name="labs_types" >}} 

@@ -16,14 +16,15 @@ Para interagir com o cluster de banco de dados Aurora, você usará um <a href="
 
 <!-- Se você nunca utilizou o Session Manager, click em **Get Started with Systems Manager** 
 
-<span class="image">![Get Started Session](1-getstarted2.png)</span>
+![Get Started Session](1-getstarted2.png)
 
 
 Clique em **Create**:
-<span class="image">![Get Started Session](1-create.png.png)</span>
+![Get Started Session](1-create.png.png)
 
 Selecione a opção **Host Management**:
-<span class="image">![Get Started Session](1-hostbase.png.png)</span> -->
+![Get Started Session](1-hostbase.png.png)
+ -->
 
 
 
@@ -33,11 +34,11 @@ Abra o <a href="https://console.aws.amazon.com/systems-manager/session-manager" 
 Certifique-se que você selecionou a região correta. 
 {{% /notice %}}
 
-<span class="image">![Start Session](1.start-session.png?raw=true)</span>
+![Start Session](/images/aurora-1.start-session.png?raw=true)
 
 Selecione uma instância EC2 para estabelecer uma sessão. A estação de trabalho é chamada `auroralab-mysql-workstation`, selecione-a e clique **Start session**.
 
-<span class="image">![Connect Instance](1-connect-session.png?raw=true)</span>
+![Connect Instance](/images/aurora-1-connect-session.png?raw=true)
 
 Você deve ver uma tela de terminal e um prompt quando estiver conectado à estação de trabalho. Digite os seguintes comandos para garantir que a conexão foi bem-sucedida:
 
@@ -52,7 +53,7 @@ Por padrão, o Session Manager se conecta usando a conta de usuário **ssm-user*
 
 Se você encontrar erros ao acessar os comandos dos laboratórios subsequentes, é provável que a conta do usuário não tenha sido alterada com o comando acima. 
 
-<span class="image">![Terminal Connected](1-terminal-sudo.png?raw=true)</span>
+![Terminal Connected](/images/aurora-1-terminal-sudo.png?raw=true)
 
 ## 2. Verifique o ambiente do laboratório
 

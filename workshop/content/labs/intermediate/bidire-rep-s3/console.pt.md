@@ -10,9 +10,9 @@ type: lab
 2. Escolha **Create bucket (Criar bucket)**.
    - Digite um nome para seu bucket primário (Exemplo: **bucket-ACCOUNT-NUMBER-primary**
    - Selecione a região **us-east-2 (Ohio)**
-   ![create bucket](./images/s3-create-bucket.png)
+   ![create bucket](/images/s3-create-bucket.png)
    - Na mesma página ative a opção de versionamento de objetos do Bucket.
-   ![bucket versioning](./images/s3-bucket-versioning.png)
+   ![bucket versioning](/images/s3-bucket-versioning.png)
    - Selecione a opção **Create bucket (Criar bucket)**
    
 
@@ -31,18 +31,18 @@ type: lab
 2. Acesse a guia **Management (Gerenciamento)**
 3. Na seção **Replication rules (Regras de replicação)**, selecione **Create replication rule (Criar regra de replicação)**.
    - Digite um nome para a sua regra (Exemplo: **copy-to-secondary**).
-   ![create replication](./images/s3-create-replication-rule.png)
+   ![create replication](/images/s3-create-replication-rule.png)
    - Na seção **Source Bucket (bucket de origem)**, altere a regra de escopo para a opção **This rule applies to all objects in the bucket**
-   ![replication scope](./images/s3-replication-scope.png)
+   ![replication scope](/images/s3-replication-scope.png)
    - Na seção **Destination** digite o nome do seu bucket secundário (Exemplo:**bucket-ACCOUNT-NUMBER-secondary**).
-   ![replication destination](./images/s3-replication-destination.png)
+   ![replication destination](/images/s3-replication-destination.png)
    - Na seção **IAM role** selecione a opção **Create new role**.
-   ![replication destination](./images/s3-replication-role.png)
+   ![replication destination](/images/s3-replication-role.png)
    {{% notice note %}}
    O Amazon S3 não pode replicar objetos sem sua permissão. Você concede permissões com a *Role* do IAM especificada na configuração de replicação. O Amazon S3 assume a *Role* do IAM para replicar objetos em seu nome.
    {{% /notice %}}
    - Na seção **Additional replication options** marque todas as opções conforme a imagem abaixo:
-   ![replication destination](./images/s3-replication-options.png)
+   ![replication destination](/images/s3-replication-options.png)
    - Selecione **Save (Salvar)** 
 
 #### Regra de replicação do bucket primário para o bucket secundário

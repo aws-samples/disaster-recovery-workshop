@@ -28,7 +28,7 @@ Esse exercício irá mostrar os passos para você configurar rapidamente a funci
 
 **Custo Aproximado**: 3 USD
 
-![Arquitetura Route 53](images/Route53-lab.png)
+![Arquitetura Route 53](/images/route53-lab-architecture.png)
 
 ### Execução
 

@@ -19,7 +19,7 @@ O AWS Secrets Manager ajuda você a proteger os segredos necessários para acess
 ### Visão geral da solução
 
 
-![arc](images/architecture.png)
+![Secrets Manager Architecture](/images/secretmanager-architecture.png)
 
 
 ### Objetivo

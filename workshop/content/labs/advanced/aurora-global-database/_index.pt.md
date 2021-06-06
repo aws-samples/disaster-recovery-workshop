@@ -41,13 +41,13 @@ Este laboratório contém as seguintes tarefas:
 
 Você pode acessar o console em : <a href="https://console.aws.amazon.com/" target="_blank">https://console.aws.amazon.com/</a> ou por meio do mecanismo de logon único (SSO) fornecido por sua organização. 
 
-<span class="image">![AWS Management Console Login](environment/2-login.png?raw=true)</span>
+![AWS Management Console Login](/images/aurora-2-login.png?raw=true)
 
 Os laboratórios são projetados para funcionar em qualquer uma das regiões onde o Amazon Aurora MySQL compatível está disponível. No entanto, nem todos os recursos e capacidades do Amazon Aurora podem estar disponíveis em todas as regiões com suporte no momento. 
 
 Essa lab utiliza a região US East (N. Virginia) / us-east-1 para a região secundária do Aurora Global Database, nesse caso recomendamos utilizar a região de Ohio / us-east-1 para o ambiente primario. 
 
-<span class="image">![Seleção de região do AWS Management Console](environment/2-region-select.png?raw=true)</span>
+![Seleção de região do AWS Management Console](/images/aurora-2-region-select.png?raw=true)
 
 <h4>Criar o ambiente de laboratório usando AWS CloudFormation </h4>
 
@@ -62,19 +62,19 @@ No campo denominado **Stack Name**, verifique se o valor `auroralab` está prede
 
 Para rodar o Lab de Aurora Global Database, selecione também **Yes** para o parâmetro **Enable Aurora Global Database Labs?**
 
-<span class="image">![Create Stack](environment/2-create-stack-params.png?raw=true)</span>
+![Create Stack](/images/aurora-2-create-stack-params.png?raw=true)
 
 Vá até o final da página, marque a caixa que diz : **I acknowledge that AWS CloudFormation might create IAM resources with custom names** e clique em **Create stack**.
 
-<span class="image">![Create Stack](environment/2-create-stack-confirm.png?raw=true)</span>
+![Create Stack](/images/aurora-2-create-stack-confirm.png?raw=true)
 
 A stack levará aproximadamente 20 minutos para ser provisionada. Você pode monitorar o status na página **Stack detail**. Você pode monitorar o progresso do processo de criação da stack atualizando a guia **Events**. O último evento na lista indicará `CREATE_COMPLETE` para o recurso da stack. 
 
-<span class="image">![Stack Status](environment/2-stack-status.png?raw=true)</span>
+![Stack Status](/images/aurora-2-stack-status.png?raw=true)
 
 Quando o status da stack for `CREATE_COMPLETE`, clique na guia **Outputs**. Os valores aqui serão essenciais para a conclusão do restante do laboratório. Reserve um momento para salvar esses valores em um local onde tenha fácil acesso a eles durante o restante do laboratório. Os nomes que aparecem na coluna **Key** são referenciados diretamente nas instruções nas etapas subsequentes, usando o formato de parâmetro: ==[outputKey]==. 
 
-<span class="image">![Stack Outputs](environment/2-stack-outputs.png?raw=true)</span>
+![Stack Outputs](/images/aurora-2-stack-outputs.png?raw=true)
 
 
 Agora vamos verificar o acesso ao Session Manager, de onde rodaremos alguns comandos nos laboratórios a seguir.
@@ -107,15 +107,15 @@ No campo denominado **Stack Name**, verifique se o valor `auroralab` está prede
 
 Vá até a parte inferior da página, marque a caixa que diz: **I acknowledge that AWS CloudFormation might create IAM resources with custom names** e clique em **Create stack**.
 
-<span class="image">![Create Stack](images/cfn-create-stack-confirm.png?raw=true)</span>
+![Create Stack](/images/aurora-cfn-create-stack-confirm.png?raw=true)
 
 A stack levará aproximadamente 10 minutos para ser provisionada, você pode monitorar o status na página **Stack detail**. Você pode monitorar o progresso do processo de criação da pilha atualizando a guia **Events**. O último evento na lista indicará `CREATE_COMPLETE` para o recurso da stack.
 
-<span class="image">![Stack Status](images/cfn-stack-status.png?raw=true)</span>
+![Stack Status](/images/aurora-cfn-stack-status.png?raw=true)
 
 Quando o status da stack for `CREATE_COMPLETE`, clique na guia **Outputs**. Os valores aqui serão essenciais para a conclusão do restante do laboratório. Reserve um momento para salvar esses valores em um local onde tenha fácil acesso a eles durante o restante do laboratório. Os nomes que aparecem na coluna **Key** são referenciados diretamente nas instruções nas etapas subsequentes, usando o formato de parâmetro: ==[outputKey]==.
 
-<span class="image">![Stack Outputs](images/cfn-stack-outputs.png?raw=true)</span>
+![Stack Outputs](/images/aurora-cfn-stack-outputs.png?raw=true)
 
 
 ## 3. Crie um Aurora global cluster
@@ -123,9 +123,7 @@ Quando o status da stack for `CREATE_COMPLETE`, clique na guia **Outputs**. Os v
 O ambiente de laboratório que foi provisionado automaticamente para você já tem um cluster Aurora MySQL DB, no qual você está executando o gerador de carga. Você criará um cluster de banco de dados global usando este cluster de banco de dados existente, como o **primária**. 
 
 {{% notice info %}}
-'Global cluster' vs. 'DB cluster': Qual é a diferença?
-
-Um **DB Cluster** existe em apenas uma região. É um contêiner para até 16 **instâncias de banco de dados** que compartilham o mesmo volume de armazenamento. Esta é a configuração tradicional de um cluster Aurora. Esteja você implantando um cluster provisionado, serverless ou multi-master, você está implantando um **cluster DB** em uma única região.
+'Global cluster' vs. 'DB cluster': Qual é a diferença? <br> Um **DB Cluster** existe em apenas uma região. É um contêiner para até 16 **instâncias de banco de dados** que compartilham o mesmo volume de armazenamento. Esta é a configuração tradicional de um cluster Aurora. Esteja você implantando um cluster provisionado, serverless ou multi-master, você está implantando um **cluster DB** em uma única região.
 Um cluster **global** é um contêiner para vários **clusters de banco de dados**, cada um localizado em uma região diferente, que atuam como um banco de dados coeso. Um **cluster global** é composto por um **cluster [DB] primário** em uma determinada região que é capaz de aceitar gravações e até 5 clusters **[DB] secundários** que são somente leitura, cada em uma região diferente. Cada um dos **clusters de banco de dados** em um determinado **cluster global** tem seu próprio volume de armazenamento, mas os dados são replicados do **cluster primário** para cada um dos **clusters secundários** de forma assíncrona, usando um sistema de replicação de baixa latência e alto rendimento desenvolvido para esse fim.
 {{% /notice %}}
 
@@ -139,57 +137,57 @@ Verifique se você ainda está trabalhando na **região primária**, especialmen
 
 Primeiro, você precisa **desativar** o recurso **Backtrack**. No momento, o backtrack do banco de dados não é compatível com os bancos de dados globais do Aurora, e um cluster com esse recurso ativo não pode ser convertido em um banco de dados global. Selecione o `auroralab-mysql-cluster` e clique no botão **Modify**.
 
-<span class="image">![RDS Cluster Modify](images/rds-cluster-action-modify.png?raw=true)</span>
+![RDS Cluster Modify](/images/aurora-rds-cluster-action-modify.png?raw=true)
 
 Vá até a seção **Additional Configuration**  (expanda-a se necessário) e desmarque a opção **Enable Backtrack**, então clique em **Continue** na parte inferior da página.
 
-<span class="image">![RDS Cluster Disable Backtrack](images/rds-cluster-disable-backtrack.png?raw=true)</span>
+![RDS Cluster Disable Backtrack](/images/aurora-rds-cluster-disable-backtrack.png?raw=true)
 
 Na seção **Scheduling of modifications**, escolha a opção **Apply immediately** e clique em **Modify cluster** para confirmar as alterações.
 
-<span class="image">![RDS Cluster Confirm Changes](images/rds-cluster-modify-confirm.png?raw=true)</span>
+![RDS Cluster Confirm Changes](/images/aurora-rds-cluster-modify-confirm.png?raw=true)
 
 Quando a modificação for concluída, e o cluster de banco de dados estiver em um estado `available` novamente, no botão suspenso **Actions**, escolha **Add region**..
 
 {{% notice note %}}
 Pode ser necessário atualizar a página do navegador após desativar o Backtrack, antes de adicionar uma região. Se **Add region** aparecer indisponivel, atualize a página do navegador ou verifique se Backtrack foi desativado corretamente.
 {{% /notice  %}}
-<span class="image">![RDS Cluster Add Region](images/rds-cluster-action-add.png?raw=true)</span>
+![RDS Cluster Add Region](/images/aurora-rds-cluster-action-add.png?raw=true)
 
 Defina as seguintes opções na tela de configuração para o cluster de banco de dados secundário:
 
 1. Na seção **Global database settings**:
-    * [ ] Em **Global database identifier** coloque `auroralab-mysql-global`
+    * Em **Global database identifier** coloque `auroralab-mysql-global`
 
 2. Na seção **AWS Region**:
-    * [ ] Escolha a **região secundária** de `US East (N. Virginia)`
+    * Escolha a **região secundária** de `US East (N. Virginia)`
 
 3. Em **Connectivity**, especifique onde o cluster de banco de dados será implantado com as informações de rede criadas acima:
-    * [ ] Em **Virtual Private Cloud (VPC)** coloque `auroralab-vpc`
-    * [ ] Garanta que o correto  **Subnet Group** foi selecionado automaticamente, deve ter o nome `auroralab-db-subnet-group`.
-    * [ ] Certifique-se de que a opção **Publicly accessible** está definida como `No`
-    * [ ] Para **VPC security group** selecione **Choose existing** e escolha o grupo de segurança chamado `auroralab-database-sg`, remova quaisquer outros grupos de segurança, como `default` da seleção.
+    * Em **Virtual Private Cloud (VPC)** coloque `auroralab-vpc`
+    * Garanta que o correto  **Subnet Group** foi selecionado automaticamente, deve ter o nome `auroralab-db-subnet-group`.
+    * Certifique-se de que a opção **Publicly accessible** está definida como `No`
+    * Para **VPC security group** selecione **Choose existing** e escolha o grupo de segurança chamado `auroralab-database-sg`, remova quaisquer outros grupos de segurança, como `default` da seleção.
 
 4. Em **Read replica write forwarding**:
-    * [ ] **Marque** a opção **Enable read replica write forwarding**
+    *  **Marque** a opção **Enable read replica write forwarding**
 
 5. Expanda a seção **Advanced configuration**, e configure as seguintes opções:
-    * [ ] Para **DB instance identifier** escolha `auroralab-mysql-node-3`
-    * [ ] Para **DB cluster identifier** escolha `auroralab-mysql-secondary`
-    * [ ] Para **DB cluster parameter group** selecione o grupo com o nome da stack no nome (ex. `auroralab-[...]`)
-    * [ ] Para **DB parameter group** selecione o grupo com o nome da stack no nome (ex. `auroralab-[...]`)
-    * [ ] Para **Backup retention period** escolha `1 day`
-    * [ ] **Marque** a opção **Enable Performance Insights**
-    * [ ] Para **Retention period** escolha `Default (7 days)`
-    * [ ] Para **Master key** escolha `[default] aws/rds`
-    * [ ] **Marque** a opção **Enable Enhanced Monitoring**
-    * [ ] Para **Granularity** escolha `1 second`
-    * [ ] Para **Monitoring Role** escolha `auroralab-monitor-[secondary-region]`
+    * Para **DB instance identifier** escolha `auroralab-mysql-node-3`
+    * Para **DB cluster identifier** escolha `auroralab-mysql-secondary`
+    * Para **DB cluster parameter group** selecione o grupo com o nome da stack no nome (ex. `auroralab-[...]`)
+    * Para **DB parameter group** selecione o grupo com o nome da stack no nome (ex. `auroralab-[...]`)
+    * Para **Backup retention period** escolha `1 day`
+    * **Marque** a opção **Enable Performance Insights**
+    * Para **Retention period** escolha `Default (7 days)`
+    * Para **Master key** escolha `[default] aws/rds`
+    * **Marque** a opção **Enable Enhanced Monitoring**
+    * Para **Granularity** escolha `1 second`
+    * Para **Monitoring Role** escolha `auroralab-monitor-[secondary-region]`
 
 {{% notice info %}}
 Observe que há **duas** funções de monitoramento na lista, uma para a região primária (uma no canto superior direito), a outra para a região secundária (normalmente `us-east-1`) . Nesta etapa, você precisa da região **secundária**.
 {{% /notice %}}
-<span class="image">![RDS Cluster Add Region](images/rds-cluster-add-region.png?raw=true)</span>
+![RDS Cluster Add Region](/images/aurora-rds-cluster-add-region.png?raw=true)
 
 {{% notice note %}}
 O que essas opções significam? 
@@ -209,7 +207,7 @@ Para se conectar ao cluster de banco de dados e começar a usá-lo, é necessár
 
 A seção **Endpoints** na guia **Connectivity and security** da página de detalhes exibe os endpoints. 
 
-<span class="image">![RDS Cluster Secondary Endpoints](images/rds-cluster-secondary-endpoints.png?raw=true)</span>
+![RDS Cluster Secondary Endpoints](/images/aurora-rds-cluster-secondary-endpoints.png?raw=true)
 
 # Monitore o Global Database
 
@@ -257,14 +255,14 @@ O que todos esses parâmetros significam?
 
 O comando será enviado para a instância EC2 que preparará o conjunto de dados de teste e executará o teste de carga. Pode levar até um minuto para que o CloudWatch reflita a carga adicional nas métricas. Você verá uma confirmação de que o comando foi iniciado.
 
-<span class="image">![SSM Command](images/ssm-cmd-sysbench.png?raw=true)</span>
+![SSM Command](/images/aurora-ssm-cmd-sysbench.png?raw=true)
 
 
 ## 2. Monitore a carga do cluster e o atraso de replicação
 
 No console de serviço RDS na **região primária**, selecione `auroralab-mysql-cluster` (primário), se ainda não estiver selecionado e alterne para a guia **Monitoring**. Você verá uma visão combinada das instâncias de banco de dados de escrita e leitura nesse cluster. Você não está usando os nós de leitura neste momento, a carga é direcionada apenas para o nó de escrita. Navegue pelas métricas e analise especificamente as métricas **CPU Utilization**, **Commit Throughput**, **DML Throughput**, **Select Throughput** e observe que estão razoavelmente estáveis, além do pico inicial causado pela ferramenta sysbench preenchendo um conjunto de dados inicial.
 
-<span class="image">![RDS Cluster Primary Metrics](images/rds-cluster-primary-metrics.png?raw=true)</span>
+![RDS Cluster Primary Metrics](/images/aurora-rds-cluster-primary-metrics.png?raw=true)
 
 Em seguida, você mudará o foco para o **cluster de banco de dados secundário** recém-criado. Você criará um painel do CloudWatch para monitorar três métricas principais relevantes para clusters globais e clusters de banco de dados secundários, mais especificamente:
 
@@ -280,15 +278,15 @@ Abre o <a href="https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#
 Você trabalhará em uma região diferente nas etapas subsequentes: N. Virginia (us-east-1). Como você pode ter várias guias do navegador e sessões de linha de comando abertas, certifique-se de estar sempre operando na região pretendida.
 {{% /notice  %}}
 
-<span class="image">![CloudWatch Dashboards Listing](images/cw-dash-listing.png?raw=true)</span>
+![CloudWatch Dashboards Listing](/images/aurora-cw-dash-listing.png?raw=true)
 
 Clique em **Create dashboard**. Defina o nome da nova dashboard `auroralab-gdb-dashboard` e clique em **Create dashboard**.
 
-<span class="image">![CloudWatch Dashboard Creation](images/cw-dash-create.png)</span>
+![CloudWatch Dashboard Creation](/images/aurora-cw-dash-create.png)
 
 Vamos adicionar nosso primeiro widget no painel que mostrará nossa latência de replicação entre o cluster Aurora secundário e primário. Selecione **Number** e clique em **Next**.
 
-<span class="image">![CloudWatch Dashboard Add Number Widget](images/cw-dash-add-number.png)</span>
+![CloudWatch Dashboard Add Number Widget](/images/aurora-cw-dash-add-number.png)
 
 Na tela de **Add Metric Graph**, examinaremos a guia **All Metrics**, selecionaremos **RDS** e, em seguida, selecionaremos o grupo de métricas denominado **SourceRegion**.
 
@@ -300,20 +298,20 @@ Na parte inferior, clique na guia **Graphed Metrics** para personalizar ainda ma
 
 Confirme se as configurações estão iguais ao exemplo abaixo, e clique em **Create widget**.
 
-<span class="image">![CloudWatch Widget Configuration](images/cw-widget-setup.png)</span>
+![CloudWatch Widget Configuration](/images/aurora-cw-widget-setup.png)
 
 
 Agora você criou seu primeiro widget. Você pode definir uma atualização automática em um intervalo definido no menu de atualização no canto superior direito.
 
 Clique em **Save dashboard** para salvar as alterações.
 
-<span class="image">![CloudWatch Dashboard Single Widget](images/cw-dash-single-widget.png)</span>
+![CloudWatch Dashboard Single Widget](/images/aurora-cw-dash-single-widget.png)
 
 Você pode adicionar widgets individualmente ao dashboard, para construir um painel de monitoramento mais completo. No entanto, para economizar tempo, vamos utilziar o JSON abaixo.
 
 Primeiro, clique na lista suspensa **Actions** no painel e escolha **View/edit source**.
 
-<span class="image">![CloudWatch Dashboard Actions](images/cw-dash-actions.png)</span>
+![CloudWatch Dashboard Actions](/images/aurora-cw-dash-actions.png)
 
 Na caixa de texto que aparece na tela, cole o seguinte código JSON. Certifique-se de atualizar a região AWS no código abaixo para corresponder à sua **região secundária**,se necessário. Além disso, se você usou identificadores (nomes) de cluster de BD diferentes para os clusters de BD do que os indicados neste guia, você também terá que atualizá-los.
 
@@ -380,11 +378,11 @@ Na caixa de texto que aparece na tela, cole o seguinte código JSON. Certifique-
 
 Clique em **Update** para alterar o dashboard.
 
-<span class="image">![CloudWatch Dashboard Source](images/cw-dash-source.png)</span>
+![CloudWatch Dashboard Source](/images/aurora-cw-dash-source.png)
 
 Clique em **Save dashboard** para garantir que o painel seja salvo com as novas alterações .
 
-<span class="image">![CloudWatch Dashboard Multiple Widgets](images/cw-dash-multi-widget.png)</span>
+![CloudWatch Dashboard Multiple Widgets](/images/aurora-cw-dash-multi-widget.png)
 
 {{% notice note %}}
 As métricas **Aurora Global DB Replicated I/O** e **Aurora Global DB Data Transfer Bytes**  são atualizadas apenas uma vez por hora, portanto, talvez você não consiga ver os dados dessas métricas, dependendo do tempo de seu laboratório.
@@ -458,7 +456,7 @@ Abra o <a href="https://console.aws.amazon.com/vpc/home#acls:sort=networkAclId" 
 Verifique se você ainda está trabalhando na **região primária**, especialmente se estiver seguindo os links acima para abrir o console de serviço na tela certa.
 {{% /notice  %}}
 
-<span class="image">![NACLs Rules Review](images/vpc-nacl-rules.png)</span>
+![NACLs Rules Review](/images/aurora-vpc-nacl-rules.png)
 
 Alterne para a guia **Subnet associations** do NACL selecionado no painel de detalhes e clique no botão **Edit subnet associations**.
 
@@ -466,7 +464,7 @@ O cluster Aurora DB é configurado para usar as **private subnets** configuradas
 
 Selecione todas as sub-redes que começam com este prefixo `auroralab-prv-sub-`. Você também pode simplesmente usar a caixa de pesquisa para filtrar em qualquer sub-rede com o nome ** prv ** e selecioná-la. Em seguida, clique no botão **Edit** para confirmar as associações.
 
-<span class="image">![NACLs Edit Subnet Association](images/vpc-subassoc-edit.png)</span>
+![NACLs Edit Subnet Association](/images/aurora-vpc-subassoc-edit.png)
 
 Uma vez associadas, as regras NACL entram em vigor imediatamente e tornarão os recursos dentro das sub-redes privadas inacessíveis. Sua conexão com o banco de dados na linha de comando do Session Manager deve eventualmente ser interrompida com uma mensagem de erro indicando que o cliente perdeu a conexão com o servidor.
 
@@ -489,17 +487,17 @@ Você também pode notar que em seu console RDS ele ainda mostrara o cluster de 
 
 Com o cluster de banco de dados secundário `auroralab-mysql-secondary` selecionado, clique no menu **Actions** e selecione **Remove from Global**.
 
-<span class="image">![RDS Remove Cluster From Global](images/rds-cluster-action-remglobal.png)</span>
+![RDS Remove Cluster From Global](/images/aurora-rds-cluster-action-remglobal.png)
 
 Uma mensagem aparecerá solicitando que você confirme. Essa ação interromperá a replicação do cluster de banco de dados primário. Confirme clicando em **Remove and promote**.
 
-<span class="image">![RDS Confirm Remove Cluster From Global](images/rds-cluster-confirm-remglobal.png)</span>
+![RDS Confirm Remove Cluster From Global](/images/aurora-rds-cluster-confirm-remglobal.png)
 
 O processo de promoção deve levar menos de 1 minuto. Depois de concluído, você poderá ver que o cluster de banco de dados anteriormente secundário agora está rotulado como **Regional** e a instância de banco de dados agora é um nó de **Writer**.
 
 Clique no cluster de banco de dados recém-promovido. Na guia **Connectivity and security**, o endpoint do **Writer** agora deve ser listado como **Available**. Copie e cole a string do terminal em seu bloco de notas.
 
-<span class="image">![RDS Cluster Endpoints Promoted](images/rds-cluster-endpoints-promoted.png)</span>
+![RDS Cluster Endpoints Promoted](/images/aurora-rds-cluster-endpoints-promoted.png)
 
 Abra uma sessão adicional no Session Manager na **região secundária**. Consulte [Conectar ao Session Manager](./connect), para obter o passo a passo de como criar uma sessão de linha de comando do Session Manager, mas certifique-se de usar a **região secundária**.
 
@@ -551,7 +549,7 @@ Sua aplicação agora pode atender consultas de leitura e gravação onde costum
 
 Para remover os ambientes de lab criados vá até o CloudFormation em cada região escolhida, selecione a stack utilizada nos laboratórios e escolha a opção **Delete** e depois confirme clicando em **Delete stack**.
 
-<span class="image">![CLoudFormation](images/cf-delete.png?width=50pc)</span>
+![CloudFormation](/images/aurora-cf-delete.png?width=50pc)
 
 ### Conclusão
 

@@ -31,7 +31,7 @@ Assumindo que você ainda não tenha criado uma instância de Amazon FSx, essa �
 
 
 
-![fsx](images/step1.png)
+![fsx](/images/step1.png)
 
 {{% notice tip %}}
 Enquanto o novo sistema de arquivos é criado, você pode executar a Etapa 2.
@@ -85,22 +85,22 @@ The next step is to install the **[DataSync agent](https://docs.aws.amazon.com/d
 
 Currently, as shown in the following screenshot, AWS provides two options for deploying the agent, either a VMware image or an EC2 image. To support replication from one AWS Region to another AWS Region, we are to use the Amazon EC2 image.
 
-![fsx](images/step4.png)
+![fsx](/images/step4.png)
 
 You can select how you want to communicate from the DataSync agent to the DataSync service by selecting the service endpoint. The two most common options are to communicate over the internet using the public service endpoints or over a private connection using the **[VPC endpoints using AWS PrivateLink](https://docs.aws.amazon.com/datasync/latest/userguide/datasync-in-vpc.html)**.
 
 For AWS DataSync transfers between AWS Regions, you would most likely select the private connection using VPC endpoints to keep the replication traffic over a private connection. However for brevity of this lab, it's not necessary add the complexity of creating the VPC endpoints for this private connection (in this case). Thus, was selected the public service endpoints (see the following screenshot). However, if you want to use the private connection using VPC endpoints, please see our **[documentation](https://docs.aws.amazon.com/datasync/latest/userguide/datasync-in-vpc.html)**.
 
 
-![fsx](images/step4_1.png)
+![fsx](/images/step4_1.png)
 
 Once you deploy the agent, you must register the agent with the DataSync service by entering the name or IP address of the agent. Then press the Get key button.
 
-![fsx](images/step4_2.png)
+![fsx](/images/step4_2.png)
 
 To active the DataSync agent, make sure that the AWS Management Console can communicate with the DataSync agent. Once the DataSync agent registers successfully, you should see it listed in the console:
 
-![fsx](images/step4_3.png)
+![fsx](/images/step4_3.png)
 
 *For more on installing the DataSync agent information, please see the **[documentation](https://docs.aws.amazon.com/datasync/latest/userguide/configure-agent.html)**.*
 
@@ -115,25 +115,25 @@ Open the AWS Management Console, and from the Region drop-down menu in the top r
 
 On the Configuration screen, you specify the source location options. For the Agent setting, select the DataSync agent that you installed in the prior step. Since you are replicating data from Amazon FSx, it is considered SMB file storage, so select the **Server Message Block (SMB)** option. For the SMB Server IP address, specify the **Preferred File Servier IP Address**, which can be found on the properties page of the Amazon FSx file system:
 
-![fsx](images/step5_1.png)
+![fsx](/images/step5_1.png)
 
 Specify the Windows file share on the server that you want to replicate. In my lab, my source Windows file server was at 10.0.22.151 and the **Share name** is share.
 
-![fsx](images/step5_12.png)
+![fsx](/images/step5_12.png)
 
 Next, specify the credentials of a user that has rights to read the data from the source location. A typical implementation is to create a service account that is a member of the Windows backup operators group and specify that service account. In this scenario, the source location is Amazon FSx, so make sure that the service account is a member of the **AWS Delegated FSx Administrators** group. For more information, please see our **[documentation](https://docs.aws.amazon.com/fsx/latest/WindowsGuide/limit-access-file-folder.html)**. The following screenshot shows all of the specifications already selected for the purposes of this example.
 
-![fsx](images/step5_13.png)
+![fsx](/images/step5_13.png)
 
 **Etapa 5.2: Specify the destination location**
 
 For this step, specify the destination location where the data should be migrated. Under **Configure destination location** for the location type, specify the **Amazon FSx for Windows File Server** option. Select the Amazon FSx file system in the DR AWS Region that you created earlier and the share name where you want to copy the data.
 
-![fsx](images/step5_2.png)
+![fsx](/images/step5_2.png)
 
 You must also specify an account that has rights to write data to the Amazon FSx file system. To ensure sufficient permissions to files, folders, and file metadata, we recommend that you pick a user that is a member of the Amazon FSx file system’s delegated administrators group. For more information, please see our **[documentation](https://docs.aws.amazon.com/datasync/latest/userguide/create-fsx-location.html)**.
 
-![fsx](images/step5_22.png)
+![fsx](/images/step5_22.png)
 
 **Etapa 5.3: Specify the DataSync task settings**
 
@@ -141,24 +141,24 @@ On the next screen, you set the DataSync task settings, as shown in the followin
 
 Since you are replicating the data to the DR AWS Region, verification of all the data in the destination every time the replication task is run is not required. Choose **Verify only the data transferred**. This change instructs AWS DataSync task to verify only the data transferred. For more information on each option, please see our **[user guide](https://docs.aws.amazon.com/datasync/latest/userguide/create-task.html)**.
 
-![fsx](images/step5_31.png)
+![fsx](/images/step5_31.png)
 
 * On the **Schedule** option (shown in the following screenshot), you can specify when you want the AWS DataSync task to run. For more information, please see our **[user guide](https://docs.aws.amazon.com/datasync/latest/userguide/task-scheduling.html)**.
 
-![fsx](images/step5_32.png)
+![fsx](/images/step5_32.png)
 
 **Etapa 5.4: Run the DataSync migration task**
 
 Once you have specified the task setting and created the DataSync task, it then runs on the schedule that you specified. If you want to start the task immediately, you can do so by selecting the DataSync task and under **Actions**, select **Start**.
 
 
-![fsx](images/step5_41.png)
+![fsx](/images/step5_41.png)
 
 Now to check that the DataSync replication task is operating, logon to a Windows Server that has access to the Amazon FSx file system in the source and DR AWS Regions. Map a file share to the Amazon FSx file system in the DR AWS Region. If you need help with mapping a file share to the Amazon FSx file system, please see our **[documentation](https://docs.aws.amazon.com/fsx/latest/WindowsGuide/using-file-shares.html)**.
 
 You should see your files appearing on the Amazon FSx file system as the AWS DataSync task copies the files. In the following screenshot, the file explorer on the left is my source file system and the one on the right contains the files on the Amazon FSx file system.
 
-![fsx](images/step5_42.png)
+![fsx](/images/step5_42.png)
 
 
 #### Apagando os recursos
