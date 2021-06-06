@@ -15,8 +15,9 @@ pygmentsCodeFences = true
 pygmentsStyle = "monokai"
 
 [params]
+  editURL = "https://github.com/aws-samples/disaster-recovery-workshop/edit/main/workshop/content/"
   description = "Reliability reference architectures for disaster recovery scenarios"
-  author = "Leonardo Piedade @ AWS"
+  author = "Leonardo Piedade"
   disableBreadcrumb = false
   disableNextPrev = false
   themeVariant = "aws"
