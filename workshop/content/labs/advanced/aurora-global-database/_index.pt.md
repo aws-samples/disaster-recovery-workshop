@@ -55,7 +55,7 @@ Para simplificar a experiência inicial com os laboratórios, criamos modelos b�
 
 Clique em  **Launch Stack para criar um cluster de banco de dados provisionado Aurora automaticamente**:
 
-<a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/create/review?stackName=auroralab&templateURL=https://s3.amazonaws.com/ams-stack-prod-content-us-east-1/templates/lab_template.yml&param_deployCluster=Yes&param_deployGDB=Yes" target="_blank"><img src="images/cloudformation-launch-stack.png" alt="Launch Stack"></a>
+<a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/create/review?stackName=auroralab&templateURL=https://s3.amazonaws.com/ams-stack-prod-content-us-east-1/templates/lab_template.yml&param_deployCluster=Yes&param_deployGDB=Yes" target="_blank"><img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png" alt="Launch Stack"></a>
 
 
 No campo denominado **Stack Name**, verifique se o valor `auroralab` está predefinido.
