@@ -1,25 +1,31 @@
 #name - DNS-friendly name for the workshop. This will be used when generating the hosting URL (ie. https://my-first-workshop.workshops.aws/)
-name: reliability-refarch
+name: disaster-recovery
 #title - The title of your workshop
-title: Reliability on AWS
+title: Disaster Recovery on AWS
 #description - A short description that will be displayed in search results
-description: Help customers to build applications that could be fault-tolerant to AWS Region level issues.
+description: In this workshop, we will explore some of the techniques to support Disaster Recovery strategies based on multi-region approach.
 #categories - Refer to official AWS categories covered by the workshop content here
 categories: 
-  - Analytics
-  - Application Integration
-  - Compute
   - Containers
-  - Database
-  - Front-end Web & Mobile
-  - Management & Governance
+  - Databases
   - Networking
-  - Security, Identity & Compliance
+  - Serverless
+  - Security
   - Storage
+  - Disaster Recovery
+  - Well Architected
 #services - Refer to the official AWS service names covered by the workshop content here
 services: 
-   - Api Gateway
+   - API Gateway
+   - Aurora
+   - CloudFront
+   - DynamoDB
+   - EC2
+   - ECR
+   - EKS
    - Lambda
+   - S3
+   - Secrets Manager
 #level - Approximate skill level needed for this workshop
 level: 300 
 #duration - Estimated duration in minutes
