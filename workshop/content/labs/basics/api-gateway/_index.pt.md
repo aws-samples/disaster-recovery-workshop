@@ -28,7 +28,7 @@ Esse exercício irá mostrar os passos para você configurar rapidamente suas ap
 **Tempo de Execução Estimado:** 40 minutos
 
 **Custo Aproximado**: 3 USD
-
+In you diagram and in the CFN template both vpc have CIDR 10.0.0.0/16. With this configuration VPC peering will not work as overlapping VPC CIDR ranges are not allowed. 
 ![Arquitetura API Gateway](/images/apigw-lab-architecture.png)
 
 ### Execução
