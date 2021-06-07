@@ -10,7 +10,7 @@ disableToc: true
 note: change the url to match the new repo... using old repo as an example placeholder
 
 <br><br>
-Acesse: [Contributors page](https://github.com/lpiedade/reliability-refarch/graphs/contributors) para ver a lista de autores desse conteúdo!
+Acesse: [Contributors page](https://github.com/aws-samples/disaster-recovery-workshop/graphs/contributors) para ver a lista de autores desse conteúdo!
 --->
 
 Organizador: 

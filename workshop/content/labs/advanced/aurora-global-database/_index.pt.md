@@ -101,7 +101,7 @@ Vamos nos referir à região onde você implantará o cluster de banco de dados 
 
 Clique em **Launch Stack** abaixo para provisionar um ambiente de laboratório na região **US East (N Virginia, us-east-1)** para oferecer suporte ao Aurora Global Database. 
 
-<a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?stackName=auroralab&templateURL=https://s3.amazonaws.com/ams-stack-prod-content-us-east-1/templates/lab_template.yml&param_deployCluster=No&param_deployML=No&param_deployGDB=Yes&param_isSecondary=Yes" target="_blank"><img src="images/cloudformation-launch-stack.png" alt="Launch Stack"></a>
+<a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?stackName=auroralab&templateURL=https://s3.amazonaws.com/ams-stack-prod-content-us-east-1/templates/lab_template.yml&param_deployCluster=No&param_deployML=No&param_deployGDB=Yes&param_isSecondary=Yes" target="_blank"><img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png" alt="Launch Stack"></a>
 
 No campo denominado **Stack Name**, verifique se o valor `auroralab` está predefinido. Aceite todos os valores padrão para os parâmetros restantes. 
 
