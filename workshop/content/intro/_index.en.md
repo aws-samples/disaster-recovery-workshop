@@ -5,21 +5,19 @@ chapter: true
 pre: "<b>1. </b>"
 ---
 
-Esse material discute fundamentos de arquitetura e mecanismos para construção de aplicações altamente resilientes no ambiente Amazon Web Services (AWS), para atender os requisitos de recuperação de aplicações em diferentes camadas, inclusive para aplicações de missão crítica.
+This material discusses software architecture fundamentals and mechanisms for building highly resilient applications in the Amazon Web Services (AWS) environment. The object is to meet the requirements for recovering applications in different layers, including for mission-critical applications.
 
-Aplicações resilientes provêm serviço contínuo apesar das disrupções. 
-Eventos como desastres naturais, falhas de hardware e erros humanos podem causar interrupções em um serviço. Empresas que não preparam suas aplicações para essas falhas possuem um maior risco de *downtime*, instabilidade e perda de dados em suas soluções. Essa indisponibilidade pode acarretar em perda financeira, implicações legais, impactos negativos sobre a marca e insatisfação dos clientes.<sup>[1](https://d1.awsstatic.com/Industries/Financial%20Services/Overview/Resilient%20Applications%20on%20AWS%20for%20Financial%20Services.pdf)</sup>
+Resilient applications provide continuous service despite disruptions.
+Events such as natural disasters, hardware failures, and human errors can cause disruptions to a service. Companies that don't prepare their applications for these failures have a higher risk of downtime, instability and loss of data in your solutions. This unavailability can lead to financial loss, legal implications, negative impacts on the brand, and customer dissatisfaction.<sup>[1](https://d1.awsstatic.com/Industries/Financial%20Services/Overview/Resilient%20Applications%20on%20AWS%20for%20Financial%20Services.pdf)</sup>
 
-Desenvolver uma aplicação considerando as possíveis falhas, é um dos príncipios mais importantes para que ela seja resiliente. 
-De acordo com a criticidade de cada aplicação, devem ser estipulados RTO e RPO esperados.
-É importante que sejam discutidas as [Estratégias de Recuperação de Desastres](disaster-recovery) no ambiente AWS.
+Developing an application considering possible failures is one of the most important principles to make it resilient.
+According to the criticality of each application, expected RTO and RPO should be stipulated.
+It is important to discuss the [Disaster Recovery Strategies](disaster-recovery) in the AWS environment.
 
-Para entender como funciona a infraestrutura da AWS, veja [Infraestrutura Global](global-infra).
-Caso seja o seu primeiro contato com o ambiente AWS veja também [Regiões e Zonas de Disponibilidade](regions-az). 
-
-
+To understand how the AWS infrastructure works, see [Global Infrastructure](global-infra).
+If it's your first contact with the AWS environment, see also. [Regions and Availability Zones](regions-az).
 
 
 ---
-**Referências:**
+**References:**
 1. [Building Mission-Critical Financial Services Applications on AWS](https://d1.awsstatic.com/Industries/Financial%20Services/Overview/Resilient%20Applications%20on%20AWS%20for%20Financial%20Services.pdf)

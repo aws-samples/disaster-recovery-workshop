@@ -5,7 +5,7 @@ chapter: true
 pre: "<b>2. </b>"
 aliases: 
  - /pt/concepts/
-url: "/pt/conceitos/"
+url: "/pt/intro/conceitos/"
 ---
 
 Para que seja possível um entendimento mais abrangente, essa seção apresenta alguns conceitos que serão utilizados nesse workshop.
