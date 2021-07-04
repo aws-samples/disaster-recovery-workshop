@@ -23,7 +23,7 @@ pygmentsStyle = "monokai"
   themeVariant = "aws"
   disableSearch = false
   disableAssetsBusting = true
-  disableLanguageSwitchingButton = true
+  disableLanguageSwitchingButton = false
   disableShortcutsTitle = false
   disableInlineCopyToClipBoard = true
   showVisitedLinks = true
@@ -52,66 +52,66 @@ home = [ "HTML", "RSS", "JSON"]
 
 [Languages]
 
-#[Languages.en]
-#title = "Disaster Recovery on AWS"
-#weight = 1
-#languageName = "English"
-#
-#[[Languages.en.menu.shortcuts]]
-#name = "<i class='fas fa-tags'></i> Tags"
-#url = "/tags.html"
-#weight = 1
-#
-#[[Languages.en.menu.shortcuts]]
-#name = "<i style='text-indent: 15px;' class='fab fa-aws'></i> Backup & Restore"
-#url = "/tags/backup-restore.html"
-#weight = 2
-#
-#[[Languages.en.menu.shortcuts]]
-#name = "<i style='text-indent: 15px;' class='fab fa-aws'></i> Pilot Light"
-#url = "/tags/pilot-light.html"
-#weight = 3
-#
-#[[Languages.en.menu.shortcuts]]
-#name = "<i style='text-indent: 15px;' class='fab fa-aws'></i> Warm Standby"
-#url = "/tags/warm-standby.html"
-#weight = 4
-#
-#[[Languages.en.menu.shortcuts]]
-#name = "<i style='text-indent: 15px;' class='fab fa-aws'></i> Active-Active"
-#url = "/tags/active-active.html"
-#weight = 5
-#
-#[[Languages.en.menu.shortcuts]]
-#name = "<i class='fas fa-chalkboard'></i> AWS Workshops"
-#url = "https://workshops.aws/"
-#weight = 9
-#
-#[[Languages.en.menu.shortcuts]]
-#name = "<i class='fas fa-bookmark'></i> More resources"
-#url = "/more-resources"
-#weight = 10
-#
-#[[Languages.en.menu.shortcuts]]
-#name = "<i class='fas fa-users'></i> Authors"
-#url = "/authors"
-#weight = 20
-#
-#[[Languages.en.menu.shortcuts]]
-#name = "<i class='fab fa-github'></i> GitHub Project"
-#url = "https://github.com/aws-samples/disaster-recovery-workshop"
-#weight = 30
-#
-#[[Languages.en.menu.shortcuts]]
-#name = "<i class='fas fa-envelope'></i> Have questions?"
-#url = "mailto:aws-sa-disaster-recovery@amazon.com"
-#weight = 40
-#
-#[[Languages.en.menu.shortcuts]]
-#name = "<i class='fas fa-poll'></i> Survey"
-#url = "/survey"
-#weight = 50
-#
+[Languages.en]
+title = "Disaster Recovery on AWS"
+weight = 1
+languageName = "English"
+
+[[Languages.en.menu.shortcuts]]
+name = "<i class='fas fa-tags'></i> Tags"
+url = "/tags.html"
+weight = 1
+
+[[Languages.en.menu.shortcuts]]
+name = "<i style='text-indent: 15px;' class='fab fa-aws'></i> Backup & Restore"
+url = "/tags/backup-restore.html"
+weight = 2
+
+[[Languages.en.menu.shortcuts]]
+name = "<i style='text-indent: 15px;' class='fab fa-aws'></i> Pilot Light"
+url = "/tags/pilot-light.html"
+weight = 3
+
+[[Languages.en.menu.shortcuts]]
+name = "<i style='text-indent: 15px;' class='fab fa-aws'></i> Warm Standby"
+url = "/tags/warm-standby.html"
+weight = 4
+
+[[Languages.en.menu.shortcuts]]
+name = "<i style='text-indent: 15px;' class='fab fa-aws'></i> Active-Active"
+url = "/tags/active-active.html"
+weight = 5
+
+[[Languages.en.menu.shortcuts]]
+name = "<i class='fas fa-chalkboard'></i> AWS Workshops"
+url = "https://workshops.aws/"
+weight = 9
+
+[[Languages.en.menu.shortcuts]]
+name = "<i class='fas fa-bookmark'></i> More resources"
+url = "/more-resources"
+weight = 10
+
+[[Languages.en.menu.shortcuts]]
+name = "<i class='fas fa-users'></i> Authors"
+url = "/authors"
+weight = 20
+
+[[Languages.en.menu.shortcuts]]
+name = "<i class='fab fa-github'></i> GitHub Project"
+url = "https://github.com/aws-samples/disaster-recovery-workshop"
+weight = 30
+
+[[Languages.en.menu.shortcuts]]
+name = "<i class='fas fa-envelope'></i> Have questions?"
+url = "mailto:aws-sa-disaster-recovery@amazon.com"
+weight = 40
+
+[[Languages.en.menu.shortcuts]]
+name = "<i class='fas fa-poll'></i> Survey"
+url = "/survey"
+weight = 50
+
 
 
 [Languages.pt]

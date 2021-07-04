@@ -38,4 +38,4 @@ Revisores:
 
 ---
 
-*Esse conteúdo foi criado com a extração e ajuste de trechos de múltiplos materiais disponíveis nos canais da AWS. As fontes estão devidamente creditadas e citadas em todos os pontos nos quais um material de terceiros foi utilizado. Caso tenha algum material não creditado, por favor entre em contato conosco: aws-sa-disaster-recovery@amazon.com*
+*Esse conteúdo foi criado com a extração e adaptação de trechos de múltiplos materiais disponíveis nos canais da AWS. As fontes estão devidamente creditadas e citadas em todos os pontos nos quais um material de terceiros foi utilizado. Caso tenha algum material não creditado, por favor entre em contato conosco: aws-sa-disaster-recovery@amazon.com*
