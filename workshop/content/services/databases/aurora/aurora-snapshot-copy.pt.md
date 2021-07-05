@@ -1,7 +1,6 @@
 ---
 title: "Aurora - Backup de Snapshots"
 menutitle: "Backup de Snapshots"
-weight: 2
 chapter: false
 pre: "<b></b>"
 awsServices: 

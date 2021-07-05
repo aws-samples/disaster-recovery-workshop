@@ -1,8 +1,12 @@
-***
-
-## title: “Amazon Aurora”&#xA;menutitle: “Amazon Aurora”&#xA;weight:1&#xA;chapter: false&#xA;pre:”<b></b>“&#xA;AWS Services:&#xA;\- Amazon Aurora
-
-<!-- Introdução geral ao serviço -->
+---
+title: "Amazon Aurora"
+menutitle: "Amazon Aurora"
+weight: 1
+chapter: false
+pre: "<b></b>"
+awsServices: 
+    - Amazon Aurora
+---
 
 Amazon Aurora is a relational database compatible with MySQL and PostgreSQL built for the cloud that combines the performance and availability of traditional enterprise databases with the simplicity and economics of open source databases.
 
@@ -12,10 +16,8 @@ Amazon Aurora offers a distributed, fault tolerant, auto-recovery storage system
 
 {{< youtube FzxqIdIZ9wc >}}
 
-<!-- **RTO:** 1 minuto. -->
-
-***
+---
 
 **References:**
 
-*   [Aurora - Global Database](https://docs.aws.amazon.com/pt_br/AmazonRDS/latest/AuroraUserGuide/aurora-global-database.html#aurora-global-database-overview)
+- [Amazon Aurora - Global Database](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database.html#aurora-global-database-overview)

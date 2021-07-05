@@ -1,8 +1,6 @@
 ---
 title : "Amazon API Gateway - Active-Active"
 menuTitle : "Active-Active"
-date : 2020-12-17T17:41:47-03:00
-weight : 4
 tags:
   - Active-Active
 awsServices:

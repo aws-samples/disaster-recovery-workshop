@@ -1,5 +1,5 @@
 ---
-title: "Banco de dados"
+title: "Databases"
 weight: 3
 chapter: true
 pre: "<b></b>"

@@ -1,8 +1,6 @@
 ---
 title : "Amazon API Gateway - Pilot Light"
 menuTitle : "Pilot Light"
-date : 2020-12-17T17:43:32-03:00
-weight : 2
 tags:
   - Pilot Light
 awsServices:

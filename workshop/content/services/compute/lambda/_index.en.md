@@ -13,7 +13,7 @@ AWS Lambda is a compute service that allows you to run code without provisioning
 The cost model of Serverless applications using AWS Lambda is a major advantage in scenarios of *Disaster Recovery* since you only pay for usage, not for the availability of allocated resources.
 {{% /notice%}}
 
-With AWS Lambda, you can run code for any type of backend application or service virtually, all without administration. The following [languages are compatible with AWS Lambda](https://docs.aws.amazon.com/pt_br/lambda/latest/dg/lambda-runtimes.html).
+With AWS Lambda, you can run code for any type of backend application or service virtually, all without administration. The following [languages are compatible with AWS Lambda](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html).
 
 #### Multi-region Lambda Management
 
@@ -23,15 +23,15 @@ The strategies of *Disaster Recovery* require their AWS Lambda functions to be i
 
 ##### Backup & Restore
 
-It consists of maintaining a backup of your AWS Lambda functions so that you can restore them in another region in the event of a disaster. Keep the source code and settings of your functions under the management of a versioning tool and use tags to baseline your code versions. During the restore process, you can install your functions in two ways: [Manually]({{< ref "manual" >}}  "Manually") or through a [CI/CD Pipeline]({{< ref "pipeline" >}} "CI/CD Pipeline").
+It consists of maintaining a backup of your AWS Lambda functions so that you can restore them in another region in the event of a disaster. Keep the source code and settings of your functions under the management of a versioning tool and use tags to baseline your code versions. During the restore process, you can install your functions in two ways: [Manually]({{< ref "manual">}}  "Manually") or through a [CI/CD Pipeline]({{< ref "pipeline" >}} "CI/CD Pipeline").
 
 ##### Pilot Light
 
-For this strategy, AWS Lambda functions that are critical to the minimal functioning of the DR region must be functional and up to date. In this way, consider minimally that critical AWS Lambda functions are managed via [CI/CD Pipeline] ({{< ref "pipeline" >}} "CI/CD Pipeline"). At the time of provisioning the production facility in the event of a disaster, provision the environment also through the [CI/CD Pipelines] ({{< ref "pipeline" >}} "CI/CD Pipeline") or, at least, [< ref "manual" > manually] ({{}} "Manually").
+For this strategy, AWS Lambda functions that are critical to the minimal functioning of the DR region must be functional and up to date. In this way, consider minimally that critical AWS Lambda functions are managed via [CI/CD Pipeline]({{< ref "pipeline" >}} "CI/CD Pipeline"). At the time of provisioning the production facility in the event of a disaster, provision the environment also through the [CI/CD Pipelines]({{< ref "pipeline" >}} "CI/CD Pipeline") or, at least, [Manual]({{< ref "manual">}} "Manually").
 
 ##### Warm Standby & Active-Active
 
-In this case, you will have two functional productive environments, but with one of them running at minimum capacity. Maintaining both manually is unfeasible, and in this case the [CI/CD Pipeline] ({{< ref "pipeline" >}}) is the option to use.
+In this case, you will have two functional productive environments, but with one of them running at minimum capacity. Maintaining both manually is unfeasible, and in this case the [CI/CD Pipeline]({{< ref "pipeline" >}}) is the option to use.
 
 ---
 

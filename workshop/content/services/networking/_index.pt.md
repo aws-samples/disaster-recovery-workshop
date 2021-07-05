@@ -1,6 +1,5 @@
 ---
-title: "Redes e entrega de conteúdo"
-weight: 8
+title: "Redes e Entrega de Conteúdo"
 chapter: true
 pre: "<b></b>"
 ---

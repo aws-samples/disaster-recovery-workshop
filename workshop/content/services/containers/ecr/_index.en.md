@@ -1,6 +1,6 @@
 ---
-title: "Containers"
-weight: 5
+title: "Amazon ECR"
+weight: 1
 chapter: true
 pre: "<b></b>"
 awsServices:
@@ -14,8 +14,6 @@ Containers provide a standard way to package code, configurations, and dependenc
 AWS Supports Containers [OCI compliant](https://opencontainers.org/), including containers from [docker](https://aws.amazon.com/pt/docker/).
 
 ***
-
-### Containers on AWS
 
 On *whitepaper [Running Containerized Microservices on AWS](https://d1.awsstatic.com/whitepapers/DevOps/running-containerized-microservices-on-aws.pdf)* The architectural best practices for adopting containers on AWS are discussed, and how traditional software design standards evolve in the context of containers. Martin Fowler's principles of microservices are mapped to [The Twelve-Factor App](https://12factor.net/) pattern, in addition to real-life considerations. After reading this content, you will have a starting point for building microservices using software design best practices and standards.
 

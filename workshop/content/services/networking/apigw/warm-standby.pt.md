@@ -1,8 +1,6 @@
 ---
 title : "Amazon API Gateway - Warm Standby"
 menuTitle: "Warm Standby"
-date : 2020-12-17T17:20:03-03:00
-weight : 3
 tags:
   - Warm Standby
 awsServices:
