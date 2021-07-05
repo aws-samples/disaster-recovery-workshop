@@ -89,12 +89,12 @@ weight = 9
 
 [[Languages.en.menu.shortcuts]]
 name = "<i class='fas fa-bookmark'></i> More resources"
-url = "/more-resources"
+url = "/more-resources.html"
 weight = 10
 
 [[Languages.en.menu.shortcuts]]
 name = "<i class='fas fa-users'></i> Authors"
-url = "/authors"
+url = "/authors.html"
 weight = 20
 
 [[Languages.en.menu.shortcuts]]
@@ -109,7 +109,7 @@ weight = 40
 
 [[Languages.en.menu.shortcuts]]
 name = "<i class='fas fa-poll'></i> Survey"
-url = "/survey"
+url = "/survey.html"
 weight = 50
 
 
