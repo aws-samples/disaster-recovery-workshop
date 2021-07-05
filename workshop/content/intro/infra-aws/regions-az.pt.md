@@ -7,9 +7,6 @@ pre: "<b></b>"
 ---
 
 
-
-
-
 Cada região é projetada para ser isolada das outras regiões. Isso proporciona a maior tolerância a falhas e estabilidade possível.
 
 ![Regiões](/images/aws-region2.png)

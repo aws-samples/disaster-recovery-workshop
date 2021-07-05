@@ -1,7 +1,7 @@
 RelativeURLs=true
 CanonifyURLs=true
-languageCode = "pt-BR"
-defaultContentLanguage = "pt"
+languageCode = "en-US"
+defaultContentLanguage = "en"
 
 title = "Disaster Recovery on AWS"
 theme = "hugo-theme-learn"

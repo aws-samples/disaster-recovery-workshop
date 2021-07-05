@@ -1,13 +1,13 @@
 ---
-title: "AWS Secrets Manager - Secrets Replication"
-menutitle: "AWS Secrets Manager - Secrets Replication"
+title: "AWS Secrets Manager - Replicação de Segredos"
+menutitle: "AWS Secrets Manager - Replicação de Segredos"
 weight: 1
 pre: "<b></b>"
 hidden: true
 ---
 
-
 #### Crie um Segredo
+
 1. Acesse o serviço do AWS Secrets Manager: [https://console.aws.amazon.com/secretsmanager/](https://console.aws.amazon.com/secretsmanager/home?region=us-east-1)
 2. Clique em **Store a new secret**
 3. Ná tela **Store a new secret**, selecione **Other type of secrets**. Esse tipo de segredo é usado quando não se aplica a um banco de dados.
