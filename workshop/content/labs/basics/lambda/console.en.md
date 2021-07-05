@@ -57,6 +57,6 @@ type: lab
     *   (Optional) If you want to test your function, set up the test payload as we did in steps 5.6 and 7 of item 3 in **Create a Lambda function** above.
 5.  Ready! Its Lambda function has been copied from one region to another.
 
-#### Deleting resources
+#### Cleaning up
 
 1.  Delete the lambda functions created in both regions.

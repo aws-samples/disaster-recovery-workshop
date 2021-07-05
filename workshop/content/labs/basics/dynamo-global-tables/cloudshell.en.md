@@ -91,7 +91,7 @@ type: lab
     aws dynamodb scan --table-name Music --region eu-west-1
     ```
 
-#### Deleting resources
+#### Cleaning up
 
 1.  Delete the replica table in the region **Europe (Ireland)** and region **US West (Oregon)**.
 

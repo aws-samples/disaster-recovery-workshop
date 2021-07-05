@@ -274,7 +274,7 @@ hidden: true
 
 1.  Once DNS entries that use the failover policy between resources in different regions have been configured, simply trigger the alarm that indicates the failure in the health check of the primary environment that we can see that the DNS entry for the api.octank.com endpoint will be switched to the other region.
 
-#### Deleting resources
+#### Cleaning up
 
 1.  Go to the CloudFormation Console in the Region **Sao Paulo**
 2.  Select the **Stack** created.

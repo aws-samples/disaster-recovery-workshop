@@ -272,7 +272,7 @@ type: lab
     curl -s ${CLOUDFRONT_URL}/ohio.html # O retorno deverá ser o texto: File in Oregon S3
     ```
 
-#### 8. Deleting resources
+#### 8. Cleaning up
 
 1.  Disable distribution using the update distribution configuration feature.
     ```bash

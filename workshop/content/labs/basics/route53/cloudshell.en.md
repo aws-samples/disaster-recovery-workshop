@@ -106,7 +106,7 @@ hidden: true
 
 2.  Once DNS entries that use the failover policy between resources in different regions are configured, simply trigger the alarm that indicates the health check failure of the primary environment that we can see that the DNS entry for the service.customer.internal endpoint will be switched to the other region.
 
-#### Deleting resources
+#### Cleaning up
 
 1.  Go to the CloudFormation Console in the Region **Sao Paulo**
 2.  Select the **Stack** created.

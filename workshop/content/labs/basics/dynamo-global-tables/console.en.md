@@ -32,7 +32,7 @@ type: lab
 
 The items are replicated to all replica regions, regardless of which region the item was entered.
 
-#### Deleting resources
+#### Cleaning up
 
 1.  In the AWS Management Console in the Region **(US West (Oregon))**. To the table **Music**, select the table and click **Delete (Delete)**
     Confirm by typing **Delete** and then selecting **Delete table (delete table)**.

@@ -158,7 +158,7 @@ For this exercise, use **Virginia (us-east-1)** like the main region and the **C
     aws ecr describe-images --repository-name ecr-repository --region us-west-1
     ```
 
-#### Deleting resources
+#### Cleaning up
 
 1.  Delete images created in repositories
     ```bash

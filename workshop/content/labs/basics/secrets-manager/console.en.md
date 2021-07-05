@@ -48,7 +48,7 @@ Ready! You just replicated your Secret to another AWS region.
 The Replicated Secret is associated with Primary Secret, to make it independent just click **Promote to standalone secret**
 {{% /notice%}}
 
-#### Deleting resources
+#### Cleaning up
 
 1.  Access the AWS Secrets Manager Service in the Primary Region **Virginia**: [https://console.aws.amazon.com/secretsmanager/](https://console.aws.amazon.com/secretsmanager/home?region=us-east-1)
 2.  Click the created key.

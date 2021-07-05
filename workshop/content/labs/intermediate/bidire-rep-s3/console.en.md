@@ -65,6 +65,6 @@ type: lab
 Cross-bucket replication is expected to occur in a maximum of 15 minutes for 99.99% of objects.
 {{% /notice%}}
 
-#### Deleting resources
+#### Cleaning up
 
 1.  Delete the two created buckets.

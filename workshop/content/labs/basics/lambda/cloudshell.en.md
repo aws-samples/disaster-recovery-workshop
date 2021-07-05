@@ -103,7 +103,7 @@ type: lab
     <br/>We can validate that the function was updated because the INFO log line now also writes the received payload, which did not happen with the function created at the beginning of this lab.
 4.  Ready! Its Lambda function was created in another region.
 
-#### Deleting resources
+#### Cleaning up
 
 1.  Delete the lambda functions created in both regions with the following commands:
     ```bash
