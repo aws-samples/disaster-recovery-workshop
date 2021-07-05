@@ -24,6 +24,6 @@ For WebSocket apis, the use of infrastructure as code is the best alternative to
 
 **References:**
 
-*   [Exporting a REST api from API Gateway](https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-export-api.html)
-*   [Exporting an API Gateway HTTP Api](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-export.html)
+*   [Export a REST api from API Gateway](https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-export-api.html)
+*   [Export an API Gateway HTTP Api](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-export.html)
 *   [Defining an API Using the Serverless Application Model (SAM)](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-api.html)

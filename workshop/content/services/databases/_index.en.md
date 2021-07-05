@@ -1,6 +1,6 @@
 ---
 title: "Databases"
-weight: 3
+weight: 6
 chapter: true
 pre: "<b></b>"
 ---

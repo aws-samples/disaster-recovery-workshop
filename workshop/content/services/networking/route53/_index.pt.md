@@ -1,7 +1,6 @@
 ---
 title: "Amazon Route53"
 menutitle: "Amazon Route53"
-weight: 3
 chapter: true
 pre: "<b></b>"
 awsServices:

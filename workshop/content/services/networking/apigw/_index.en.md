@@ -1,7 +1,6 @@
 ---
 title: "Amazon API Gateway"
 menutitle: "Amazon API Gateway"
-weight: 1
 chapter: true
 pre: "<b></b>"
 ---
@@ -10,4 +9,4 @@ Amazon API Gateway is an AWS service for creating, publishing, maintaining, moni
 
 ---
 **References**
-- [Amazon API Gateway](https://docs.aws.amazon.com/pt_br/apigateway/latest/developerguide/welcome.html)
+- [Amazon API Gateway](https://docs.aws.amazon.com/apigateway/latest/developerguide/welcome.html)

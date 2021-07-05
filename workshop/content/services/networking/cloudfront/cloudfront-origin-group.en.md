@@ -29,4 +29,4 @@ CloudFront fails over to secondary origin only when the HTTP method of the consu
 ---
 **References**
 
-- [Control origin timeouts and attempts](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/high_availability_origin_failover.html#controlling-attempts-and-timeouts)
+- [Controlling origin timeouts and attempts](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/high_availability_origin_failover.html#controlling-attempts-and-timeouts)

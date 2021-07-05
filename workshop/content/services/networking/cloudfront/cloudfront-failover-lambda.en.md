@@ -23,4 +23,4 @@ You can use Lambda @Edge functions with CloudFront distributions that you have c
 
 ---
 **References**
-- [Using Source Failover with Lambda @Edge Functions](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/high_availability_origin_failover.html#concept_origin_groups.lambda)
+- [Use origin failover with Lambda@Edge functions](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/high_availability_origin_failover.html#concept_origin_groups.lambda)
