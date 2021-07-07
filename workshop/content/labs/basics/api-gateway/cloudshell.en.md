@@ -122,7 +122,7 @@ hidden: true
 
     *   Sign in to the AWS console, access **Certificate Manager**
     *   In **Certificate Manager**, click **Getting Started**, select **Request a private certificate** and click **Request a certificate**.
-    *   Select the previously created CA in the combobox (octank.com), click **Acknowledge** and then on **Next**.
+    *   Select the previously created CA in the combobox (octank.com), click **Acknowledge**, and then on **Next**.
     *   Fill with \***.octank.com** upon **Domain name** and click **Next**.
     *   Click **Review and request**.
     *   Click **Confirm and request**.

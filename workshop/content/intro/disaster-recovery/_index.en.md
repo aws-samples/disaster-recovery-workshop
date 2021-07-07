@@ -26,7 +26,7 @@ Each service has a [Service Level Agreement (SLA)](https://aws.amazon.com/pt/leg
 
 {{% /notice%}}
 
-Strategies can be defined at different levels of your architecture, such as software components, hardware, networks, availability zones, etc. *Multi-Region*, you should choose one of the following strategies. They are listed in increasing order of complexity, and descending of RTO and RPO.
+Strategies can be defined at different levels of your architecture, such as software components, hardware, networks, availability zones, etc. *Multi-Region*, you should choose one of the following strategies. They are listed in increasing order of complexity and descending of RTO and RPO.
 
 ![Disaster Recovery Strategies](/images/dr-multi-region.png)
 

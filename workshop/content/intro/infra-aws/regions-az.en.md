@@ -14,7 +14,7 @@ Each region is designed to be isolated from other regions. This provides the hig
 Availability zones are several datacenters isolated in each region.
 
 {{% notice note%}}
-AWS operates datacenters state-of-the-art and highly available. While rare, failures may occur that affect the availability of instances and services that are in the same location. If you host all of your instances in a single location affected by a failure, none of them will be available. That's why it's important to consider using multiple availability zones for production applications, and consider using multiple regions for critical applications.
+AWS operates datacenters state-of-the-art and highly available. While rare, failures may occur that affect the availability of instances and services that are in the same location. If you host all of your instances in a single location affected by a failure, none of them will be available. That's why it's important to consider using multiple availability zones for production applications and consider using multiple regions for critical applications.
 
 {{% /notice%}}
 

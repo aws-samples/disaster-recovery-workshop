@@ -7,7 +7,7 @@ pre: "<b></b>"
 type: documentation
 ---
 
-There are 3 crucial pillars for *workloads* run in the environment *Cloud* be resilient since their conception. These pillars base the architectural decisions that enable the movement of *workload* flexibly and securely: <br><br>
+There are 3 crucial pillars for *workloads* running in the environment *Cloud* be resilient since its conception. These pillars base the architectural decisions that enable the movement of *workload* flexibly and securely: <br><br>
 
 |Infrastructure-AS-Code|Data Movement | Application Architecture |
 |-|-|-|

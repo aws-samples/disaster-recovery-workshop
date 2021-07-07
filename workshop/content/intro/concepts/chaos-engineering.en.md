@@ -17,7 +17,7 @@ Test results should be measured and then compared with availability objectives t
 
 ---
 ### AWS Fault Injection Simulator
-AWS FIS is a service dedicated to simulating failures in the AWS environment so that testing can be carried out in a controlled manner. AWS FIS simplifies the process of controlling experimentation of applications in a crash environment. For more information, see: [AWS Fault Injection Simulator](https://aws.amazon.com/fis/)
+AWS FIS is a service dedicated to simulating failures in the AWS environment so that testing can be carried out in a controlled manner. AWS FIS simplifies the process of controlling the experimentation of applications in a crash environment. For more information, see: [AWS Fault Injection Simulator](https://aws.amazon.com/fis/)
 
 ---
 **References:**

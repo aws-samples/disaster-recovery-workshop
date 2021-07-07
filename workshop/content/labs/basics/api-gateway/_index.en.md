@@ -12,17 +12,17 @@ awsServices:
 
 ### Objective
 
-This exercise will show you the steps for you to quickly set up your apis in more than one AWS Region and allow them to behave in an active-passive way by receiving requests transparently from your customers.
+This exercise will show you the steps for you to quickly set up your APIs in more than one AWS Region and allow them to behave in an active-passive way by receiving requests transparently from your customers.
 
 **Required knowledge:**
 
-*   Basic Use of the AWS CLI
-*   Load Balancers Getting Started
+*   Basic usage of the AWS CLI
+*   Basic concepts of load balancers 
 
 **By the end of this exercise, you will be able to:**
 
-*   Set up an api in two or more regions
-*   Set up a DNS engine to dynamically routing your apis transparently to your customers
+*   Set up an API in two or more regions
+*   Set up a DNS engine to dynamically routing your APIs transparently to your customers
 
 **Estimated Duration:** 40 minutes
 

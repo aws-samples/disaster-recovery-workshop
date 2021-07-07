@@ -10,10 +10,10 @@ For the work of planning disaster recovery strategies, it's important to know th
 Go to [AWS Global Infrastructure](https://aws.amazon.com/about-aws/global-infrastructure/).
 
 {{% notice tip%}} <i class="fas fa-lightbulb"></i>
-The regions are geographically distributed and this reflects the time of communication between them. If your application is latency sensitive, you should balance the proximity of regions with the possibility of a regional event.
+The regions are geographically distributed and this reflects the time of communication between them. If your application is latency-sensitive, you should balance the proximity of regions with the possibility of a regional event.
 {{% /notice%}}
 
-There are services that are not available in all regions. When choosing a region, confirm that the service you want to use is available. See the table for [AWS Regional Services](https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services/).
+Some services are not available in all regions. When choosing a region, confirm that the service you want to use is available. See the table for [AWS Regional Services](https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services/).
 
 ---
 **References:**
