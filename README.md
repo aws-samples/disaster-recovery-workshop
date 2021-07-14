@@ -35,7 +35,8 @@ $ open http://localhost:1313/
 ```
 
 ## TO-DO:
-- [ ] Translate workshop content to English
+- [ ] Add new labs - Intermediate Level
+- [ ] Add new labs - Advanced Level
 
 
 ## Want to contribute?
