@@ -29,7 +29,7 @@ Cloud9 requires third-party-cookies. You can whitelist the [specific domains]( h
 
 - Select **Create environment**
 - Name it **workshop**, click Next.
-- In the Environment Settings  make sure the option "Create a new EC2 instance for environment (direct access)" is selected.
+- In the Environment Settings  make sure the option **Create a new EC2 instance for environment (direct access)** is selected.
 - Choose **t3.small** for instance type, take all default values and click **Next Step**
 - Review the details, and click **Create environment** (this will take a few minutes)
 

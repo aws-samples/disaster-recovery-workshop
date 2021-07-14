@@ -9,13 +9,17 @@ hidden: true
 
 #### Go to AWS CloudShell
 
-1.  Go to AWS ClouShell, in the top bar of the AWS Console, click the button on the right side of the search bar.
+1. Go to AWS ClouShell, in the top bar of the AWS Console, click the button on the right side of the search bar.
     ![CloudShell](/images/console-cloudshell2.png)
+2. Create a EC2 **Key Pair** for each region
+   ```
+   aws ec2 create-key-pair --key-name sa-east-1-keypair --query 'KeyMaterial' --output text > sa-east-1.pem --region sa-east-1
+   aws ec2 create-key-pair --key-name us-west-1-keypair --query 'KeyMaterial' --output text > us-west-1.pem --region us-west-1
+   ```     
 
 #### Build Resources Using AWS CloudFormation
 
-1.  Create a **Key Pair** for each region (if it does not exist). It will be used to access EC2 instances.
-2.  Create VPC. **Note**: Before you run AWS CloudFormation, for each region you use.
+1.  Create VPC. **Note**: Before you run AWS CloudFormation, for each region you use.
 
     | Region: São Paulo (sa-east-1) | Region: N. California (us-west-1) |
     |-|-|

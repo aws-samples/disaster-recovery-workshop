@@ -12,3 +12,7 @@ weight: 15
 nvm install stable
 sudo yum -y install jq 
 ```
+
+{{% notice note %}}
+jq is a lightweight and flexible command-line JSON processor
+{{% /notice %}}
