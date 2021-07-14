@@ -8,6 +8,7 @@ awsServices:
  - "Amazon Route53"
 type: Documentation
 ---
+
 O diagrama abaixo detalha como ocorre o processo de resolução de URLs para endereços IP.
 
 ![Route53](/images/how-route-53-routes-traffic.png)

@@ -1,7 +1,6 @@
 ---
 title: "Amazon ElastiCache"
 menutitle: "Amazon ElastiCache"
-weight: 3
 chapter: true
 pre: "<b></b>"
 ---

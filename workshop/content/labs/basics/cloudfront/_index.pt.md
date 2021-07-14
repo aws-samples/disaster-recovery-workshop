@@ -32,6 +32,3 @@ Com esse exercício foi possível verificar como as distribuições do Amazon Cl
 
 **Fonte:** [Amazon CloudFront - Guia do desenvolvedor](https://docs.aws.amazon.com/pt_br/AmazonCloudFront/latest/DeveloperGuide/high_availability_origin_failover.html#concept_origin_groups.creating)
 
-
-<!-- TODO: Incluir estimativa de custos!!! --->
-

@@ -1,7 +1,6 @@
 ---
 title: "Amazon CloudFront"
 menutitle: "Amazon CloudFront"
-weight: 2
 chapter: true
 pre: "<b></b>"
 awsServices: Amazon CloudFront

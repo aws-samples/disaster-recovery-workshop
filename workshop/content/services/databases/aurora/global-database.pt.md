@@ -1,7 +1,6 @@
 ---
 title: "Aurora - Global Database"
 menutitle: "Global Database"
-weight: 2
 chapter: false
 pre: "<b></b>"
 awsServices: 

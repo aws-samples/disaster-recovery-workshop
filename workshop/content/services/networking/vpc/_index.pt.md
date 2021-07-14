@@ -1,7 +1,6 @@
 ---
 title: "Amazon VPC"
 menutitle: "Amazon VPC"
-weight: 3
 chapter: true
 pre: "<b></b>"
 awsServices:

@@ -1,6 +1,6 @@
 ---
 title: "Containers"
-weight: 1
+weight: 5
 chapter: true
 pre: "<b></b>"
 awsServices:
@@ -9,13 +9,14 @@ awsServices:
 type: documentation
 ---
 
-Os containers proporcionam uma maneira padrão de empacotar código, configurações e dependências de seu aplicativo em um único objeto. Eles compartilham um sistema operacional instalado no servidor e são executados como processos isolados. Isso permite fazer implantações rápidas, confiáveis e consistentes, independentemente do ambiente. A plataforma AWS oferece recursos de infraestrutura otimizados para a execução de containers, além de um conjunto de serviços de orquestração que facilitam a criação e execução de aplicativos conteinerizados em produção.
+Containers provide a standard way to package code, configurations, and dependencies for your application into a single object. They share an operating system installed on the server and run as isolated processes. This allows you to make fast, reliable, and consistent deployments regardless of the environment. The AWS platform provides infrastructure capabilities optimized for running containers, plus a set of orchestration services that make it easy to create and run containerized applications in production.
 
-A AWS oferece suporte a containers [compatíveis com OCI](https://opencontainers.org/), inclusive containers de [docker](https://aws.amazon.com/pt/docker/).
+AWS Supports Containers [OCI compliant](https://opencontainers.org/), including containers from [docker](https://aws.amazon.com/pt/docker/).
 
----
+***
+
 ### Containers on AWS
 
-No *whitepaper [Running Containerized Microservices on AWS](https://d1.awsstatic.com/whitepapers/DevOps/running-containerized-microservices-on-aws.pdf)* são discutidas as práticas recomendadas de arquitetura para adoção de containers na AWS, e como os padrões de design de software tradicionais evoluem no contexto de containers. Os princípios de microsserviços de Martin Fowler são mapeados para [The Twelve-Factor App](https://12factor.net/) pattern, além de considerações da vida real. Depois de ler este conteúdo, você terá um ponto de partida para a construção de microsserviços usando as práticas recomendadas e padrões de projeto de software. 
+On *whitepaper [Running Containerized Microservices on AWS](https://d1.awsstatic.com/whitepapers/DevOps/running-containerized-microservices-on-aws.pdf)* The architectural best practices for adopting containers on AWS are discussed, and how traditional software design standards evolve in the context of containers. Martin Fowler's principles of microservices are mapped to [The Twelve-Factor App](https://12factor.net/) pattern, in addition to real-life considerations. After reading this content, you will have a starting point for building microservices using software design best practices and standards.
 
-É recomendado a leitura do *whitepaper* acima, pois o mesmo traz os fundamentos e boas práticas recomendadas de arquitetura para adoção de containers na AWS que são essenciais para uma arquitetura resiliente e com contingência em múltiplas regiões.
+It is recommended to read *whitepaper* above, as it brings the basics and best practices of architecture for adopting containers on AWS that are essential to a resilient, contingency architecture across multiple regions.

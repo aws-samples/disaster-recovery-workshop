@@ -1,6 +1,6 @@
 ---
 title: "Application Integration"
-weight: 7
+weight: 2
 chapter: true
 pre: "<b></b>"
 ---

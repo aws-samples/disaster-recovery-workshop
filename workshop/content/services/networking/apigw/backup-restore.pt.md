@@ -1,8 +1,6 @@
 ---
 title : "Amazon API Gateway - Backup & Restore"
 menuTitle : "Backup & Restore"
-date : 2020-12-16T15:22:28-03:00
-weight : 1
 tags:
   - Backup & Restore
 awsServices:

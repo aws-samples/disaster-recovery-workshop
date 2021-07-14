@@ -1,7 +1,6 @@
 ---
 title: "Amazon API Gateway"
 menutitle: "Amazon API Gateway"
-weight: 1
 chapter: true
 pre: "<b></b>"
 ---

@@ -24,7 +24,6 @@ Esse exercício irá mostrar os passos para habilitar a replicação de registro
 **Custo Aproximado**: 1 USD
 
 ### Execução
-
 {{< tabs name="labs_types" >}}  
 {{< tab name="AWS Cloud9" include="cloud9" />}}
 {{< /tabs >}}

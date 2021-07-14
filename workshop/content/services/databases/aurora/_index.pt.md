@@ -22,4 +22,4 @@ O Amazon Aurora oferece um sistema de armazenamento distribuído, tolerante a fa
 
 ---
 **Referências:**
-- [Aurora - Banco de dados Globais](https://docs.aws.amazon.com/pt_br/AmazonRDS/latest/AuroraUserGuide/aurora-global-database.html#aurora-global-database-overview)
+- [Amazon Aurora - Banco de dados Globais](https://docs.aws.amazon.com/pt_br/AmazonRDS/latest/AuroraUserGuide/aurora-global-database.html#aurora-global-database-overview)

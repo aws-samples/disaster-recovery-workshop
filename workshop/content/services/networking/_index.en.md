@@ -1,6 +1,6 @@
 ---
-title: "Networks and Content Delivery"
-weight: 8
+title: "Networking and Content Delivery"
+weight: 9
 chapter: true
 pre: "<b></b>"
 ---

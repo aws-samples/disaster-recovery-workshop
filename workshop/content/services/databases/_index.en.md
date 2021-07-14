@@ -1,6 +1,6 @@
 ---
-title: "Banco de dados"
-weight: 3
+title: "Databases"
+weight: 6
 chapter: true
 pre: "<b></b>"
 ---

@@ -1,8 +1,6 @@
 ---
 title: "ElastiCache - Global Datastore"
 menuTitle: "Global Datastore"
-date: 2020-12-14T21:49:53-03:00
-weight: 2
 tags:
     - Warm Standby
 awsServices:

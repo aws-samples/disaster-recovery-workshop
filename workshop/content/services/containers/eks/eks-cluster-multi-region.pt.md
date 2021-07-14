@@ -11,7 +11,7 @@ tags:
 ---
 
 
-O Amazon EKS é um serviço gerenciado que facilita a execução do Kubernetes na , sem a necessidade de instalar, operar e manter seu próprio plano de controle ou nós do Kubernetes. O Kubernetes é um sistema de código aberto para automatizar a implantação, a escalabilidade e o gerenciamento de aplicativos em contêineres.
+O Amazon EKS é um serviço gerenciado que facilita a execução do Kubernetes na, sem a necessidade de instalar, operar e manter seu próprio plano de controle ou nós do Kubernetes. O Kubernetes é um sistema de código aberto para automatizar a implantação, a escalabilidade e o gerenciamento de aplicativos em contêineres.
 
 ---
 ## Cluster Multi-Region

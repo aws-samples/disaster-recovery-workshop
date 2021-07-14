@@ -1,7 +1,6 @@
 ---
 title: "Aurora MySQL - Replicação entre Regiões"
 menutitle: "MySQL - Replicação entre Regiões"
-weight: 2
 chapter: false
 pre: "<b></b>"
 awsServices: 

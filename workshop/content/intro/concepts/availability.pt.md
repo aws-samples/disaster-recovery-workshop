@@ -13,8 +13,6 @@ Disponibilidade (também conhecida como disponibilidade de serviços) é uma mé
 
 Esse percentual é calculado em períodos como um mês, um ano ou os últimos três anos. Aplicando a interpretação mais estrita possível, a disponibilidade diminui sempre que o aplicativo não está operando normalmente, incluindo interrupções programadas e não programadas. 
 
-
-
 {{< youtube Pr7u2dSKS38>}}
 
 
