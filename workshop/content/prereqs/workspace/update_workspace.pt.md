@@ -2,6 +2,7 @@
 title: "Atualizar seu Workspace"
 chapter: false
 weight: 15
+draft: true
 ---
 
 #### Instalar as dependências

@@ -2,6 +2,7 @@
 title: "Criar um IAM Role para o Workspace"
 chapter: false
 weight: 16
+draft: true
 ---
 
 
