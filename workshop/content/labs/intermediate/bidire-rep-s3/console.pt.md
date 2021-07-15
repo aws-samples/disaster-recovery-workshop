@@ -45,7 +45,7 @@ type: lab
    ![replication destination](/images/s3-replication-options.png)
    - Selecione **Save (Salvar)** 
 
-#### Regra de replicação do bucket primário para o bucket secundário
+#### Regra de replicação do bucket secundário para o bucket primário
 1. Na console do Amazon S3, selecione o segundo bucket criado (**secondary**).
 2. Acesse a guia **Management (Gerenciamento)**
 3. Na seção **Replication rules (Regras de replicação)**, selecione **Create replication rule (Criar regra de replicação)**.

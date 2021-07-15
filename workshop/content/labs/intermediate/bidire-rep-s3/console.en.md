@@ -43,7 +43,7 @@ type: lab
         ![replication destination](/images/s3-replication-options.png)
     *   Select **Save (Save)**
 
-#### Primary Bucket Replication Rule for Secondary Bucket
+#### Secondary Bucket Replication Rule for Primary Bucket
 
 1.  In the Amazon S3 console, select the second bucket created (**secondary**).
 2.  Go to the tab **Management**
