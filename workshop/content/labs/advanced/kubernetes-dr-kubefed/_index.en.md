@@ -39,14 +39,14 @@ This exercise will show you the steps to set up and use [KubeFed](https://github
 
 ![KubeFed - Federated clusters](/images/kubefed-arch.png)
 
-### Outturn
+### Execution
 
 {{% notice info%}}
-If you haven't already created your environment on AWS Cloud9, start by creating your workspace. [Click here](pt/../../../../prereqs/workspace/workspace).
+If you haven't already created your environment on AWS Cloud9, start by creating your workspace. [Click here]({{% relref workspace %}}).
 {{% /notice%}}
 
 {{% notice note%}}
-For this exercise, use **Virginia (us-east-1)** like the main region and the **Ohio (us-east-2)** like the secondary region.
+For this exercise, use **Virginia (us-east-1)** as the main region and the **Ohio (us-east-2)** as the secondary region.
 {{% /notice%}}
 
 {{< tabs name="labs_types" >}}  

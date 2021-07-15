@@ -11,10 +11,10 @@ Resilient applications provide continuous service despite disruptions. Events su
 
 Developing an application considering possible failures is one of the most important principles to make it resilient.
 According to the criticality of each application, expected RTO and RPO should be stipulated.
-It is important to discuss the [Disaster Recovery Strategies](disaster-recovery) in the AWS environment.
+It is important to discuss the [Disaster Recovery Strategies]({{% relref disaster-recovery %}}) in the AWS environment.
 
-To understand how the AWS infrastructure works, see [Global Infrastructure](global-infra).
-If it's your first contact with the AWS environment, see also. [Regions and Availability Zones](regions-az).
+To understand how the AWS infrastructure works, see [Global Infrastructure]({{% relref infra-aws %}}).
+If it's your first contact with the AWS environment, see also. [Regions and Availability Zones]({{% relref regions-az %}}).
 
 
 ---

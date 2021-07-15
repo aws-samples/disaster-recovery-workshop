@@ -76,7 +76,7 @@ When the stack status is `CREATE_COMPLETE`, click the tab **Outputs**. The value
 
 Now let's check the access to Session Manager, from where we'll run some commands in the following labs.
 
-*   [Connect to the Session Manager Workstation ](./connect/)
+* [Connect to the Session Manager Workstation ]({{% relref connect %}})
 
 {{% notice warning%}}
 Do not proceed without checking access to Session Manager.
@@ -212,13 +212,13 @@ This lab contains the following tasks:
 
 This laboratory requires the following prerequisites:
 
-*   [Connect to the Session Manager Workstation ](./connect/)
+*   [Connect to the Session Manager Workstation ]({{% relref connect %}})
 
 ## 1. Generate load on the primary DB cluster
 
 You will use the benchmark script similar to Percona's TPCC based on sysbench to generate the load. To put it simply, we packaged the correct set of commands into a <a href = "https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-ssm-docs.html" target = "_ blank" > AWS Systems Manager Command Document </a>. You will use <a href="https://docs.aws.amazon.com/systems-manager/latest/userguide/execute-remote-commands.html" target="_blank"> AWS Systems Manager Run Command </a> to run the test.
 
-If you're not already connected to the Session Manager terminal, sign in [following these instructions](./connect/) onto **primary region**. Once connected, enter the following commands, replacing the placeholders appropriately.
+If you're not already connected to the Session Manager terminal, sign in [following these instructions]({{% relref connect %}}) onto **primary region**. Once connected, enter the following commands, replacing the placeholders appropriately.
 
 {{% notice warning%}}
 Make sure you're still working on **primary region**
@@ -386,19 +386,20 @@ Combined with an application layer implemented across multiple regions (via immu
 
 This lab contains the following tasks:
 
-1.  Inject a fault into the primary region
-2.  Promote the secondary DB cluster
+1. Inject a fault into the primary region
+2. Promote the secondary DB cluster
 
 This laboratory requires the following prerequisites:
 
-*   [Connect to the Session Manager Workstation ](./connect/)
-*   Aurora Global Database Cluster Created and Working
+* [Connect to the Session Manager Workstation ]({{% relref connect %}})
+* Aurora Global Database Cluster Created and Working
+
 
 ## 1. Inject a fault into the primary region
 
-If you're not already connected to the Session Manager workstation command line, connect [following these instructions](./connect/) onto **primary region**. Once connected, type one of the following commands, replacing the placeholders appropriately.
+If you're not already connected to the Session Manager workstation command line, connect [following these instructions]({{% relref connect %}}) onto **primary region**. Once connected, type one of the following commands, replacing the placeholders appropriately.
 
-*   [Connect to the Session Manager Workstation ](./connect/)
+*   [Connect to the Session Manager Workstation ]({{% relref connect %}})
 
 {{% notice warning%}}
 Because you can have multiple browser tabs open, make sure you're always operating in the desired region.
@@ -483,7 +484,7 @@ Click the newly promoted DB cluster. On the tab **Connectivity and security**, t
 
 ![RDS Cluster Endpoints Promoted](/images/aurora-rds-cluster-endpoints-promoted.png)
 
-Open an additional session in Session Manager in **secondary region**. See [Connect to Session Manager](./connect), to get the step-by-step how to create a Session Manager command line session, but make sure to use **secondary region**.
+Open an additional session in Session Manager in **secondary region**. See [Connect to Session Manager]({{% relref connect %}}), to get the step-by-step how to create a Session Manager command line session, but make sure to use **secondary region**.
 
 {{% notice warning%}}
 Make sure you're working on **secondary region**, especially if you're following the links above to open the service console on the right screen.

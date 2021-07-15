@@ -12,10 +12,10 @@ Esse conteúdo é voltado para profissionais de tecnologia, tais como: CTOs, arq
 Após a leitura, você terá um melhor entendimento sobre práticas e estratégias de arquitetura de aplicações para aumentar a confiabilidade das soluções.
 
 {{% notice note %}}
-Você pode iniciar o [workshop aqui...](prereqs/)
+Você pode iniciar o [workshop aqui...]({{% relref prereqs %}})
 {{% /notice %}}
 
 {{% notice info %}}
-Se quiser entender melhor os conceitos que serão apresentados [comece aqui...](intro/)
+Se quiser entender melhor os conceitos que serão apresentados [comece aqui...]({{% relref intro %}})
 {{% /notice %}}
 

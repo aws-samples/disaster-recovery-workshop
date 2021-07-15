@@ -15,5 +15,5 @@ Start the [workshop here...]({{% relref "prereqs" %}})
 {{% /notice %}}
 
 {{% notice info %}}
-If you want to understand better the concepts that will be used [start here...](/intro.html)
+If you want to understand better the concepts that will be used [start here...]({{% relref intro.html %}})
 {{% /notice %}}

@@ -79,7 +79,7 @@ Quando o status da stack for `CREATE_COMPLETE`, clique na guia **Outputs**. Os v
 
 Agora vamos verificar o acesso ao Session Manager, de onde rodaremos alguns comandos nos laboratórios a seguir.
 
-* [Conecte-se à estação de trabalho do Session Manager ](./connect/)
+* [Conecte-se à estação de trabalho do Session Manager ]({{% relref connect %}})
 
 {{% notice warning %}}
 Não prossiga sem verificar o acesso ao Session Manager.
@@ -220,13 +220,13 @@ Este laboratório contém as seguintes tarefas:
 
 Este laboratório requer os seguintes pré-requisitos:
 
-* [Conecte-se à estação de trabalho do Session Manager ](./connect/)
+* [Conecte-se à estação de trabalho do Session Manager ]({{% relref connect %}})
 
 ## 1. Gerar carga no cluster de banco de dados primário
 
 Você usará o script de benchmark semelhante ao TPCC da Percona com base no sysbench para gerar a carga. Para simplificar, empacotamos o conjunto correto de comandos em um <a href = "https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-ssm-docs.html" target = "_ blank" > Documento de comando do AWS Systems Manager </a>. Você usará o <a href="https://docs.aws.amazon.com/systems-manager/latest/userguide/execute-remote-commands.html" target="_blank"> AWS Systems Manager Run Command </a> para executar o teste.
 
-Se você ainda não estiver conectado ao terminal do Session Manager, conecte-se [seguindo estas instruções](./connect/) na **região primária**. Uma vez conectado, digite os comandos a seguir, substituindo os marcadores de posição apropriadamente.
+Se você ainda não estiver conectado ao terminal do Session Manager, conecte-se [seguindo estas instruções]({{% relref connect %}}) na **região primária**. Uma vez conectado, digite os comandos a seguir, substituindo os marcadores de posição apropriadamente.
 
 {{% notice warning %}}
 Verifique se você ainda está trabalhando na **região primária**
@@ -402,17 +402,17 @@ Este laboratório contém as seguintes tarefas:
 
 Este laboratório requer os seguintes pré-requisitos:
 
-* [Conecte-se à estação de trabalho do Session Manager ](./connect/)
+* [Conecte-se à estação de trabalho do Session Manager ]({{% relref connect %}})
 * Cluster Aurora Global Database criado e em funcionamento
 
 
 ## 1. Injete uma falha na região primária
 
 
-Se você ainda não estiver conectado à linha de comando da estação de trabalho do Session Manager, conecte-se [seguindo estas instruções](./connect/) na **região primária**. Uma vez conectado, digite um dos seguintes comandos, substituindo os marcadores de posição apropriadamente.
+Se você ainda não estiver conectado à linha de comando da estação de trabalho do Session Manager, conecte-se [seguindo estas instruções]({{% relref connect %}}) na **região primária**. Uma vez conectado, digite um dos seguintes comandos, substituindo os marcadores de posição apropriadamente.
 
 
-* [Conecte-se à estação de trabalho do Session Manager ](./connect/)
+* [Conecte-se à estação de trabalho do Session Manager ]({{% relref connect %}})
 
 {{% notice warning %}}
 Como você pode ter várias guias do navegador abertas, certifique-se de estar sempre operando na região pretendida.
@@ -499,7 +499,7 @@ Clique no cluster de banco de dados recém-promovido. Na guia **Connectivity and
 
 ![RDS Cluster Endpoints Promoted](/images/aurora-rds-cluster-endpoints-promoted.png)
 
-Abra uma sessão adicional no Session Manager na **região secundária**. Consulte [Conectar ao Session Manager](./connect), para obter o passo a passo de como criar uma sessão de linha de comando do Session Manager, mas certifique-se de usar a **região secundária**.
+Abra uma sessão adicional no Session Manager na **região secundária**. Consulte [Conectar ao Session Manager]({{% relref connect %}}), para obter o passo a passo de como criar uma sessão de linha de comando do Session Manager, mas certifique-se de usar a **região secundária**.
 
 {{% notice warning %}}
 Verifique se você está trabalhando na **região secundária**, especialmente se estiver seguindo os links acima para abrir o console de serviço na tela certa.

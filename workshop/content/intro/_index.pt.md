@@ -12,10 +12,10 @@ Eventos como desastres naturais, falhas de hardware e erros humanos podem causar
 
 Desenvolver uma aplicação considerando as possíveis falhas, é um dos príncipios mais importantes para que ela seja resiliente. 
 De acordo com a criticidade de cada aplicação, devem ser estipulados RTO e RPO esperados.
-É importante que sejam discutidas as [Estratégias de Recuperação de Desastres](disaster-recovery) no ambiente AWS.
+É importante que sejam discutidas as [Estratégias de Recuperação de Desastres]({{% relref disaster-recovery %}}) no ambiente AWS.
 
-Para entender como funciona a infraestrutura da AWS, veja [Infraestrutura Global](global-infra).
-Caso seja o seu primeiro contato com o ambiente AWS veja também [Regiões e Zonas de Disponibilidade](regions-az). 
+Para entender como funciona a infraestrutura da AWS, veja [Infraestrutura Global]({{% relref infra-aws %}}).
+Caso seja o seu primeiro contato com o ambiente AWS veja também [Regiões e Zonas de Disponibilidade]({{% relref regions-az %}}). 
 
 
 ---

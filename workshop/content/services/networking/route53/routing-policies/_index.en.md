@@ -27,11 +27,11 @@ When you create a record, you can choose a routing policy, which determines how 
 
 {{% notice tip%}} <i class="fas fa-lightbulb"></i>
 The choice of routing policy should follow the disaster recovery strategy being implemented. See the suggestion table below:
-{{% /notice%}}
+{{% /notice%}} 
 
 | Politics | Strategy |
 |-|-|
-| [Simple (Multiple IP's)](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy.html#routing-policy-simple) <br> [Weighted (50%-50%)](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy./html#routing-policy-weighted) <br> [Multiple Values](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy.html#routing-policy-multivalue) | Active-Active |
+| [Simple (Multiple IP's)](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy.html#routing-policy-simple) <br> [Weighted (50%-50%)](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy.html#routing-policy-weighted) <br> [Multiple Values](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy.html#routing-policy-multivalue) | Active-Active |
 | [Weighted](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy.html#routing-policy-weighted) | Warm Standby |
 | [Failover](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy.html#routing-policy-failover) | Pilot Light|
 
