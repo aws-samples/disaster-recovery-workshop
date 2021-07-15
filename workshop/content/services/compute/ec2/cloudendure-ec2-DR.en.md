@@ -45,7 +45,7 @@ With CloudEndure Disaster Recovery, you can conduct disaster recovery tests with
 
 Because CloudEndure Disaster Recovery replicates data at the block level, you can use it for all applications and databases that work on supported versions of Windows and Linux OS. This includes Windows Server versions 2003/2008/2012/2016/2019 and Linux distributions such as CentOS, RHEL, OEL, SUSE, Ubuntu, and Debian.
 
-For more information see the article: [AWS CloudEndure - How CloudEndure Disaster Recovery Works](https://d1.awsstatic.com/products/CloudEndure/How%20\_CloudEndure_Disaster_Recovery_Works.pdf)
+For more information see the article: [AWS CloudEndure - How CloudEndure Disaster Recovery Works](https://d1.awsstatic.com/products/CloudEndure/How%20_CloudEndure_Disaster_Recovery_Works.pdf)
 
 ---
 

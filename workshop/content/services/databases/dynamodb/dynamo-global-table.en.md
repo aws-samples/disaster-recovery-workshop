@@ -27,6 +27,6 @@ An application can read and write data to any replica table. If your application
 
 ---
 **References:**
-- [AWS Developer Workshop: How to Build Multi-Region Applications in the Cloud](https://www.youtube.com/watch?v=k9\_9bDZa_EI)
+- [AWS Developer Workshop: How to Build Multi-Region Applications in the Cloud](https://www.youtube.com/watch?v=k9_9bDZa_EI)
 - [AWS Solutions: Multi-Region Availability with Amazon DynamoDB, Amazon S3, and Amazon Cognito (LIVE)](https://www.youtube.com/watch?v=tTQ36qQF_vA)
 - [AWS Re:Invent 2018: How Oath Built a Multi-Region GDPR Application with Amazon DynamoDB (DAT325)](https://www.youtube.com/watch?v=HCfoKyoimOg)

@@ -16,7 +16,7 @@ awsServices:
 
 {{% notice tip %}}
 **Nota:** Existem outros métodos para o uso de EKS em um cenário de múltiplas regiões. Para mais detalhes acesse: 
-[Introduction to GitOps w/ AWS EKS](https://weaveworks-gitops.awsworkshop.io/25_workshop_2_ha-dr.html) <br>[Backup and Restore EKS using Velero](https://www.eksworkshop.com/intermediate/280_backup-and-restore/)
+[Using GitOps and AWS EKS to Manage HA & DR](https://weaveworks-gitops.awsworkshop.io/25_workshop_2_ha-dr.html)
 
 {{% /notice %}}
 

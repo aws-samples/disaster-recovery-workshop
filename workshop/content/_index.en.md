@@ -11,9 +11,9 @@ This content is intended for those in technology roles, such as Chief Technology
 
 
 {{% notice note %}}
-Start the [workshop here...](prereqs/)
+Start the [workshop here...](prereqs)
 {{% /notice %}}
 
 {{% notice info %}}
-If you want to understand better the concepts that will be used [start here...](intro/)
+If you want to understand better the concepts that will be used [start here...](intro)
 {{% /notice %}}

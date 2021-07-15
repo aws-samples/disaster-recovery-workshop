@@ -22,5 +22,5 @@ Using AWS Backup, you can copy backups to multiple AWS regions on demand or auto
 **References:**
 - [How to copy a cross-region snapshot](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_CopySnapshot.html)
 - [AWS Backup - Cross-Region Backups](https://docs.aws.amazon.com/aws-backup/latest/devguide/how-it-works-cross-region-replication.html)
-- [Replicating automated backups to another AWS Region](https://docs.aws.amazon.comAmazonRDS/latest/UserGuide/USER_ReplicateBackups.html)
+- [Replicating automated backups to another AWS Region](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReplicateBackups.html)
 - [Automate RDS Snapshots for disaster recovery](https://github.com/aws-samples/ssm-for-rds-snapshot-cross-region-copy)
