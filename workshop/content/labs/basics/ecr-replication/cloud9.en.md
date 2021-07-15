@@ -8,7 +8,7 @@ hidden: true
 
 
 {{% notice info%}}
-If you haven't already created your environment on AWS Cloud9, start by creating your workspace. [Click here](pt/../../../../prereqs/workspace/workspace).
+If you haven't already created your environment on AWS Cloud9, start by creating your workspace. [Click here]({{% relref workspace %}}).
 {{% /notice%}}
 
 {{% notice note%}}

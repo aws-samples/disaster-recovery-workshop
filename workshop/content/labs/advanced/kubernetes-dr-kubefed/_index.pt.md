@@ -41,7 +41,7 @@ Esse exercício irá mostrar os passos para configurar e utilizar o [KubeFed](ht
 ### Execução
 
 {{% notice info %}}
-Caso ainda não tenha criado o ambiente no AWS Cloud9, comece criando seu workspace. [Clique aqui](pt/../../../../prereqs/workspace/workspace).
+Caso ainda não tenha criado o ambiente no AWS Cloud9, comece criando seu workspace. [Clique aqui]({{% relref workspace %}}).
 {{% /notice %}}
 
 {{% notice note %}}

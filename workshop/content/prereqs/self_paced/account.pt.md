@@ -32,4 +32,4 @@ Siga os passos abaixo usando um usuário IAM com acesso de Administrador na cont
 
 1. Click on this URL to go to the AWS Management Console login page, use the username and password for the `workshop` user you just created.
 
-Once you have completed the step above, you can head straight to [**Create a Workspace**](../../workspace/workspace)
+Once you have completed the step above, you can head straight to [**Create a Workspace**]({{% relref workspace %}})
