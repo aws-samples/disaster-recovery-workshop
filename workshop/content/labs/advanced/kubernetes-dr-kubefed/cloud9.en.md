@@ -230,7 +230,7 @@ do
 done
 ```
 
-Simply access the load balancer address for each of the regions through your browser. The container used in the deployment returns `instance_metadata` of the instance on which the container is running. In this metadata it is possible among other information to see which region it is running. For more information on `instance_metadata` access [is documentation](https://docs.aws.amazon.com/pt_br/AWSEC2/latest/UserGuide/ec2-instance-metadata.html).
+Simply access the load balancer address for each of the regions through your browser. The container used in the deployment returns `instance_metadata` of the instance on which the container is running. In this metadata it is possible among other information to see which region it is running. For more information on `instance_metadata` access [is documentation](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html).
 
 #### 5. Configure Route53 Failover Between the Two Regions
 
@@ -246,7 +246,7 @@ export VPC_ID=$(aws ec2 describe-instances --filters 'Name=tag:Name,Values=*work
 export ZONE_ID=$(aws route53 create-hosted-zone --name my.private.hz --vpc "VPCRegion=us-east-1,VPCId=${VPC_ID}" --hosted-zone-config 'Comment=private,PrivateZone=true' --caller-reference $(date "+%Y%m%d%H%M%S") | jq .HostedZone.Id | cut -d '/' -f3)
 ```
 
-Now that we've created our DNS Zone we'll configure active-passive failover. For more information about routing policies on AWS, visit [this documentation](https://docs.aws.amazon.com/pt_br/Route53/latest/DeveloperGuide/routing-policy.html).
+Now that we've created our DNS Zone we'll configure active-passive failover. For more information about routing policies on AWS, visit [this documentation](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy.html).
 
 5.2 Let's create the health check for our primary endpoint that will be in **us-east-1**
 

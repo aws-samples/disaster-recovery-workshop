@@ -22,4 +22,4 @@ AWS FIS is a service dedicated to simulating failures in the AWS environment so 
 ---
 **References:**
 
-- [Chaos Engineering Principles](https://principlesofchaos.org/pt)
+- [Chaos Engineering Principles](https://principlesofchaos.org/)

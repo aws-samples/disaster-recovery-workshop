@@ -22,7 +22,7 @@ Defining the Recovery Time Objective (RTO) and Recovery Point Objective (RPO) fo
 *Recovery Point Objective (RPO)* is the maximum acceptable time since the last data recovery point. This determines what is considered an acceptable loss of data between the last recovery point and the service outage.
 
 {{% notice info%}} <i class="fas fa-lightbulb"></i>
-Each service has a [Service Level Agreement (SLA)](https://aws.amazon.com/pt/legal/service-level-agreements/). If you're looking for a *uptime* higher than that defined by AWS or need to minimize risk of failures in a region, then define a recovery strategy *Multi-Region*.
+Each service has a [Service Level Agreement (SLA)](https://aws.amazon.com/legal/service-level-agreements/). If you're looking for a *uptime* higher than that defined by AWS or need to minimize risk of failures in a region, then define a recovery strategy *Multi-Region*.
 
 {{% /notice%}}
 

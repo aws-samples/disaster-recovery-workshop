@@ -14,7 +14,7 @@ Aurora automatically backs up the cluster volume and maintains restore data for 
 With Amazon RDS you can copy manual or automated snapshots from the DB cluster. After copying a snapshot, the copy is a manual snapshot.
 You can copy a snapshot within the same AWS Region, a snapshot across AWS Regions, and shared snapshots.
 
-You cannot copy a DB cluster snapshot between regions and accounts in a single step. Perform a step for each of these copy actions. As an alternative to copying, you can also share manual snapshots with other AWS accounts. For more information, see [Share a snapshot of the DB cluster](https://docs.aws.amazon.com/pt_br/AmazonRDS/latest/AuroraUserGuide/USER_ShareSnapshot.html).
+You cannot copy a DB cluster snapshot between regions and accounts in a single step. Perform a step for each of these copy actions. As an alternative to copying, you can also share manual snapshots with other AWS accounts. For more information, see [Share a snapshot of the DB cluster](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_ShareSnapshot.html).
 
 You can use AWS Backup to manage your Amazon Aurora cluster backups. AWS Backup can centrally configure backup policies, monitor backup activity, copy a snapshot within and across AWS regions.
 

@@ -15,4 +15,4 @@ Amazon Elasticsearch Service (Amazon ES) is a managed service that makes it easy
 
 **References:**
 
-*   [Amazon Elasticsearch](https://docs.aws.amazon.com/pt_br/elasticsearch-service/latest/developerguide/what-is-amazon-elasticsearch-service.html)
+*   [Amazon Elasticsearch](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/what-is-amazon-elasticsearch-service.html)

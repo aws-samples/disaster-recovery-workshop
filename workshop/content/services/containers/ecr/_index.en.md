@@ -11,7 +11,7 @@ type: documentation
 
 Containers provide a standard way to package code, configurations, and dependencies for your application into a single object. They share an operating system installed on the server and run as isolated processes. This allows you to make fast, reliable, and consistent deployments regardless of the environment. The AWS platform provides infrastructure capabilities optimized for running containers, plus a set of orchestration services that make it easy to create and run containerized applications in production.
 
-AWS Supports Containers [OCI compliant](https://opencontainers.org/), including containers from [docker](https://aws.amazon.com/pt/docker/).
+AWS Supports Containers [OCI compliant](https://opencontainers.org/), including containers from [docker](https://aws.amazon.com/docker/).
 
 ***
 
