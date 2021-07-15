@@ -8,7 +8,7 @@ hidden: true
 
 #### Acesse o AWS CloudShell
 
-1. Acesse o AWS ClouShell, na barra superior do AWS Console, clique no botão ao lado direito da barra de busca.
+1. Acesse o AWS CloudShell, na barra superior do AWS Console, clique no botão ao lado direito da barra de busca.
    ![CloudShell](/images/console-cloudshell2.png)
 
 

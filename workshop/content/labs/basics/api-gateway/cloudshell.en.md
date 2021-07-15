@@ -9,7 +9,7 @@ hidden: true
 
 #### Go to AWS CloudShell
 
-1. Go to AWS ClouShell, in the top bar of the AWS Console, click the button on the right side of the search bar.
+1. Go to AWS CloudShell, in the top bar of the AWS Console, click the button on the right side of the search bar.
     ![CloudShell](/images/console-cloudshell2.png)
 2. Create a EC2 **Key Pair** for each region
    ```
@@ -21,7 +21,7 @@ hidden: true
 
 1.  Create VPC. **Note**: Before you run AWS CloudFormation, for each region you use.
 
-    | Region: São Paulo (sa-east-1) | Region: N. California (us-west-1) |
+    | Region: Sao Paulo (sa-east-1) | Region: N. California (us-west-1) |
     |-|-|
     |[![Launch Stack](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home?region=sa-east-1#/stacks/quickcreate?templateUrl=https%3A%2F%2Fdr-on-aws-workshop.s3.us-east-2.amazonaws.com%2Fapigw-api-cfn-template.yaml\&stackName=api-vpc) |[![Launch Stack](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home?region=us-west-1#/stacks/quickcreate?templateUrl=https%3A%2F%2Fdr-on-aws-workshop.s3.us-east-2.amazonaws.com%2Fapigw-api-cfn-template.yaml\&stackName=api-vpc) |
 
@@ -44,19 +44,19 @@ hidden: true
 
     ```
     aws ec2 create-vpc-endpoint \
-    --vpc-id <Id da VPC na região 1> \
+    --vpc-id <VPC ID - Region 1> \
     --vpc-endpoint-type Interface \
     --service-name com.amazonaws.sa-east-1.execute-api \
-    --subnet-id <Subnet privada da região 1> \
-    --security-group-id <Security Group da região 1 para acesso HTTPS> \
+    --subnet-id <Private Subnet - Region 1> \
+    --security-group-id <Security Group - Region 1 to enable HTTPS> \
     --region sa-east-1
 
     aws ec2 create-vpc-endpoint \
-    --vpc-id <Id da VPC na região 1> \
+    --vpc-id <VPC ID - Region 1> \
     --vpc-endpoint-type Interface \
     --service-name com.amazonaws.us-west-1.execute-api \
-    --subnet-id <Subnet privada da região 1> \
-    --security-group-id <Security Group da região 1 para acesso HTTPS> \
+    --subnet-id <Private Subnet - Region 1> \
+    --security-group-id <Security Group - Region 1 to enable HTTPS> \
     --region us-west-1
 
     ```
@@ -65,7 +65,7 @@ hidden: true
 
     *   Access the menu **Amazon API Gateway**
     *   In the list of types, select **REST API Private** and click **Import**.
-    *   Click **OKAY**.
+    *   Click **OK**.
     *   Select the option **Example API** and click **Import.**
     *   On the API edit screen, click **Settings** below **Documentation**.
     *   Click on the text box for **VPC Endpoints** and select the previously created endpoint, click **Save Changes**.
@@ -126,8 +126,8 @@ hidden: true
 
     *   Sign in to the AWS console, access **Certificate Manager**
     *   In **Certificate Manager**, click **Getting Started**, select **Request a private certificate** and click **Request a certificate**.
-    *   Select the previously created CA in the combobox (octank.com), click **Acknowledge**, and then on **Next**.
-    *   Fill with \***.octank.com** upon **Domain name** and click **Next**.
+    *   Select the previously created CA in the combobox (example.com), click **Acknowledge**, and then on **Next**.
+    *   Fill with \***.example.com** upon **Domain name** and click **Next**.
     *   Click **Review and request**.
     *   Click **Confirm and request**.
     *   Copy the ARN into the details of the certificate created for use in the next step.
@@ -136,7 +136,7 @@ hidden: true
 
 *   Access the service **Amazon API Gateway** via the AWS console
 *   Click **Custom domain names** on the left menu
-*   In **Domain name**, includes the name of the domain to be used by the api, in this case **api.octank.com**.
+*   In **Domain name**, includes the name of the domain to be used by the api, in this case **api.example.com**.
 *   In **ACM certificate**, select the previously created certificate.
 *   Click **Create domain name**.
 
@@ -168,7 +168,7 @@ hidden: true
 
     aws elbv2 create-listener \
     --load-balancer-arn <ARN do load balancer> \
-    --protocol TLS --port 443 --certificates CertificateArn=<ARN do certificado *.octank.com> \
+    --protocol TLS --port 443 --certificates CertificateArn=<ARN do certificado *.example.com> \
     --ssl-policy ELBSecurityPolicy-2016-08 \
     --default-actions Type=forward,TargetGroupArn=<ARN do target group> \
     --region sa-east-1
@@ -187,10 +187,10 @@ hidden: true
     |—|—|—|
     | Public/Private | Destination: 172.16.0.0/16, Target: PCX-xxxxx | Destination: 10.0.0.0/16, Target: PCX-YYYYY|
 
-7.  Create a Private Hosted Zone for the internal domain octank.com associating the VPC on sa-east-1
+7.  Create a Private Hosted Zone for the internal domain example.com associating the VPC on sa-east-1
 
     ```
-    aws route53 create-hosted-zone --name octank.com --caller-reference 2021-03-15-22:28 --hosted-zone-config PrivateZone=true --vpc VPCRegion=sa-east-1,VPCId=<ID da VPC da região de São Paulo>
+    aws route53 create-hosted-zone --name example.com --caller-reference 2021-03-15-22:28 --hosted-zone-config PrivateZone=true --vpc VPCRegion=sa-east-1,VPCId=<ID da VPC da região de Sao Paulo>
 
     ```
 
@@ -272,11 +272,11 @@ hidden: true
 
     <!---->
 
-        aws route53 create-traffic-policy-instance --hosted-zone-id <Id do Hosted Zone criado no passo 2> --name api.octank.com --ttl 60 --traffic-policy-id <Id do Traffic Policy criado no passo anterior> --traffic-policy-version 1
+        aws route53 create-traffic-policy-instance --hosted-zone-id <Id do Hosted Zone criado no passo 2> --name api.example.com --ttl 60 --traffic-policy-id <Id do Traffic Policy criado no passo anterior> --traffic-policy-version 1
 
 #### Testing Cross-Region Routing
 
-1.  Once DNS entries that use the failover policy between resources in different regions have been configured, simply trigger the alarm that indicates the failure in the health check of the primary environment that we can see that the DNS entry for the api.octank.com endpoint will be switched to the other region.
+1.  Once DNS entries that use the failover policy between resources in different regions have been configured, simply trigger the alarm that indicates the failure in the health check of the primary environment that we can see that the DNS entry for the api.example.com endpoint will be switched to the other region.
 
 #### Cleaning up
 

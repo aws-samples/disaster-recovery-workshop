@@ -32,7 +32,7 @@ A escolha da política de roteamento deve seguir a estratégia de recuperação 
 
 | Política  | Estratégia  |
 |---|---|
-| [Simples (Múltiplos IP's)](https://docs.aws.amazon.com/pt_br/Route53/latest/DeveloperGuide/routing-policy.html#routing-policy-simple) <br> [Ponderado (50%-50%)](https://docs.aws.amazon.com/pt_br/Route53/latest/DeveloperGuide/routing-policy./html#routing-policy-weighted) <br> [Múltiplos Valores](https://docs.aws.amazon.com/pt_br/Route53/latest/DeveloperGuide/routing-policy.html#routing-policy-multivalue) | Active-Active | 
+| [Simples (Múltiplos IP's)](https://docs.aws.amazon.com/pt_br/Route53/latest/DeveloperGuide/routing-policy.html#routing-policy-simple) <br> [Ponderado (50%-50%)](https://docs.aws.amazon.com/pt_br/Route53/latest/DeveloperGuide/routing-policy.html#routing-policy-weighted) <br> [Múltiplos Valores](https://docs.aws.amazon.com/pt_br/Route53/latest/DeveloperGuide/routing-policy.html#routing-policy-multivalue) | Active-Active | 
 | [Ponderado (Weighted)](https://docs.aws.amazon.com/pt_br/Route53/latest/DeveloperGuide/routing-policy.html#routing-policy-weighted) | Warm Standby | 
 | [Failover](https://docs.aws.amazon.com/pt_br/Route53/latest/DeveloperGuide/routing-policy.html#routing-policy-failover) | Pilot Light| 
 

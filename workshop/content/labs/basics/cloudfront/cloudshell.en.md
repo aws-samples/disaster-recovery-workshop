@@ -6,7 +6,7 @@ type: lab
 
 #### 1. Go to AWS CloudShell
 
-1.  Go to AWS ClouShell, in the top bar of the AWS Console, click the button on the right side of the search bar.
+1.  Go to AWS CloudShell, in the top bar of the AWS Console, click the button on the right side of the search bar.
 
 <img src="/images/console-cloudshell2.png?classes=shadow" />
 

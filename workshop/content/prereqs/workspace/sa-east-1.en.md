@@ -1,5 +1,5 @@
 ---
-title: "South America (São Paulo)"
+title: "South America (Sao Paulo)"
 chapter: false
 disableToc: true
 hidden: true

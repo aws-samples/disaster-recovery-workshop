@@ -24,7 +24,7 @@ Cloud9 requires third-party-cookies. You can whitelist the [specific domains]( h
 {{{< tab name="Ohio" include="us-east-2.en.md" />}}
 {{{< tab name="Singapore" include="ap-southeast-1.en.md" />}}
 {{{< tab name="Sydney" include="ap-southeast-2.en.md" />}}
-{{{< tab name="São Paulo" include="sa-east-1.en.md" />}}
+{{{< tab name="Sao Paulo" include="sa-east-1.en.md" />}}
 {{< /tabs >}}
 
 - Select **Create environment**

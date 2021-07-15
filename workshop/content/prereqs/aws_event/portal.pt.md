@@ -22,4 +22,4 @@ Clique em **AWS Console** no Team Dashboard.
 
 Clique em **Open AWS Console**. Irá abrir o console AWS em uma nova aba do seu navegador.
 
-Uma vez completada a etapa acima, você pode ir diretamente para [**Criar um Workspace**](../../workspace/workspace/)
+Uma vez completada a etapa acima, você pode ir diretamente para [**Criar um Workspace**]({{% relref workspace %}})

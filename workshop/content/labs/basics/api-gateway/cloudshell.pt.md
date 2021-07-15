@@ -8,7 +8,7 @@ hidden: true
 
 #### Acesse o AWS CloudShell
 
-1. Acesse o AWS ClouShell, na barra superior do AWS Console, clique no botão ao lado direito da barra de busca.
+1. Acesse o AWS CloudShell, na barra superior do AWS Console, clique no botão ao lado direito da barra de busca.
    ![CloudShell](/images/console-cloudshell2.png)
 
 
@@ -120,8 +120,8 @@ hidden: true
 
     - Entrar no console AWS, acessar **Certificate Manager**
     - Em **Certificate Manager**, cliar em **Getting Started**, selecionar **Request a private certificate** e clicar em **Request a certificate**.
-    - Selecionar a CA criada anteriormente no combobox (octank.com), clicar em **Acknowledge** e depois em **Next**.
-    - Preencher com ***.octank.com** em **Domain name** e clicar em **Next**.
+    - Selecionar a CA criada anteriormente no combobox (example.com), clicar em **Acknowledge** e depois em **Next**.
+    - Preencher com ***.example.com** em **Domain name** e clicar em **Next**.
     - Clicar em **Review and request**.
     - Clicar em **Confirm and request**.
     - Copiar o ARN nos detalhes do certificado criado para usar no passo seguinte.
@@ -130,7 +130,7 @@ hidden: true
 
 - Acessar o serviço do **Amazon API Gateway** via console AWS
 - Clicar em **Custom domain names** no menu esquerdo
-- Em **Domain name**, inclui o nome do domínio a ser utilizado pela api, no caso **api.octank.com**.
+- Em **Domain name**, inclui o nome do domínio a ser utilizado pela api, no caso **api.example.com**.
 - Em **ACM certificate**, selecionar o certificado criado anteriormente.
 - Clicar em **Create domain name**.
 
@@ -162,7 +162,7 @@ hidden: true
 
     aws elbv2 create-listener \
     --load-balancer-arn <ARN do load balancer> \
-    --protocol TLS --port 443 --certificates CertificateArn=<ARN do certificado *.octank.com> \
+    --protocol TLS --port 443 --certificates CertificateArn=<ARN do certificado *.example.com> \
     --ssl-policy ELBSecurityPolicy-2016-08 \
     --default-actions Type=forward,TargetGroupArn=<ARN do target group> \
     --region sa-east-1
@@ -182,10 +182,10 @@ hidden: true
     | publica/privada | Destination: 172.16.0.0/16, Target: pcx-XXXXX | Destination: 10.0.0.0/16, Target: pcx-YYYYY|
 
 
-7. Criar um Private Hosted Zone para o domínio interno octank.com associando a VPC em sa-east-1
+7. Criar um Private Hosted Zone para o domínio interno example.com associando a VPC em sa-east-1
 
     ```
-    aws route53 create-hosted-zone --name octank.com --caller-reference 2021-03-15-22:28 --hosted-zone-config PrivateZone=true --vpc VPCRegion=sa-east-1,VPCId=<ID da VPC da região de São Paulo>
+    aws route53 create-hosted-zone --name example.com --caller-reference 2021-03-15-22:28 --hosted-zone-config PrivateZone=true --vpc VPCRegion=sa-east-1,VPCId=<ID da VPC da região de São Paulo>
 
     ```
 
@@ -270,11 +270,11 @@ hidden: true
     ```
 
     ```
-    aws route53 create-traffic-policy-instance --hosted-zone-id <Id do Hosted Zone criado no passo 2> --name api.octank.com --ttl 60 --traffic-policy-id <Id do Traffic Policy criado no passo anterior> --traffic-policy-version 1
+    aws route53 create-traffic-policy-instance --hosted-zone-id <Id do Hosted Zone criado no passo 2> --name api.example.com --ttl 60 --traffic-policy-id <Id do Traffic Policy criado no passo anterior> --traffic-policy-version 1
     ```
 
 #### Testando o roteamento entre as regiões
-1. Uma vez configuradas as entradas de DNS que utiliza a política de failover entre os recursos em diferentes regiões, basta disparar o alarme que indica a falha no health check do ambiente primário que podemos ver que a entrada DNS para o endpoint api.octank.com será chaveado para a outra região. 
+1. Uma vez configuradas as entradas de DNS que utiliza a política de failover entre os recursos em diferentes regiões, basta disparar o alarme que indica a falha no health check do ambiente primário que podemos ver que a entrada DNS para o endpoint api.example.com será chaveado para a outra região. 
 
 #### Apagando os recursos
 

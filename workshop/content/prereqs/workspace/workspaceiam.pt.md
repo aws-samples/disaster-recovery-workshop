@@ -24,7 +24,7 @@ rm -vf ${HOME}/.aws/credentials
 We should configure our aws cli with our current region as default.
 
 {{% notice info %}}
-If you are [at an AWS event](../aws_event/), ask your instructor which **AWS region** to use.
+If you are [at an AWS event]({{% relref aws_event %}}), ask your instructor which **AWS region** to use.
 {{% /notice %}}
 
 ```sh

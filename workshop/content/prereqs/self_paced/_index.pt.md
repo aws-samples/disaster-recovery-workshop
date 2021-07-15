@@ -8,7 +8,7 @@ weight: 11
 
 
 {{% notice warning %}}
-Somente execute essa seção se você for utilizar sua própria conta AWS. Se você estiver em um evento da AWS, como re:Invent, Roadshows, Immersion Day, etc.), acesse: [Iniciar o workshop em um evento AWS](../aws_event/).
+Somente execute essa seção se você for utilizar sua própria conta AWS. Se você estiver em um evento da AWS, como re:Invent, Roadshows, Immersion Day, etc.), acesse: [Iniciar o workshop em um evento AWS]({{% relref aws_event %}}).
 {{% /notice %}}
 
 {{% children %}}

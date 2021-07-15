@@ -8,7 +8,7 @@ hidden: true
 
 #### Go to AWS CloudShell
 
-1.  Go to AWS ClouShell, in the top bar of the AWS Console, click the button on the right side of the search bar.
+1.  Go to AWS CloudShell, in the top bar of the AWS Console, click the button on the right side of the search bar.
     ![CloudShell](/images/console-cloudshell2.png)
 
 #### Create resources across multiple regions
@@ -34,7 +34,7 @@ hidden: true
 2.  Create a Private Hosted Zone for the customer.internal domain by associating the VPC in sa-east-1
 
     ```
-    aws route53 create-hosted-zone --name customer.internal --caller-reference 2021-03-15-22:28 --hosted-zone-config PrivateZone=true --vpc VPCRegion=sa-east-1,VPCId=<ID da VPC da região de São Paulo>
+    aws route53 create-hosted-zone --name customer.internal --caller-reference 2021-03-15-22:28 --hosted-zone-config PrivateZone=true --vpc VPCRegion=sa-east-1,VPCId=<ID da VPC da região de Sao Paulo>
 
     ```
 
