@@ -37,5 +37,5 @@ In this case, you will have two functional productive environments, but with one
 
 **References**
 
-- [AWS Lambda](https://docs.aws.amazon.com/pt_br/lambda/latest/dg/welcome.html)
+- [AWS Lambda](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html)
 - [Replicate AWS CodeCommit Repositories between Regions using AWS Fargate](https://aws.amazon.com/blogs/devops/replicate-aws-codecommit-repository-between-regions-using-aws-fargate/)

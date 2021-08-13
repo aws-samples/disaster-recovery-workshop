@@ -17,7 +17,7 @@ Embed redundancy — You can add code to the application that changes your AWS S
 Increase Session Token Validity — AWS STS Regional Endpoint Session Tokens are valid across AWS Regions. STS Global Endpoint Session Tokens are valid only in AWS Regions that are enabled by default. If you want to enable a new region for your account, you can use session tokens from STS regional endpoints. If you choose to use the global endpoint, you must change the compatibility of STS session token regions for the global endpoint. This ensures that the tokens are valid in all AWS regions.
 
 {{% notice tip%}} <i class="fas fa-lightbulb"></i>
-See the table for [STS regional endpoints](https://docs.aws.amazon.com/pt_br/IAM/latest/UserGuide/id_credentials_temp_enable-regions.html#id_credentials_region-endpoints) and make sure your application is using at least two regional endpoints.
+See the table for [STS regional endpoints](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_enable-regions.html#id_credentials_region-endpoints) and make sure your application is using at least two regional endpoints.
 {{% /notice%}}
 
 ***

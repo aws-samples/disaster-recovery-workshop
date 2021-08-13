@@ -11,7 +11,7 @@ AWS CloudFormation is a service that helps you model and configure your Amazon W
 
 **References:**
 
-*   [AWS CloudFormation](https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/Welcome.html)
-*   [Automating safe, hands-off deployments](https://aws.amazon.com/pt/builders-library/automating-safe-hands-off-deployments/)
-*   [Accelerating with Continuous Delivery](https://aws.amazon.com/pt/builders-library/going-faster-with-continuous-delivery/)
-*   [Ensuring the Security of Rollback During Deployments](https://aws.amazon.com/pt/builders-library/ensuring-rollback-safety-during-deployments/)
+*   [AWS CloudFormation](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/Welcome.html)
+*   [Automating safe, hands-off deployments](https://aws.amazon.com/builders-library/automating-safe-hands-off-deployments/)
+*   [Accelerating with Continuous Delivery](https://aws.amazon.com/builders-library/going-faster-with-continuous-delivery/)
+*   [Ensuring the Security of Rollback During Deployments](https://aws.amazon.com/builders-library/ensuring-rollback-safety-during-deployments/)
