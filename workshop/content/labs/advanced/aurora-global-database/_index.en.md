@@ -12,7 +12,7 @@ awsServices:
 
 ### Objective
 
-These exercises will show you the steps for using the Global Database engine for Amazon Aurora for MySQL databases. If you want more information [click here]({{< ref "/services/databases/aurora/" >}} "Amazon Aurora").
+These exercises will show you the steps for using the Global Database engine for Amazon Aurora for MySQL databases. If you want more information [click here]({{< ref "/services/databases/aurora" >}} "Amazon Aurora").
 
 **By the end of this exercise, you will be able to:**
 

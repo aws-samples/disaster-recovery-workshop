@@ -12,7 +12,7 @@ awsServices:
 
 ### Objetivo
 
-Esses exercícios irão mostrar os passos para o uso do mecanismo Global Database para bases de dados do Amazon Aurora for MySQL. Caso queira mais informações [clique aqui]({{< ref "/services/databases/aurora/" >}} "Amazon Aurora").
+Esses exercícios irão mostrar os passos para o uso do mecanismo Global Database para bases de dados do Amazon Aurora for MySQL. Caso queira mais informações [clique aqui]({{< ref "/services/databases/aurora" >}} "Amazon Aurora").
 
 **Ao final desse exercício, você será capaz de:**
 - Criar clusters de banco de dados
