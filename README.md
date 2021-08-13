@@ -24,6 +24,14 @@ This workshop is built with markdown as a static HTML site using [hugo](http://g
 $ brew install hugo
 ```
 
+Clone this repository and submodules:
+
+```bash
+git clone https://github.com/aws-samples/disaster-recovery-workshop.git
+git submodule init
+git submodule update
+```
+
 You'll find the content of the workshop in the [workshop/](workshop/) directory.
 
 You can start up a local development server by running:
