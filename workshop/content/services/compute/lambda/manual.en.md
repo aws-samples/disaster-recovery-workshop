@@ -48,7 +48,7 @@ You can also create AWS Lambda functions using the AWS CLI. To do this, use the 
 
     aws lambda create-function --function-name funcao-teste --zip-file fileb://meufonte.zip --handler meuhandler --runtime meuruntime --role arn:aws:iam:meuaccountid:role/minharole
 
-The above command is just an example. Replace the Values `funcao-teste, meufonte.zip, meuhandler, meuruntime, meuaccountid e minharole` by the values specific to your scenario. The full documentation is found [hereto](https://docs.aws.amazon.com/pt_br/lambda/latest/dg/gettingstarted-awscli.html).
+The above command is just an example. Replace the Values `funcao-teste, meufonte.zip, meuhandler, meuruntime, meuaccountid e minharole` by the values specific to your scenario. The full documentation is found [hereto](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-awscli.html).
 
 #### Considerations
 
@@ -64,8 +64,8 @@ In addition to the SAM described above, you can also use tools such as AWS [Clou
 
 **References**
 
-- [AWS CloudFormation](https://aws.amazon.com/pt/cloudformation/)
-- [Add a cross-region action in CodePipeline](https://docs.aws.amazon.com/pt_br/codepipeline/latest/userguide/actions-create-cross-region.html)
+- [AWS CloudFormation](https://aws.amazon.com/cloudformation/)
+- [Add a cross-region action in CodePipeline](https://docs.aws.amazon.com/codepipeline/latest/userguide/actions-create-cross-region.html)
 - [Deploy code in multiple AWS Regions using AWS CodePipeline, AWS CodeCommit, and AWS CodeBuild](https://docs.aws.amazon.com/prescriptive-guidance/latest/patterns/deploy-code-in-multiple-aws-regions-using-aws-codepipeline-aws-codecommit-and-aws-codebuild.html)
 - [Pillars for Resilient Workloads]({{< ref "intro/disaster-recovery/architecture-pillars" >}} "Pillars for Resilient Workloads")
 - [AWS CLI Docs - Lambda](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-awscli.html)
