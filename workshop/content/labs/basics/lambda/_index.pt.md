@@ -12,7 +12,7 @@ awsServices:
 
 ### Objetivo
 
-Esse exercício irá mostrar os passos para exportar e importar funções Lambda entre regiões manualmente. Caso queira mais informações [clique aqui]({{< ref "/services/compute/lambda/" >}} "AWS Lambda").
+Esse exercício irá mostrar os passos para exportar e importar funções Lambda entre regiões manualmente. Caso queira mais informações [clique aqui]({{< ref "/services/compute/lambda" >}} "AWS Lambda").
 
 **Conhecimentos necessários:** 
 - Uso básico do AWS CLI
