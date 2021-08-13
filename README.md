@@ -41,7 +41,7 @@ cd workshop
 hugo server -D
 ```
 
-On your browser open: http://localhost:1313/
+Open in your browser: http://localhost:1313/
 
 ## TO-DO:
 - [ ] Add new labs - Intermediate Level
