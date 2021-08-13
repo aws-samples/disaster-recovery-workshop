@@ -21,7 +21,7 @@ Visit the workshop on this URL: [disaster-recovery.workshop.aws](https://disaste
 This workshop is built with markdown as a static HTML site using [hugo](http://gohugo.io).
 
 ```bash
-$ brew install hugo
+brew install hugo
 ```
 
 Clone this repository and submodules:
@@ -37,10 +37,11 @@ You'll find the content of the workshop in the [workshop/](workshop/) directory.
 You can start up a local development server by running:
 
 ```bash
-$ cd workshop
-$ hugo server -D
-$ open http://localhost:1313/
+cd workshop
+hugo server -D
 ```
+
+On your browser open: http://localhost:1313/
 
 ## TO-DO:
 - [ ] Add new labs - Intermediate Level

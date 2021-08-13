@@ -21,7 +21,7 @@ Visite o workshop sobre este URL: [recuperação de desastres.workshop.aws](http
 Este workshop é construído usando markdown como um site HTML estático usando [hugo](http://gohugo.io).
 
 ```bash
-$ brew install hugo
+brew install hugo
 ```
 
 Clone esse repositório e os submódulos:
@@ -37,10 +37,11 @@ Você encontrará o conteúdo da oficina no [workshop/](workshop/) diretório.
 Você pode iniciar um servidor de desenvolvimento local executando:
 
 ```bash
-$ cd workshop
-$ hugo server -D
-$ open http://localhost:1313/
+cd workshop
+hugo server -D
 ```
+
+Abre no seu navegador: http://localhost:1313/
 
 ## Quer contribuir?
 
