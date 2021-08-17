@@ -10,6 +10,7 @@ Your account must have the ability to create new IAM roles and scope other IAM p
 
 1. If you don't already have an AWS account with Administrator access: [create
 one now by clicking here](https://aws.amazon.com/getting-started/)
+   * If using an existing account, ensure that it is one you can use for testing. It must _not_ be used for production or other purposes.
 
 1. Ensure you are following the remaining workshop steps
     as an IAM user with administrator access to the AWS account.

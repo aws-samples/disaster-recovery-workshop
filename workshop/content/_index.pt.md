@@ -5,7 +5,7 @@ chapter: true
 ---
 
 O foco desse material é apresentar padrões de arquiteturas resilientes e como aplicá-los nas suas soluções utilizando os serviços da AWS. 
-Esse material é baseado no [Reliability Pillar](https://d1.awsstatic.com/whitepapers/architecture/AWS-Reliability-Pillar.pdf?ref=reliability-refarch) parte integrante do [AWS Well-Architected Framework](https://aws.amazon.com/architecture/well-architected/?ref=reliability-refarch). 
+Esse material é baseado no [Reliability Pillar](https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html?ref=reliability-refarch) parte integrante do [AWS Well-Architected Framework](https://aws.amazon.com/architecture/well-architected/?ref=reliability-refarch). 
 Você verá um conjunto de mecanismos que ajudam no uso das melhores práticas para o desenvolvimento e operação de aplicações no ambiente Amazon Web Services (AWS). Adotando as abordagens arquiteturais deste conteúdo você construirá soluções mais resilientes com procesos de recuperação comprovados.
 
 Esse conteúdo é voltado para profissionais de tecnologia, tais como: CTOs, arquitetos de soluções, desenvolvedores e membros de times de operações. 
