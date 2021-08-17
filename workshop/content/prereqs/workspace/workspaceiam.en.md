@@ -9,7 +9,7 @@ draft: true
 Cloud9 normally manages IAM credentials dynamically. For this workshop we will disable it and rely on the IAM role instead.
 {{% /notice %}}
 
-- Return to your workspace and click the gear icon (in top right corner), or click to open a new tab and choose "Open Preferences"
+- Return to your Cloud9 workspace and click the gear icon (in top right corner), or click to open a new tab and choose "Open Preferences"
 - Select **AWS SETTINGS**
 - Turn off **AWS managed temporary credentials**
 - Close the Preferences tab
@@ -62,12 +62,12 @@ aws iam get-instance-profile --instance-profile-name $INSTANCE_PROFILE_NAME --qu
 ```
 -->
 
-The output assumed-role name should contain:
+The output assumed-role name (in the ARN) should contain:
 {{< output >}}
 workshop-admin
 {{< /output >}}
 
-#### VALID
+#### VALID results
 
 If the _Arn_ contains the role name from above and an Instance ID, you may proceed.
 
@@ -79,9 +79,9 @@ If the _Arn_ contains the role name from above and an Instance ID, you may proce
 }
 {{< /output >}}
 
-#### INVALID
+#### INVALID results
 
-If the _Arn contains `TeamRole`, `MasterRole`, or does not match the role name output above, <span style="color: red;">**DO NOT PROCEED**</span>. Go back and confirm the steps on this page.
+If the _Arn_ contains `TeamRole`, `MasterRole`, `AmazonSSMRoleForInstancesQuickSetup` or does not match the role name output above, <span style="color: red;">**DO NOT PROCEED**</span>. Go back and confirm the steps on this page.
 
 {{< output >}}
 {
