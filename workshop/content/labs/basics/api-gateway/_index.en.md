@@ -12,7 +12,7 @@ awsServices:
 
 ### Objective
 
-This exercise shows the steps to quickly set up your APIs in more than one AWS Region and allow them to behave in an active-passive way by receiving requests transparently from your customers.
+This exercise shows the steps to quickly set up your APIs in more than one AWS Region using an active-passive strategy by routing requests transparently from your customers to one API, or the other.
 
 **Required knowledge:**
 
@@ -22,7 +22,7 @@ This exercise shows the steps to quickly set up your APIs in more than one AWS R
 **By the end of this exercise, you will be able to:**
 
 * Set up an API in two or more regions
-* Set up a DNS record to dynamically routing your APIs transparently to your customers
+* Set up a DNS record to dynamically route customer requests transparently to your APIs
 
 **Estimated Duration:** 40 minutes
 
