@@ -40,4 +40,4 @@ This lab will guide you to increase the resilience of applications that rely on 
 
 - Seth Eliot, Principal Reliability Solutions Architect, AWS Well-Architected
 
-**Source:** [Amazon S3 - Implementing Bi-directional Cross-Region Replication (CRR)](https://wellarchitectedlabs.com/reliability/200\_labs/200\_bidirectional_replication_for_s3/)
+**Source:** [Amazon S3 - Implementing Bi-directional Cross-Region Replication (CRR)](https://wellarchitectedlabs.com/reliability/200_labs/200_bidirectional_replication_for_s3/)
