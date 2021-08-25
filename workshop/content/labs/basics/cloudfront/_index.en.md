@@ -12,7 +12,11 @@ awsServices:
 
 ### Objective
 
-This exercise will show you the steps for using the Amazon CloudFront Origin Group engine, using Amazon S3 buckets as an origin. If you want more information [click here]({{< ref "/services/networking/cloudfront" >}} "Amazon CloudFront").
+This exercise will show you the steps for using the Amazon CloudFront Origin Group engine, using Amazon S3 buckets as an origin. During this lab it will be created two S3 buckets and when the Cloudfront Distribution receive a error code from S3 on Primary Region it will try the same request on Secondy Region automacically.  
+
+If you want more information [click here]({{< ref "/services/networking/cloudfront" >}} "Amazon CloudFront").
+
+![Cloudfront Failover](/images/cloudfront-failover.png)
 
 **By the end of this exercise, you will be able to:**
 

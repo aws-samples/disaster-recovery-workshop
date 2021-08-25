@@ -14,6 +14,8 @@ awsServices:
 
 Esse exercício irá mostrar os passos para o uso do mecanismo Grupo de Origem do Amazon CloudFront, utilizando buckets do Amazon S3 como origem. Caso queira mais informações [clique aqui]({{< ref "/services/networking/cloudfront" >}} "Amazon CloudFront").
 
+![Cloudfront Failover](/images/cloudfront-failover.png)
+
 **Ao final desse exercício, você será capaz de:**
 - Criar distribuições do CloudFront resilientes com duas origens, uma primária e uma secundária para failover.
 

@@ -12,15 +12,15 @@ type: lab
 
 #### 2. Create the configuration variables
 
-1.  Create the configuration variables to make it easier to use scripts
+1. Create the configuration variables to make it easier to use scripts
     ```bash
-    ACCOUNT_ID=$(aws sts get-caller-identity | jq -r .Account) # Retorna ID da conta AWS
-    OHIO_LAB_BUCKET=${ACCOUNT_ID}-mini-lab-cf-ohio # Nome do Bucket para a região primária
-    OREGON_LAB_BUCKET=${ACCOUNT_ID}-mini-lab-cf-oregon # Nome do Bucket para a região secundária
+    ACCOUNT_ID=$(aws sts get-caller-identity | jq -r .Account) # AWS Account ID
+    OHIO_LAB_BUCKET=${ACCOUNT_ID}-mini-lab-cf-ohio # Bucket Name - Primary Region
+    OREGON_LAB_BUCKET=${ACCOUNT_ID}-mini-lab-cf-oregon # Bucket Name - Secondary Region
     ```
-    {{% notice warning%}}
-    *Stay tuned so you don't miss the [AWS CloudShell session](https://docs.aws.amazon.com/cloudshell/latest/userguide/limits.html#session-lifecycle-limitations) for inactivity, if the session is lost, the variables will be removed.*
-    {{% /notice%}}
+   {{% notice warning %}}
+   *Stay tuned so you don't miss the [AWS CloudShell session](https://docs.aws.amazon.com/cloudshell/latest/userguide/limits.html#session-lifecycle-limitations) for inactivity, if the session is lost, the variables will be removed.*
+   {{% /notice %}}
 
 #### 3. Create the buckets on Amazon S3 to be the source
 
@@ -45,16 +45,16 @@ type: lab
 
 #### 4. Create a **Origin Access Identity** on Amazon CloudFront
 
-1.  Create a  **Origin Access Identity** to have an identity and subsequently give access to the source buckets.
+1. Create a  **Origin Access Identity** to have an identity and subsequently give access to the source buckets.
     ```bash
     OAI_ID=$(aws cloudfront create-cloud-front-origin-access-identity \
              --cloud-front-origin-access-identity-config \
              CallerReference="cloudfront-mini-lab-example",Comment="CloudFront Origin Group Example" \
              | jq -r '.CloudFrontOriginAccessIdentity.Id')
     ```
-    {{% notice note%}}
-    *It is made use of [Command Substitution](https://www.gnu.org/software/bash/manual/html_node/Command-Substitution.html) next to the command [jq](https://stedolan.github.io/jq/tutorial) to store the result of the command in a variable.*
-    {{% /notice%}}
+   {{% notice note%}}
+   *It is made use of [Command Substitution](https://www.gnu.org/software/bash/manual/html_node/Command-Substitution.html) next to the command [jq](https://stedolan.github.io/jq/tutorial) to store the result of the command in a variable.*
+   {{% /notice%}}
 
 #### 5. Create Access Policies on Buckets to Allow Amazon CloudFront Access
 
@@ -224,21 +224,21 @@ type: lab
     EOT
     ```
 
-2.  Build the Distribution on Amazon CloudFront
+2. Build the Distribution on Amazon CloudFront
 
     ```bash
     CLOUDFRONT_ID=$(aws cloudfront create-distribution \
                     --distribution-config file://mini-lab-example.json | jq -r '.Distribution.Id')
     ```
+   {{% notice note%}}
+   *It is made use of [Command Substitution](https://www.gnu.org/software/bash/manual/html_node/Command-Substitution.html) next to the command [jq](https://stedolan.github.io/jq/tutorial) to store the result of the command in a variable.*
+   {{% /notice%}}
 
-    {{% notice note%}}
-    *It is made use of [Command Substitution](https://www.gnu.org/software/bash/manual/html_node/Command-Substitution.html) next to the command [jq](https://stedolan.github.io/jq/tutorial) to store the result of the command in a variable.*
-    {{% /notice%}}
-    {{% notice note%}}
-    *After requesting the creation of the distribution, it is necessary to wait a few minutes for the distribution to be available.*
-    {{% /notice%}}
+   {{% notice note%}}
+   *After requesting the creation of the distribution, it is necessary to wait a few minutes for the distribution to be available.*
+   {{% /notice%}}
 
-3.  (Optional) You can check the distribution status with the command below.
+3. (Optional) You can check the distribution status with the command below.
     ```bash
     echo "Status: " $(aws cloudfront get-distribution \
                       --id ${CLOUDFRONT_ID} | jq -r '.Distribution.Status')
@@ -246,47 +246,53 @@ type: lab
 
 #### 7. Try the Origin Group
 
-1.  Take the URL of the distribution created in the previous step.
+1. Take the URL of the distribution created in the previous step.
     ```bash
     CLOUDFRONT_URL=$(aws cloudfront get-distribution --id ${CLOUDFRONT_ID} | jq -r '.Distribution.DomainName')
     echo ${CLOUDFRONT_URL} 
     ```
-2.  Go to the URL to see the delivery of the primary region content.
+
+2. Go to the URL to see the delivery of the primary region content.
     ```bash
-    curl -s ${CLOUDFRONT_URL} # O retorno deverá ser o texto: File in Ohio S3
+    curl -s ${CLOUDFRONT_URL} # "File in Ohio S3"
     ```
-3.  Remove the index.html file from the primary region
+
+3. Remove the index.html file from the primary region
     ```bash
     aws s3 rm s3://${OHIO_LAB_BUCKET}/index.html
     ```
-4.  Reaccess the URL of the distribution created on Amazon CloudFront to see delivery from the secondary region.
+
+4. Reaccess the URL of the distribution created on Amazon CloudFront to see delivery from the secondary region.
     ```bash
-    curl -s ${CLOUDFRONT_URL} # O retorno deverá ser o texto: File in Oregon S3
+    curl -s ${CLOUDFRONT_URL} # "File in Oregon S3"
     ```
-5.  (Optional) copy the file back to the primary region but with another name
+
+5. (Optional) copy the file back to the primary region but with another name
     ```bash
     aws s3 cp ohio.index.html s3://${OHIO_LAB_BUCKET}/ohio.html
     ```
-6.  (Optional) Access the file with the new name to see the return of the primary region
+
+6. (Optional) Access the file with the new name to see the return of the primary region
     ```bash
-    curl -s ${CLOUDFRONT_URL}/ohio.html # O retorno deverá ser o texto: File in Oregon S3
+    curl -s ${CLOUDFRONT_URL}/ohio.html # "File in Oregon S3"
     ```
 
 #### 8. Cleaning up
 
-1.  Disable distribution using the update distribution configuration feature.
+1. Disable distribution using the update distribution configuration feature.
+   
     ```bash
-    CLOUDFRONT_DIST=$(aws cloudfront get-distribution-config --id ${CLOUDFRONT_ID}) # Retorna os dados da distribuição
+    CLOUDFRONT_DIST=$(aws cloudfront get-distribution-config --id ${CLOUDFRONT_ID}) # Cloudfront Distribution info
 
-    CLOUDFRONT_ETAG=$(echo $CLOUDFRONT_DIST | jq -r '.ETag') # Retorna a ETag da distribuição
+    CLOUDFRONT_ETAG=$(echo $CLOUDFRONT_DIST | jq -r '.ETag') # Cloudfront ETag 
 
-    echo $CLOUDFRONT_DIST | jq -r '.DistributionConfig' | jq -r .Enabled="false" > mini-lab-example-disabled.json # Retorna a configuração atual alterando o parametro Enabled
+    echo $CLOUDFRONT_DIST | jq -r '.DistributionConfig' | jq -r .Enabled="false" > mini-lab-example-disabled.json # Change Enabled parameter to "false"
 
     CLOUDFRONT_ETAG=$(aws cloudfront update-distribution \
     --id ${CLOUDFRONT_ID} \
     --if-match ${CLOUDFRONT_ETAG} \
     --distribution-config file://mini-lab-example-disabled.json \
-    | jq -r .ETag) # Executa o comando para desabilitar o CloudFront e atualizar a variável de ETag
+    | jq -r .ETag) 
     ```
 
 2.  Wait a few minutes until the distribution is removed. You can check the deletion already finished using the command below:
