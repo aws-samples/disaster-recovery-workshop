@@ -4,7 +4,7 @@ menutitle: "CloudFront - Origin Group"
 chapter: false
 weight: 1
 pre: "<b></b>"
-tags: [Active-Passive]
+tags: [Warm Standby]
 type: Lab
 awsServices:
  - Amazon CloudFront
