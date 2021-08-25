@@ -34,7 +34,7 @@ eksctl completion bash >> ~/.bash_completion
 curl -sSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 ```
 
-1.2 Create Two Amazon EKS Clusters in Targeed Regions
+1.2 Create Two Amazon EKS Clusters in Target Regions
 
 ```bash
 eksctl create cluster --region=us-east-1 --name kubefed-cluster --version 1.18 --managed --alb-ingress-access --zones=us-east-1a,us-east-1b,us-east-1c 

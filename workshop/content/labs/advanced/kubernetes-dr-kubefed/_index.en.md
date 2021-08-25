@@ -4,7 +4,7 @@ menutitle: "EKS - Kubefed"
 chapter: false
 weight: 1
 pre: "<b></b>"
-tags: [Active-Passive]
+tags: [Warm Standby]
 type: Lab
 awsServices:
  - Amazon EKS
@@ -29,7 +29,7 @@ This exercise will show you the steps to set up and use [KubeFed](https://github
 
 - Configure KubeFed to coordinate the configuration of multiple Kubernetes clusters
 - Deploy an application that will be created on two Kubernetes clusters in target regions
-- Use Route53 to configure DNS resolution with healthcheck for both regions
+- Use Amazon Route53 to configure DNS resolution with healthcheck for both regions
 
 **Estimated Duration:** 1 hour
 

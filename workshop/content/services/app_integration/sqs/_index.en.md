@@ -12,7 +12,10 @@ Amazon Simple Queue Service (Amazon SQS) offers a secure, durable, and available
 
 
 ---
-**Referências:**
+{{% children  %}}
+
+
+**References:**
 - [Amazon SQS](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html)
 - [Amazon Builders' Library - Avoiding insurmountable queue backlogs](https://aws.amazon.com/builders-library/avoiding-insurmountable-queue-backlogs/)
 - [AWS re:Invent 2019: Scalable serverless event-driven applications using Amazon SQS & Lambda (API304)](https://www.youtube.com/watch?v=2rikdPIFc_Q)

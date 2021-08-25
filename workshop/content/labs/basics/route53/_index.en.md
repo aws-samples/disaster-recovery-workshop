@@ -7,7 +7,7 @@ pre: "<b></b>"
 tags: [Active-Active]
 type: Lab
 awsServices:
- - Route 53
+ - Amazon Route53
 ---
 
 ### Objective
