@@ -6,9 +6,11 @@ type: lab
 
 #### 1. Go to AWS CloudShell
 
-1.  Go to AWS CloudShell, in the top bar of the AWS Console, click the button on the right side of the search bar.
+1. Go to AWS CloudShell, in the top bar of the AWS Console, click the button on the right side of the search bar.
+2. 
+   <img src="/images/console-cloudshell2.png?classes=shadow" />
 
-<img src="/images/console-cloudshell2.png?classes=shadow" />
+   *Using AWS CloudShell we don't have to set up access though AWS CLI locally.*
 
 #### 2. Create the configuration variables
 
@@ -24,20 +26,24 @@ type: lab
 
 #### 3. Create the buckets on Amazon S3 to be the source
 
-1.  Create a bucket in the primary region, in this case **US East (Ohio)**.
+1. Create a bucket in the primary region, in this case **US East (Ohio)**.
     ```bash
     aws s3 mb s3://${OHIO_LAB_BUCKET} --region us-east-2
     ```
-2.  Create a bucket in the secondary region, in this case **US West (Oregon)**.
+
+2. Create a bucket in the secondary region, in this case **US West (Oregon)**.
     ```bash
     aws s3 mb s3://${OREGON_LAB_BUCKET} --region us-west-2
     ```
-3.  Create the files to send to buckets
+
+3. Create the files to send to buckets
     ```bash
     echo "File in Ohio S3" > ohio.index.html
     echo "File in Oregon S3" > oregon.index.html
     ```
-4.  Copy the files to their buckets
+   *The content of the files is different to make it easy to known which AWS Region they come from.*
+
+4. Copy the files to their buckets
     ```bash
     aws s3 cp ohio.index.html s3://${OHIO_LAB_BUCKET}/index.html
     aws s3 cp oregon.index.html s3://${OREGON_LAB_BUCKET}/index.html
@@ -230,15 +236,12 @@ type: lab
     CLOUDFRONT_ID=$(aws cloudfront create-distribution \
                     --distribution-config file://mini-lab-example.json | jq -r '.Distribution.Id')
     ```
-   {{% notice note%}}
-   *It is made use of [Command Substitution](https://www.gnu.org/software/bash/manual/html_node/Command-Substitution.html) next to the command [jq](https://stedolan.github.io/jq/tutorial) to store the result of the command in a variable.*
-   {{% /notice%}}
 
    {{% notice note%}}
    *After requesting the creation of the distribution, it is necessary to wait a few minutes for the distribution to be available.*
    {{% /notice%}}
 
-3. (Optional) You can check the distribution status with the command below.
+3. (Optional) While you wait, you can check the distribution status with the command below.
     ```bash
     echo "Status: " $(aws cloudfront get-distribution \
                       --id ${CLOUDFRONT_ID} | jq -r '.Distribution.Status')
@@ -261,6 +264,9 @@ type: lab
     ```bash
     aws s3 rm s3://${OHIO_LAB_BUCKET}/index.html
     ```
+   {{% notice note%}}
+   *This step causes an 404 error. It will trigger the Failover mechanism.*
+   {{% /notice %}}
 
 4. Reaccess the URL of the distribution created on Amazon CloudFront to see delivery from the secondary region.
     ```bash
@@ -274,8 +280,11 @@ type: lab
 
 6. (Optional) Access the file with the new name to see the return of the primary region
     ```bash
-    curl -s ${CLOUDFRONT_URL}/ohio.html # "File in Oregon S3"
+    curl -s ${CLOUDFRONT_URL}/ohio.html # "File in Ohio S3"
     ```
+   {{% notice note%}}
+   *This step shows that new requests will be directed to Primary Region first even after the previous request has failed.*
+   {{% /notice %}}    
 
 #### 8. Cleaning up
 
