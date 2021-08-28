@@ -10,7 +10,7 @@ type: lab
 2. 
    <img src="/images/console-cloudshell2.png?classes=shadow" />
 
-   *Using AWS CloudShell we don't have to set up access though AWS CLI locally.*
+   *Using AWS CloudShell we don't have to set up access though AWS CLI locally or AWS Cloud9.*
 
 #### 2. Create the configuration variables
 
