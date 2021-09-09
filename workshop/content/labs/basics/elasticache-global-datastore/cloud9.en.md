@@ -186,7 +186,7 @@ type: lab
     GET userid
    ```
 
-4. Try to create and modify the keys
+4. Try to create a new key-value pair
 
    ```bash
     SET new-key somevalue
@@ -200,39 +200,69 @@ type: lab
     INFO replication
    ```  
 
-#### Promote Secondary Region
+#### Promote Secondary Cluster to Primary
 
-1.  To verify that replication is working, add a new item to the Music table in the region **US East (Ohio)**.
+1.  Promote the cluster-secondary in **N. California** to primary role in the Global Datastore. Using the Cloud9 Terminal execute the command below:
     ```bash
-    aws ...
-        --region us-east-2
+    aws elasticache failover-global-replication-group \
+     --global-replication-group-id ldgnf-multi-region \
+     --primary-region us-west-1 \
+     --primary-replication-group-id cluster-secondary \
+    --region us-east-1
     ```
 
-2.  To verify that replication is working, add a new item to the Music table in the region **US East (Ohio)**.
+2.  Using AWS Cloud9 Terminal in **N. California** connect to Redis again:
     ```bash
-    aws ...
-        --region us-west-2
+    src/redis-cli -h $PRIMARY_ENDPOINT -p $PORT_NUMBER
     ```
 
-3.  Make sure the items have been successfully replicated to the region **Europe (Ireland)**:
-    ```bash
-    aws ... --region eu-west-1
-    ```
+3. Now, try to create a new key-value pair again:
+
+   ```bash
+    SET new-key somevalue
+   ```
+
+   {{% notice note %}}
+   Now the write operations could be performed on **cluster-secondary** in **N. California**. The same command *failover-global-replication-group* could be used for failback operation*.
+   {{% /notice %}}
 
 #### Cleaning up
 
-1.  Delete the replica table in the region **Europe (Ireland)** and region **US West (Oregon)**.
+1. Remove the **cluster-primary** from Global Datastore. After the failover command on last step, its Role is Secondary in this point.
+   ```bash
+    aws elasticache disassociate-global-replication-group \
+     --global-replication-group-id ldgnf-multi-region \
+     --replication-group-id cluster-primary \
+     --replication-group-region us-east-1 \
+     --region us-east-1
+   ```
 
-    ```bash
-    aws ...
-    ```
+2. Delete **cluster-primary**.   
+   ```bash
+    aws elasticache delete-replication-group \
+     --replication-group-id cluster-primary \
+     --no-retain-primary-cluster \
+     --region us-east-1
+   ```
 
-2.  Wait a few minutes until both are deleted. You can check the deletion already finished using the command below:
-    ```bash
-    aws ...
+3. Delete Global Datastore.
+   
+   ```bash
+    aws elasticache delete-global-replication-group \
+     --global-replication-group-id ldgnf-multi-region \
+     --retain-primary-replication-group \
+     --region us-east-1
     ```
+4. Check Global DataStore status.
+   ```bash
+    aws elasticache describe-global-replication-groups \
+     --show-member-info --region us-east-1
+   ```
 
-3.  Delete ... in the region **US East (Ohio)**.
-    ```bash
-    aws ... --region us-east-2
-    ```
+5. Delete **cluster-secondary**.   
+   ```bash
+    aws elasticache delete-replication-group \
+     --replication-group-id cluster-secondary \
+     --no-retain-primary-cluster \
+     --region us-west-1
+   ```
