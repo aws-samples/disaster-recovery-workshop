@@ -1,6 +1,5 @@
 ---
 hidden: true
-type: lab
 ---
 
 #### Crie uma função AWS Lambda

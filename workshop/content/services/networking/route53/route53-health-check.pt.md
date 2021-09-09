@@ -6,7 +6,7 @@ chapter: true
 pre: "<b></b>"
 awsServices:
  - "Amazon Route53"
-type: documenntation
+type: documentation
 ---
 
 Crie um *health check*, se quiser que o Amazon Route 53 verifique o estado de saúde de um endereço que será usado para responder as consultas de DNS utilizando este registo. Essa verificação funciona como um filtro, portanto serão retornados apenas endereços que passaram na avaliação, que estão como saudáveis.

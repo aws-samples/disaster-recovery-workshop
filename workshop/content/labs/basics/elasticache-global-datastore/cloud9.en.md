@@ -1,6 +1,5 @@
 ---
 hidden: true
-type: lab
 ---
 
 
@@ -256,7 +255,8 @@ type: lab
 4. Check Global DataStore status.
    ```bash
     aws elasticache describe-global-replication-groups \
-     --show-member-info --region us-east-1
+     --show-member-info \
+     --region us-east-1
    ```
 
 5. Delete **cluster-secondary**.   

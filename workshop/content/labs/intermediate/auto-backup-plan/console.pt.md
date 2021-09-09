@@ -1,6 +1,5 @@
 ---
 hidden: true
-type: lab
 ---
 
 #### Crie uma tabela do Amazon DynamoDB
