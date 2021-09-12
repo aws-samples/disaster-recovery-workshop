@@ -8,9 +8,10 @@ tags: [Pilot Light]
 type: Lab
 awsServices:
  - Amazon FSx
-draft: true
 ---
 
+TODO: remove this!!!
+Senha123456
 
 
 ### Introdução
@@ -20,7 +21,7 @@ Para os clientes que utilizam o Amazon FSx como local de armazenamento e que pos
 ### Visão Geral da Solução
 
 
-![any](/images/architecture.png)
+![any](/images/fsx-win-architecture.png)
 
 ### Objetivos
 

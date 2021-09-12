@@ -8,7 +8,6 @@ tags: [Active-Active]
 type: Lab
 awsServices:
  - Amazon FSx
-draft: true
 ---
 
 
@@ -19,7 +18,7 @@ Customers who have special compliance or disaster recovery requirements have ask
 ### Solution Overview
 
 
-![any](/images/architecture.png)
+![any](/images/fsx-win-architecture.png)
 
 ### Goal
 
