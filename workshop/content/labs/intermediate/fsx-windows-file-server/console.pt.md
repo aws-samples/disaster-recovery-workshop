@@ -4,74 +4,122 @@ hidden: true
 
 #### Acesse o console AWS
 
+ **[Clique aqui para acessar o Console AWS](https://console.aws.amazon.com/)**. Selecione a região **N. Virginia** no canto superior direito da Console AWS.
 
-** **[Clique aqui para acessar o Console AWS:](https://console.aws.amazon.com/)** **
-
-#### Etapa 0: Crie um AWS Managed Microsoft AD
-Caso não tenha um AWS Managed Microsft AD criado, siga os passos abaixo:
-1. Acesse a tela de criação do AWS Managed Microsoft AD: [https://console.aws.amazon.com/directoryservicev2/](https://console.aws.amazon.com/directoryservicev2/home?region=us-east-1#!/create)
-2. Na página **Select directory type**, escolha a opção **AWS Managed Microsoft AD**. Clique em **Next**.
-3. Na página, **Enter Directory information**, selecione a opção **Standard Edition**. Entre com o DNS name desejado **corp.example.com**. Digite uma senha para o administrador no campo **Admin password** e confirme no campo **Confirm Password**. Clique em **Next**.
-4. Na página **Choose VPC and subnets**, seleciona a VPC, nesse exercício iremos utilizar a VPC padrão. Clique em **Next**.
-5. Na página **Review & create**, clique em **Create directory**.
+#### Crie um AWS Managed Microsoft AD
+Para criar um AWS Managed Microsft AD, siga os passos abaixo:
+1. Acesse o serviço Directory Service: [https://console.aws.amazon.com/directoryservicev2/](https://console.aws.amazon.com/directoryservicev2/home?region=us-east-1#!/directories)
+2. Clique em **Set up directory**.
+3. Na tela **Select directory type**, escolha a opção **AWS Managed Microsoft AD**. Clique em **Next**.
+4. Na página **Enter Directory information**
+   1. Selecione a opção **Standard Edition**. 
+   2. Entre com o DNS name desejado **corp.example.com**. 
+   3. Digite uma senha para o administrador no campo **Admin password** e confirme no campo **Confirm Password**. 
+   4. Clique em **Next**.
+5. Na página **Choose VPC and subnets**, seleciona a VPC, nesse exercício iremos utilizar a VPC padrão. Clique em **Next**.
+6. Na página **Review & create**, clique em **Create directory**.
    
-Aguarde até que o diretório tenha sido criado, esse processo pode levar de 20 a 40 minutos.
 
-#### Etapa 1: Configure o Amazon FSx for Windows File Server na região origem (N. Virginia)
+   {{% notice note %}}
+   *Aguarde até que o diretório tenha sido criado, esse processo pode levar de 20 a 40 minutos.*
+   {{% /notice %}}
 
-Assumindo que você ainda não tenha criado uma instância de Amazon FSx, essa é a primeira etapa para provisionar um sistema de arquivos para o **Windows File Server**.
+#### Configure o Amazon FSx for Windows File Server na região primária (N. Virginia)
 
-1. Acesse a console do Amazon FSx: [https://console.aws.amazon.com/fsx/](https://console.aws.amazon.com/fsx/)
-2. Selecione **Create file system** para iniciar a criação do sistema de arquivos
-3. Na página **Select file system type**, escolha **Amazon FSx for Windows File Server**, e clique em **Next**. 
-4. Na página **Create file system**, na seção **File system datails**, digite um novme para o sistema de arquivos. 
-5. No **Deployment type** selecion **Multi-AZ**. Entre com a quantidade de disco desejada **32** GB. 
-6. Na seção **Windows Authentication**, marque a opção **AWS Managed Microsoft Active Directory**. E selecione o nome do diretório criado anteriormente. Clique em **Next**. 
-7. Na página **Create file system**, clique em **Next**.
+Para provisionar um sistema de arquivos para o **Windows File Server** siga os passos abaixo:
 
-
-
-![fsx](/images/fsx-win-step1.png)
+1. Acesse a console do Amazon FSx: [https://console.aws.amazon.com/fsx/](https://console.aws.amazon.com/fsx/home?region=us-east-1)
+2. Clique em **Create file system** para iniciar a criação do sistema de arquivos
+3. Na tela **Select file system type**, escolha **Amazon FSx for Windows File Server**, e clique em **Next**. 
+4. Na tela **Create file system**, 
+   1. Na seção **File system datails**, digite um nome para o sistema de arquivos **Projects**. 
+   2. em **Deployment type** selecione **Multi-AZ**. Entre com a **Storage Capacity** de **32 GiB**. 
+   3. Na seção **Windows Authentication**, marque a opção **AWS Managed Microsoft Active Directory**. E selecione o nome do diretório criado anteriormente **corp.example.com**. Clique em **Next**. 
+5. Na tela **Summary**, clique em **Next**.![fsx](/images/fsx-win-step1.png)
 
 {{% notice tip %}}
-Enquanto o novo sistema de arquivos é criado, você pode executar a Etapa 2.
+Enquanto o novo sistema de arquivos é criado, você pode executar a etapa de comunicação entre regiões.
 {{% /notice %}}
 
 
-### Etapa 2: Habilite a comunicação entre regiões AWS
+### Habilite a comunicação entre regiões AWS
 
 Essa etapa está dividida em duas partes:
-1. Habilitar a comunicação entre regiõesenabling network 
+1. Habilitar a comunicação entre regiões
 2. Modificar o AWS Security Group para permitir a comunicação entre as VPCs.
 
 A configuração de redes deve permitir a comunicação entre as regiões AWS utilizadas. Duas formas comuns para habilitar a comunicação entre regiões, são: **[Virtual Private Cloud (VPC) peering](https://docs.aws.amazon.com/vpc/latest/peering/what-is-vpc-peering.html)** and **[AWS Transit Gateway](https://aws.amazon.com/transit-gateway/)**.
 
 Nesse exercício usaremos o **VPC peering** pela simplicidade de configuração.
 
-#### Etapa 2.1: Criando o VPC Peering
-
-1. Acesse a console do Amazon VPC: [https://us-east-1.console.aws.amazon.com/vpc/](https://console.aws.amazon.com/vpc/home?region=us-east-1#)
-2. No menu lateral esquerdo, escolha a opção **Peering Connections**
-3. Na página **Peering Connections**, clique em **Create Peering Connection**
-4. Na página **Create Peering Connection**, digite o name tag: **Virginia-Oregon**. No campo VPC (Requester), selecione a VPC padrão. Na seção **Select another VPC to peer with**, selecione a opção **Another Region** e seleciona região **US West (Oregon) (us-west-2)**. Para obter o VPC ID, acesse a console do Amazon VPC na região **Oregon**:
-[https://us-west-2.console.aws.amazon.com/vpc/](https://us-west-2.console.aws.amazon.com/vpc/home?region=us-west-2#)
-5. Clique em **Create Peering Connection**
-
 {{% notice tip %}}
-As VPC's devem usar endereços de IP diferentes, verifique o CIDR de cada uma.
+Para que seja possível a criação do **VPC Peering**, as VPC's devem usar endereços IP diferentes, por isso iremos criar uma VPC evitar conflito de IPs.
 {{% /notice %}}
 
+
+#### Criando uma VPC na região secundária
+Utilize a Console AWS na região secundária **Oregon** para executar os passos a seguir:
+1. Acesse a console do Amazon VPC na região **Oregon**:[https://us-west-2.console.aws.amazon.com/vpc/](https://us-west-2.console.aws.amazon.com/vpc/home?region=us-west-2#)
+2. Selecione **Your VPCs** no menu lateral esquerdo
+3. Na tela **Your VPCs** clique em **Create VPC**
+4. Na tela **Create VPC**:
+   1. Digite o nome **dr-vpc**
+   2. Digite o range de IP: **10.0.0.0/16**
+   3. Clique em **Create VPC**
+5. Na tela de informações da VPC, copie o **VPC ID**. Será usado no processo de criação do VPC Peering.
+
+#### Crie duas subnets para sua nova VPC
+Ainda utilizando a região secundária **Oregon**, execute os passos a seguir:
+1. Acesse a console do Amazon VPC na região **Oregon**:[https://us-west-2.console.aws.amazon.com/vpc/](https://us-west-2.console.aws.amazon.com/vpc/home?region=us-west-2#)
+2. No menu lateral esquerdo, acesse **Subnets**
+3. Na tela de **Subnets**, clique em **Create subnet**
+4. Na tela **Create subnet**: s
+   1. Selecione a VPC criada **dr-vpc**
+   2. Para a primeira **Subnet name**, digite o nome **subnet-01**
+   3. Em **Availability Zone**, escolha **us-west-2b**
+   4. Para o **IPv4 CIDR block**, utilize **10.0.16.0/20**
+   5. Clique em **Add new subnet** para definir uma segunda subnet
+   6. Para a primeira **Subnet name**, digite o nome **subnet-02**
+   7. Em **Availability Zone**, escolha **us-west-2a**
+   8. Para o **IPv4 CIDR block**, utilize **10.0.0.0/20**
+   9. Clique em **Create subnet**.
+   
+#### Criando o VPC Peering
+Utilize a Console AWS na região primária **N. Virginia** para executar os passos a seguir:
+1. Acesse a console do Amazon VPC em **N. Virginia**: [https://us-east-1.console.aws.amazon.com/vpc/](https://console.aws.amazon.com/vpc/home?region=us-east-1#).
+2. No menu lateral esquerdo, escolha a opção **Virtual Private Cloud >> Peering Connections**
+3. Na tela **Peering Connections**, clique em **Create Peering Connection**
+4. Na página **Create Peering Connection**:
+   1. Digite o nome: **Virginia-Oregon**. 
+   2. No campo **VPC (Requester)**, selecione a VPC padrão. 
+   3. Na seção **Select another VPC to peer with**, selecione a opção **Another Region** e selecione a região **US West (Oregon) (us-west-2)**. Caso não tenha copiado o ID da nova VPC no passo anterior, acesse a console do Amazon VPC na região **Oregon**:[https://us-west-2.console.aws.amazon.com/vpc/](https://us-west-2.console.aws.amazon.com/vpc/home?region=us-west-2#)
+   4. Clique em **Create Peering Connection**
+
+#### Aceitando a requisição do VPC Peering
+Utilize a Console AWS na região secundária **Oregon** para executar os passos a seguir:
 1. Acesse a console do Amazon VPC na região **Oregon**:
 [https://us-west-2.console.aws.amazon.com/vpc/](https://us-west-2.console.aws.amazon.com/vpc/home?region=us-west-2#)
 2. No menu lateral esquerdo, escolha a opção **Peering Connections**
-3. Na página **Peering Connections**, selecione a **Peering Connection** com o status **Pending Acceptance**. Clique em **Actions -> Accept Request** e confirme.
-4. Verifique que o status mudará para **Active**.
+3. Na página **Peering Connections**, selecione a **Peering Connection** com o status **Pending Acceptance**. Clique em **Actions >> Accept Request** e confirme clicando em **Accept Request**.
+4. Verifique que o status do **Peering connection** irá mudar para **Active** após alguns segundos.
 
 
 Each Amazon FSx for Windows File Server has a security group that controls what hosts (IP addresses) are allowed to access it. Update the security group protecting the Amazon FSx file system in the source Region by adding the IP address range for the DR AWS Region. Also, after creating the Amazon FSx file system in the DR Region, you must modify its security group to allow communications from the IP address range in the source AWS Region.
 
 
-### Etapa 3: Set up Amazon FSx for Windows File Server in your DR Region
+#### Configure o Amazon FSx for Windows File Server na região secundária (Oregon)
+
+Para provisionar o sistema de arquivos para o **Windows File Server** siga os passos abaixo:
+
+1. Acesse a console do Amazon FSx: [https://console.aws.amazon.com/fsx/](https://console.aws.amazon.com/fsx/home?region=us-west-2)
+2. Clique em **Create file system** para iniciar a criação do sistema de arquivos
+3. Na tela **Select file system type**, escolha **Amazon FSx for Windows File Server**, e clique em **Next**. 
+4. Na tela **Create file system**, 
+   1. Na seção **File system datails**, digite um nome para o sistema de arquivos **Projects-DR**. 
+   2. Em **Deployment type**, selecione **Multi-AZ**. 
+   3. Defina a **Storage Capacity** de **32 GiB**. 
+   4. Na seção **Windows Authentication**, marque a opção **AWS Managed Microsoft Active Directory**. E selecione o nome do diretório criado anteriormente **corp.example.com**. Clique em **Next**. 
+5. Na tela **Summary**, clique em **Next**.![fsx](/images/fsx-win-step1.png)
 
 The second step is to create an Amazon FSx for Windows File Server file system in the DR AWS Region. You can follow similar steps as you did to create the Amazon FSx file system in the source Region. However, if you are using the **[AWS Management Console](https://aws.amazon.com/console/)**, change the AWS Region that you are operating in to the Region where you want to create the DR Amazon FSx file system. Do this before you start creating the Amazon FSx file system
 
@@ -105,13 +153,13 @@ To active the DataSync agent, make sure that the AWS Management Console can comm
 *For more on installing the DataSync agent information, please see the **[documentation](https://docs.aws.amazon.com/datasync/latest/userguide/configure-agent.html)**.*
 
 
-### Etapa 5: Create the DataSync data replication task
+### Create the DataSync data replication task
 
 The last step is to create the data replication task where you configure the source location, destination location, and migration settings. It is important to create the DataSync migration task in the same AWS Region as the target storage location (for example, in my scenario in the Oregon Region).
 
 Open the AWS Management Console, and from the Region drop-down menu in the top right of the console, select the AWS Region where the DR Amazon FSx file system is created. Then navigate to the DataSync console and select the **Create task** button.
 
-**Etapa 5.1: Specify the source location**
+**Specify the source location**
 
 On the Configuration screen, you specify the source location options. For the Agent setting, select the DataSync agent that you installed in the prior step. Since you are replicating data from Amazon FSx, it is considered SMB file storage, so select the **Server Message Block (SMB)** option. For the SMB Server IP address, specify the **Preferred File Servier IP Address**, which can be found on the properties page of the Amazon FSx file system:
 
@@ -125,7 +173,7 @@ Next, specify the credentials of a user that has rights to read the data from th
 
 ![fsx](/images/fsx-win-step5_13.png)
 
-**Etapa 5.2: Specify the destination location**
+**Specify the destination location**
 
 For this step, specify the destination location where the data should be migrated. Under **Configure destination location** for the location type, specify the **Amazon FSx for Windows File Server** option. Select the Amazon FSx file system in the DR AWS Region that you created earlier and the share name where you want to copy the data.
 
@@ -135,7 +183,7 @@ You must also specify an account that has rights to write data to the Amazon FSx
 
 ![fsx](/images/fsx-win-step5_22.png)
 
-**Etapa 5.3: Specify the DataSync task settings**
+**Specify the DataSync task settings**
 
 On the next screen, you set the DataSync task settings, as shown in the following screenshot. Here are a couple suggestions on settings these items:
 
@@ -147,7 +195,7 @@ Since you are replicating the data to the DR AWS Region, verification of all the
 
 ![fsx](/images/fsx-win-step5_32.png)
 
-**Etapa 5.4: Run the DataSync migration task**
+**Run the DataSync migration task**
 
 Once you have specified the task setting and created the DataSync task, it then runs on the schedule that you specified. If you want to start the task immediately, you can do so by selecting the DataSync task and under **Actions**, select **Start**.
 

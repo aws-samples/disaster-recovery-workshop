@@ -1,6 +1,6 @@
 ---
 title: "Amazon FSx for Windows File Server - Replicação de dados entre regiões"
-menutitle: "FSx entre Regiões AWS"
+menutitle: "FSx for Windows"
 chapter: false
 weight: 1
 pre: "<b></b>"
@@ -21,7 +21,7 @@ Para os clientes que utilizam o Amazon FSx como local de armazenamento e que pos
 ### Visão Geral da Solução
 
 
-![any](/images/fsx-win-architecture.png)
+![FSX for Windows lab architecture](/images/fsx-win-architecture.png)
 
 ### Objetivos
 
@@ -36,7 +36,7 @@ Aprender como configurar a replicação do Amazon FSx for Windows File Server en
 
 
 **Ao final desse exercício, você será capaz de:**
-- Replicar dados do Amazon FSx entre regiões AWS.
+- Replicar dados do *Amazon FSx for Windows* entre regiões AWS automaticamente.
 
 **Tempo de Execução Estimado:** 1 hora e 30 minutos
 
@@ -62,7 +62,8 @@ Nesse exercício, você aprendeu como criar uma cópia de um volume do Amazon FS
 
 ----- 
 
-**Fonte:** [Amazon FSx - How to replicate Amazon FSx for Windows File Server data across AWS Regions](https://aws.amazon.com/blogs/storage/how-to-replicate-amazon-fsx-file-server-data-across-aws-regions/)
+**Referências:** 
+- [Amazon FSx - How to replicate Amazon FSx for Windows File Server data across AWS Regions](https://aws.amazon.com/blogs/storage/how-to-replicate-amazon-fsx-file-server-data-across-aws-regions/)
 
 
 
