@@ -21,7 +21,10 @@ Esse laboratório irá guiá-lo para aumentar a resiliência das aplicações qu
 ![S3 Lab Architecture](/images/s3-bi-crr.png?width=550px")
 
 ### Execução
-Esse exercício é parte do AWS Well-Architected Labs. Por favor  [acesse aqui](https://wellarchitectedlabs.com/reliability/200_labs/200_bidirectional_replication_for_s3/).
+
+{{< button href="https://wellarchitectedlabs.com/reliability/200_labs/200_bidirectional_replication_for_s3/"icon="fas fa-vial" >}} Inicie aqui{{< /button >}}
+
+**Esse exercício é parte do AWS Well-Architected Labs.*
 
 ---
 
