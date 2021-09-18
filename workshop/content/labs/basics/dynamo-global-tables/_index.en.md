@@ -16,9 +16,9 @@ This exercise will show you the steps for using the Global Tables engine for Ama
 
 **By the end of this exercise, you will be able to:**
 
-*   Create Amazon DynamoDB Replicated Tables in Other AWS Regions
+*   Replicate Amazon DynamoDB tables in other AWS Regions
 
-**Estimated Duration:** 20 minutes
+**Estimated Duration:** 15 minutes
 
 **Approximate Cost**: 1 USD
 
