@@ -36,7 +36,7 @@ With this exercise, it was possible to verify how use Global Datastore to replic
 
 **References:**
 - [Amazon ElastiCache for Redis - Global Datastore](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Redis-Global-Datastore.html)
-- [Configuring Amazon ElastiCache for REdis for higher availability](https://aws.amazon.com/blogs/database/configuring-amazon-elasticache-for-redis-for-higher-availability/)
+- [Configuring Amazon ElastiCache for Redis for higher availability](https://aws.amazon.com/blogs/database/configuring-amazon-elasticache-for-redis-for-higher-availability/)
 - [Now Available: Amazon EastiCache Global Datastore for Redis](https://aws.amazon.com/blogs/aws/now-available-amazon-elasticache-global-datastore-for-redis/)
 
 

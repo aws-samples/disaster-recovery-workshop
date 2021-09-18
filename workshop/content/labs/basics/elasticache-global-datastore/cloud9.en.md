@@ -29,7 +29,7 @@ hidden: true
 3. Repeat steps 1 and 2 using the Secondary Region **N. California**
 
    {{% notice warning %}}
-   *You'll need the two Cloud9 environments in order to access ElastiCache nodes from different regions.*
+   *You'll need the two AWS Cloud9 environments in order to access ElastiCache nodes from different regions.*
    {{% /notice %}}
 
 #### Create an Amazon ElastiCache for Redis cluster
@@ -153,7 +153,7 @@ hidden: true
    ```
 
       {{% notice note %}}
-   *Please wait about 10 minutes to new cluster be associated to Global Datastore.*
+   *Please wait about 10-15 minutes to new cluster be associated to Global Datastore.*
    {{% /notice %}}
 
 #### Test the Secondary Region cluster
@@ -191,7 +191,7 @@ hidden: true
     SET new-key somevalue
    ```
 
-   The message **error) READONLY You can't write against a read only replica** will be shown, because it's not permitted to execute write operation on READONLY instances.
+   The message: **"(error) READONLY You can't write against a read only replica"** will be shown, because it's not permitted to execute write operation on READONLY instances. This instance ROLE is SLAVE mode.
 
    You can check the instance operation mode by ROLE attribute using the command below:
 
@@ -209,6 +209,10 @@ hidden: true
      --primary-replication-group-id cluster-secondary \
     --region us-east-1
     ```
+
+    {{% notice tip %}}
+   *The failover operation on Global Datastore has an estimated RTO of less than 1 minute.*
+   {{% /notice %}}
 
 2.  Using AWS Cloud9 Terminal in **N. California** connect to Redis again:
     ```bash
@@ -236,7 +240,9 @@ hidden: true
      --region us-east-1
    ```
 
-2. Delete **cluster-primary**.   
+2. Wait until the cluster be disassociated. 
+
+3. Delete **cluster-primary**.   
    ```bash
     aws elasticache delete-replication-group \
      --replication-group-id cluster-primary \
@@ -244,7 +250,7 @@ hidden: true
      --region us-east-1
    ```
 
-3. Delete Global Datastore.
+4. Delete Global Datastore.
    
    ```bash
     aws elasticache delete-global-replication-group \
@@ -252,14 +258,14 @@ hidden: true
      --retain-primary-replication-group \
      --region us-east-1
     ```
-4. Check Global DataStore status.
+5. Check Global DataStore status.
    ```bash
     aws elasticache describe-global-replication-groups \
      --show-member-info \
      --region us-east-1
    ```
 
-5. Delete **cluster-secondary**.   
+6. Delete **cluster-secondary**.   
    ```bash
     aws elasticache delete-replication-group \
      --replication-group-id cluster-secondary \
