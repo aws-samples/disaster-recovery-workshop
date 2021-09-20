@@ -6,7 +6,7 @@ chapter: true
 pre: "<b></b>"
 awsServices:
  - "Amazon Route53"
-type: documenntation
+type: documentation
 ---
 
 Create a *health check*, if you want Amazon Route 53 to check the health status of an address that will be used to respond to DNS queries using this record. This check works as a filter, so only addresses that passed the assessment will be returned, which are healthy.
