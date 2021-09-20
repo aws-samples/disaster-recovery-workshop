@@ -4,6 +4,8 @@ chapter: false
 weight: 14
 ---
 
+O workspace do AWS Cloud9 é um ambiente de desenvolvimento cloud-based que será usado em alguns exercícios, outros exercícios serão executados pelo AWS CloudShell ou pela Console AWS. Portanto verifique nos primeiros passos do exercício escolhido se será necessário a criação de um Workspace.
+
 {{% notice warning %}}
 O workspace Cloud9 deve ser provisionado por um usuário IAM com privilégios de administrador,
 não uma conta root. Por favor, garanta que está logado como um usuário IAM e não com o usuário root.
@@ -17,9 +19,13 @@ Cloud9 utiliza cookies de terceiros. Você pode verificar a lista de [domínios 
 ### Use o Cloud9 na região mais próxima:
 {{< tabs name="Region" >}}
 {{{< tab name="N. Virginia" include="us-east-1" />}}
-{{{< tab name="Oregon" include="us-west-2" />}}
-{{{< tab name="São Paulo" include="sa-east-1" />}}
 {{{< tab name="N. Califórnia" include="us-west-1" />}}
+{{{< tab name="Oregon" include="us-west-2" />}}
+{{{< tab name="Irlanda" include="eu-west-1" />}}
+{{{< tab name="Ohio" include="us-east-2" />}}
+{{{< tab name="Singapura" include="ap-southeast-1" />}}
+{{{< tab name="Sydney" include="ap-southeast-2" />}}
+{{{< tab name="São Paulo" include="sa-east-1" />}}
 {{< /tabs >}}
 
 - Select **Create environment**

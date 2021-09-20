@@ -19,7 +19,7 @@ This exercise will show you the steps to enable record replication in the Amazon
 *   Set Up Replication to Another Region of an Amazon ECR Image Record
 *   List images and verify that replication is working according to the applied configuration.
 
-**Estimated Duration:** 20 minutes
+**Estimated Duration:** 15 minutes
 
 **Approximate Cost**: 1 USD
 

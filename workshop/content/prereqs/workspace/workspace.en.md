@@ -4,6 +4,8 @@ chapter: false
 weight: 14
 ---
 
+The AWS Cloud9 Workspace is a cloud-based integrated development environment (IDE) that will be used for some exercises, other exercises will be run through the AWS CloudShell or the AWS Console. Thus check in the first steps of the chosen exercise if it will be necessary to create a Workspace.
+
 {{% notice warning %}}
 The Cloud9 workspace should be built by an IAM user with Administrator privileges,
 not the root account user. Please ensure you are logged in as an IAM user, not the root
@@ -18,13 +20,14 @@ Cloud9 requires third-party-cookies. You can whitelist the [specific domains]( h
 
 ### Launch Cloud9 in your closest region:
 {{< tabs name="Region" >}}
-{{{< tab name="N. Virginia" include="us-east-1.en.md" />}}
-{{{< tab name="Oregon" include="us-west-2.en.md" />}}
-{{{< tab name="Ireland" include="eu-west-1.en.md" />}}
-{{{< tab name="Ohio" include="us-east-2.en.md" />}}
-{{{< tab name="Singapore" include="ap-southeast-1.en.md" />}}
-{{{< tab name="Sydney" include="ap-southeast-2.en.md" />}}
-{{{< tab name="Sao Paulo" include="sa-east-1.en.md" />}}
+{{{< tab name="N. Virginia" include="us-east-1.md" />}}
+{{{< tab name="N. California" include="us-west-1" />}}
+{{{< tab name="Oregon" include="us-west-2.md" />}}
+{{{< tab name="Ireland" include="eu-west-1.md" />}}
+{{{< tab name="Ohio" include="us-east-2.md" />}}
+{{{< tab name="Singapore" include="ap-southeast-1.md" />}}
+{{{< tab name="Sydney" include="ap-southeast-2.md" />}}
+{{{< tab name="Sao Paulo" include="sa-east-1.md" />}}
 {{< /tabs >}}
 
 - Select **Create environment**

@@ -38,19 +38,17 @@ You can start up a local development server by running:
 
 ```bash
 cd workshop
+# parameter -D (--buildDrafts) shows content marked as draft
 hugo server -D
 ```
 
 Open in your browser: http://localhost:1313/
 
-## TO-DO:
-- [ ] Add new labs - Intermediate Level
-- [ ] Add new labs - Advanced Level
 
 
 ## Want to contribute?
 
-See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
+See [CONTRIBUTING](CONTRIBUTING.md) for more information.
 
 ## License Summary
 

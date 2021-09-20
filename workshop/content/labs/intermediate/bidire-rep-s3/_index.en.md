@@ -11,17 +11,7 @@ awsServices:
 
 ### Objective
 
-This exercise will show you the steps for using object replication through Amazon S3 bucket AWS Regions (*Cross region replication*). If you want more information [click here]({{< ref "/services/storage/s3/s3-crr" >}} "Amazon S3").
-
-**By the end of this exercise, you will be able to:**
-
-- Perform Auto-Replication of Objects in Amazon S3 Buckets
-- Automate Disaster Recovery (DR) for Applications Using Objects in Amazon S3
-- Search for logs on CloudTrail to improve understanding how cross-region replication works.
-
-**Estimated Duration:** 20 minutes
-
-**Approximate Cost**: 1 USD
+This exercise will show you the steps for using object replication through Amazon S3 bucket AWS Regions (*Cross region replication*). If you want more information about this mechanism [click here]({{< ref "/services/storage/s3/s3-crr" >}} "Amazon S3").
 
 ### Introduction
 
@@ -30,9 +20,9 @@ This lab will guide you to increase the resilience of applications that rely on 
 ![S3 Lab Architecture](/images/s3-bi-crr.png?width=550px")
 
 ### Execution
-{{< tabs name="labs_types" >}} 
-{{< tab name="AWS Console" include="console" />}} 
-{{< /tabs >}}
+{{< button href="https://wellarchitectedlabs.com/reliability/200_labs/200_bidirectional_replication_for_s3/"icon="fas fa-vial" >}} Start lab here{{< /button >}}
+
+**This lab is part of AWS Well-Architected Labs.*
 
 ---
 

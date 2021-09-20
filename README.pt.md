@@ -14,7 +14,7 @@ Depois de ler isso, você entenderá as melhores práticas e estratégias da AWS
 
 ## Primeiros passos
 
-Visite o workshop sobre este URL: [recuperação de desastres.workshop.aws](https://disaster-recovery.workshop.aws/)
+Visite o workshop sobre este URL: [disaster-recovery.workshop.aws](https://disaster-recovery.workshop.aws/)
 
 ## Guia do desenvolvedor
 
@@ -38,6 +38,7 @@ Você pode iniciar um servidor de desenvolvimento local executando:
 
 ```bash
 cd workshop
+# parameter -D (--buildDrafts) shows content marked as draft
 hugo server -D
 ```
 
@@ -45,7 +46,7 @@ Abre no seu navegador: http://localhost:1313/
 
 ## Quer contribuir?
 
-Veja [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) para obter mais informações.
+Veja [CONTRIBUTING](CONTRIBUTING.md) para obter mais informações.
 
 ## Resumo da licença
 
