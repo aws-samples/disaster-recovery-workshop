@@ -63,7 +63,7 @@ For this exercise, use **N. Virginia (us-east-1)** as the main region and the **
       --region=us-east-1
     ```
 
-    *In order to speed up, create second cluster using another terminatl window.*
+    *In order to speed up, create second cluster using another terminal window.*
     ```bash  
     # Create secondary cluster
     eksctl create cluster --name kubefed-cluster \
@@ -76,7 +76,7 @@ For this exercise, use **N. Virginia (us-east-1)** as the main region and the **
     ```
 
     {{% notice warning %}}
-  Don't stop the process (CTRL+C or Command+C), because after the cluster creation your environment will be set up. This step is important to have *kubectl* authenticated in your clusters.
+  Do not stop the process (CTRL+C or Command+C), because after the cluster creation your environment will be set up. This step is important to have *kubectl* authenticated in your clusters.
   {{% /notice %}}
 
 3. Rename kubectl config contexts to make it easier to use later

@@ -18,16 +18,10 @@ the cloud9 domain, or connecting to the workspace might be impacted.
 Cloud9 requires third-party-cookies. You can whitelist the [specific domains]( https://docs.aws.amazon.com/cloud9/latest/user-guide/troubleshooting.html#troubleshooting-env-loading).
 {{% /notice %}}
 
-### Launch Cloud9 in your closest region:
+### Launch AWS Cloud9 Environment:
 {{< tabs name="Region" >}}
 {{{< tab name="N. Virginia" include="us-east-1.md" />}}
 {{{< tab name="N. California" include="us-west-1" />}}
-{{{< tab name="Oregon" include="us-west-2.md" />}}
-{{{< tab name="Ireland" include="eu-west-1.md" />}}
-{{{< tab name="Ohio" include="us-east-2.md" />}}
-{{{< tab name="Singapore" include="ap-southeast-1.md" />}}
-{{{< tab name="Sydney" include="ap-southeast-2.md" />}}
-{{{< tab name="Sao Paulo" include="sa-east-1.md" />}}
 {{< /tabs >}}
 
 - Select **Create environment**

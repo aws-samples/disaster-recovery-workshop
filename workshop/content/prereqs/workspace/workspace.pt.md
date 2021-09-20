@@ -16,16 +16,10 @@ Extensões de navegador do tipo: Ad blockers, javascript disablers e tracking bl
 Cloud9 utiliza cookies de terceiros. Você pode verificar a lista de [domínios específicos](https://docs.aws.amazon.com/pt_br/cloud9/latest/user-guide/troubleshooting.html#troubleshooting-env-loading).
 {{% /notice %}}
 
-### Use o Cloud9 na região mais próxima:
+### Crie o ambiente no AWS Cloud9:
 {{< tabs name="Region" >}}
 {{{< tab name="N. Virginia" include="us-east-1" />}}
 {{{< tab name="N. Califórnia" include="us-west-1" />}}
-{{{< tab name="Oregon" include="us-west-2" />}}
-{{{< tab name="Irlanda" include="eu-west-1" />}}
-{{{< tab name="Ohio" include="us-east-2" />}}
-{{{< tab name="Singapura" include="ap-southeast-1" />}}
-{{{< tab name="Sydney" include="ap-southeast-2" />}}
-{{{< tab name="São Paulo" include="sa-east-1" />}}
 {{< /tabs >}}
 
 - Select **Create environment**

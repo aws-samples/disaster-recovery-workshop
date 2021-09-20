@@ -47,4 +47,4 @@ This exercise will show you the steps to set up and use [KubeFed](https://github
 
 ### Conclusion
 
-With this exercise, it was possible to understand how you can federate multiple clusters into a single cluster to use a single Deployment and Service manifest to replicate a POD across multiple regions, in this case in the region **us-east-1** and **us-east-2**.
+With this exercise, it was possible to understand how you can federate multiple clusters into a single cluster to use a single Deployment and Service manifest to replicate a POD across multiple regions.
