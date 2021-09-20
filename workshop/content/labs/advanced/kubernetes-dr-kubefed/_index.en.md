@@ -12,7 +12,7 @@ awsServices:
 
 
 {{% notice warning%}}
-**Note:** On the date of publication of this mini lab, the current version of KubeFed is not in a release state and is recommended for testing purposes only. Check the [KubeFed status](https://github.com/kubernetes-sigs/kubefed) if you plan to use it.
+**Note:** On the date of publication of this lab, the current version of KubeFed is **beta**, thus it is recommended for testing purposes only. Check the [KubeFed status](https://github.com/kubernetes-sigs/kubefed) if you plan to use it.
 {{% /notice%}}
 
 {{% notice tip%}}
@@ -40,14 +40,6 @@ This exercise will show you the steps to set up and use [KubeFed](https://github
 ![KubeFed - Federated clusters](/images/kubefed-arch.png)
 
 ### Execution
-
-{{% notice info%}}
-If you haven't already created your environment on AWS Cloud9, start by creating your workspace. [Click here]({{% relref workspace %}}).
-{{% /notice%}}
-
-{{% notice note%}}
-For this exercise, use **Virginia (us-east-1)** as the main region and the **Ohio (us-east-2)** as the secondary region.
-{{% /notice%}}
 
 {{< tabs name="labs_types" >}}  
 {{< tab name="AWS Cloud9" include="cloud9" />}}
