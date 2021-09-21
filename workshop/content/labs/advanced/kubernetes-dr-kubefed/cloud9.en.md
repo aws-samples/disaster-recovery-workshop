@@ -14,6 +14,97 @@ If you haven't already created your environment on AWS Cloud9, start by creating
 For this exercise, use **N. Virginia (us-east-1)** as the main region and the **N. California (us-west-1)** as the secondary region.
 {{% /notice%}}
 
+{{%expand "Expand to see additional instructions for your AWS Cloud9 Enviroment"%}}
+#### Create IAM Role for Cloud9
+1. Follow [this deep link to create an IAM role with Administrator access.](https://console.aws.amazon.com/iam/home#/roles$new?step=review&commonUseCase=EC2%2BEC2&selectedUseCase=EC2&policies=arn:aws:iam::aws:policy%2FAdministratorAccess)
+1. Confirm that **AWS service** and **EC2** are selected, then click **Next** to view permissions.
+1. Confirm that **AdministratorAccess** is checked, then click **Next: Tags** to assign tags.
+1. Take the defaults, and click **Next: Review** to review.
+2. Enter **workshop-admin** for the Name, and click **Create role**.
+![createrole](/images/createrole.png)
+
+#### Attach the IAM Role to your Workspace
+1. Follow [this deep link to find your Cloud9 EC2 instance](https://console.aws.amazon.com/ec2/v2/home?#Instances:tag:Name=aws-cloud9-workshop;sort=desc:launchTime)
+2. Select the instance, then choose **Actions / Security / Modify IAM Role**
+![c9instancerole](/images/c9instancerole2.png)
+1. Choose **workshop-admin** from the **IAM Role** drop down, and select **Save**
+![c9attachrole](/images/c9attachrole2.png)
+
+#### Update IAM Settings for your Workspace
+{{% notice info %}}
+Cloud9 normally manages IAM credentials dynamically. For this workshop we will disable it and rely on the IAM role instead.
+{{% /notice %}}
+
+- Return to your Cloud9 workspace and click the gear icon (in top right corner), or click to open a new tab and choose "Open Preferences"
+- Select **AWS SETTINGS**
+- Turn off **AWS managed temporary credentials**
+- Close the Preferences tab
+![c9disableiam](/images/c9disableiam.png)
+
+To ensure temporary credentials aren't already in place we will also remove
+any existing credentials file:
+```sh
+rm -vf ${HOME}/.aws/credentials
+```
+
+We should configure our aws cli with our current region as default.
+
+```sh
+export ACCOUNT_ID=$(aws sts get-caller-identity --output text --query Account)
+export AWS_REGION=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r '.region')
+```
+
+Check if AWS_REGION is set to desired region
+```sh
+test -n "$AWS_REGION" && echo AWS_REGION is "$AWS_REGION" || echo AWS_REGION is not set
+```
+ 
+Let's save these into bash_profile
+```sh
+echo "export ACCOUNT_ID=${ACCOUNT_ID}" | tee -a ~/.bash_profile
+echo "export AWS_REGION=${AWS_REGION}" | tee -a ~/.bash_profile
+aws configure set default.region ${AWS_REGION}
+aws configure get default.region
+```
+
+### Validate the IAM role
+
+Use the [GetCallerIdentity](https://docs.aws.amazon.com/cli/latest/reference/sts/get-caller-identity.html) CLI command to validate that the Cloud9 IDE is using the correct IAM role.
+
+```
+aws sts get-caller-identity
+```
+
+The output assumed-role name (in the ARN) should contain:
+{{< output >}}
+workshop-admin
+{{< /output >}}
+
+#### VALID results
+
+If the _Arn_ contains the role name from above and an Instance ID, you may proceed.
+
+{{< output >}}
+{
+    "Account": "123456789012",
+    "UserId": "AROA1SAMPLEAWSIAMROLE:i-01234567890abcdef",
+    "Arn": "arn:aws:sts::123456789012:assumed-role/workshop-admin/i-01234567890abcdef"
+}
+{{< /output >}}
+
+#### INVALID results
+
+If the _Arn_ contains `TeamRole`, `MasterRole`, `AmazonSSMRoleForInstancesQuickSetup` or does not match the role name output above, <span style="color: red;">**DO NOT PROCEED**</span>. Go back and confirm the steps on this page.
+
+{{< output >}}
+{
+    "Account": "123456789012",
+    "UserId": "AROA1SAMPLEAWSIAMROLE:i-01234567890abcdef",
+    "Arn": "arn:aws:sts::123456789012:assumed-role/TeamRole/MasterRole"
+}
+{{< /output >}}
+{{%/expand%}}
+
 #### 1. Create Amazon EKS Cluster
 
 1. Install kubectl, eksctl and helm
@@ -50,7 +141,7 @@ For this exercise, use **N. Virginia (us-east-1)** as the main region and the **
 2. Create Two Amazon EKS Clusters in the target AWS Regions
   .
   {{% notice info %}}
-  *Note that it takes approximately 10-15 minutes to create a cluster in Amazon EKS, to speed up you can open a new terminal in Cloud9 IDE and create both in parallel.*
+  *Note that it takes approximately 15-20 minutes to create a cluster in Amazon EKS, to speed up you can open a new terminal in Cloud9 IDE and create both in parallel.*
   {{% /notice %}}
 
     ```bash
@@ -59,7 +150,6 @@ For this exercise, use **N. Virginia (us-east-1)** as the main region and the **
       --version 1.18 \
       --managed \
       --alb-ingress-access \
-      --zones=us-east-1a,us-east-1c \
       --region=us-east-1
     ```
 
@@ -70,7 +160,6 @@ For this exercise, use **N. Virginia (us-east-1)** as the main region and the **
       --version 1.18 \
       --managed \
       --alb-ingress-access \
-      --zones=us-west-1a,us-west-1c \
       --region=us-west-1
 
     ```
@@ -163,16 +252,18 @@ Wait until the last command shows that both clusters are `Ready = True` as can b
     kubefedctl federate namespace kubefed-minilab
 
     # Check if namespace is federated to both clusters
-    kubectl get federatednamespace kubefed-minilab -n kubefed-minilab -o=json | jq .status.clusters
+    kubectl get federatednamespace kubefed-minilab -n kubefed-minilab -o=json | jq '.status.clusters'
     ```
 
     {{< output >}}
-    [{
-    “name”: “kubefed-cluster.us-west-1"
-    },
-    {
-    “name”: “kubefed-cluster.us-east-1"
-    }]
+[
+  {
+    "name": "kubefed-cluster.us-east-1"
+  },
+  {
+    "name": "kubefed-cluster.us-west-1"
+  }
+]
     {{< /output >}}
 
 2. Create a `FederatedDeployment` and `FederatedService` from a `Deployment` and `Service` ordinary
@@ -232,7 +323,7 @@ Wait until the last command shows that both clusters are `Ready = True` as can b
       type: LoadBalancer  
     EOF
 
-    # Criar o FederatedDeployment e FederatedService
+    # Create FederatedDeployment and FederatedService
     kubefedctl federate -f deployment.yaml > federated_deployment.yaml
     kubefedctl federate -f service.yaml > federated_service.yaml
     ```
@@ -390,13 +481,13 @@ Note that we're associating healthcheck with the primary only.
     curl -XGET http://dr-app.my.private.hz
     ```
 
-If everything is right, the result of the region should be.
+    If everything is right, the application will reply "Instance Metadata". The result of the attribute **region** should be.
 
-    {{< output >}}
+    ```json
     {
-    “region”: “us-east-1"
+    "region": "us-east-1"
     }
-    {{< /output >}}
+    ```
 
 #### 6. Simulate us-east-1 primary region failure
 
@@ -451,7 +542,11 @@ If everything is right, the result of the region should be.
     kubectl apply -f federated_deployment.yaml
     ```
 
-    Wait a few minutes until the propagate update in our DNS zone.
+    Wait 1-2 minutes until the propagate update in our DNS zone. You check the DNS answer using the command below. The DNS reply will switch from Load Balancer address ***.us-east-1.elb.amazonaws.com** to ***.us-west-1.elb.amazonaws.com**
+
+    ```bash
+    dig +short dr-app.my.private.hz
+    ```
 
 3. Run the CURL again on our endpoint.
 
@@ -459,9 +554,9 @@ If everything is right, the result of the region should be.
     curl -XGET http://dr-app.my.private.hz
     ```
 
-If everything is right, the result of the region should be.
+    If everything is right, the application will reply "Instance Metadata". The result of the attribute **region** should be.
 
-    ```json
+     ```json
     {
       "region": "us-west-1"
     }
@@ -469,14 +564,7 @@ If everything is right, the result of the region should be.
 
 #### 7. Cleaning up
 
-1. Delete `FederatedDeployment` and `FederatedService` (It will be deleted from both clusters).
-
-    ```bash
-    kubectl delete -f federated_deployment.yaml
-    kubectl delete -f federated_service.yaml
-    ```
-
-2. Delete the cluster and its associated nodes with the following command.
+1. Delete the cluster and its associated nodes with the following command.
 
     ```bash
     eksctl delete cluster --region=us-east-1 --name kubefed-cluster
