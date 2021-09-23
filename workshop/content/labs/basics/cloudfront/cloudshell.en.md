@@ -299,7 +299,7 @@ hidden: true
    *This step shows that new requests will be directed to Primary Region first even after the previous request has failed.*
    {{% /notice %}}    
 
-#### 8. Cleaning up
+#### 9. Cleaning up
 
 1. Disable distribution using the update distribution configuration feature.
    
