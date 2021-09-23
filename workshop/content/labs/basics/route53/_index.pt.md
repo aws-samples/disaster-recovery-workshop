@@ -8,6 +8,7 @@ tags: [Active-Active]
 type: Lab
 awsServices:
  - Amazon Route53
+draft: true
 ---
 
 ### Objetivo

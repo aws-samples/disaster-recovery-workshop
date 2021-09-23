@@ -8,6 +8,7 @@ tags: [Active-Active]
 type: Lab
 awsServices:
  - Amazon DynamoDB
+draft: true
 ---
 
 ### Objetivo

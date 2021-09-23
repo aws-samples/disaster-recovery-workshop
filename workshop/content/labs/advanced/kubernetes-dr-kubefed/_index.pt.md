@@ -8,6 +8,7 @@ tags: [Active-Passive]
 type: Lab
 awsServices:
  - Amazon EKS
+draft: true
 ---
 
 {{% notice warning %}}
