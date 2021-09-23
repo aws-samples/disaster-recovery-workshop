@@ -50,6 +50,7 @@ rm -vf ${HOME}/.aws/credentials
 We should configure our aws cli with our current region as default.
 
 ```sh
+sudo yum install jq -y
 export ACCOUNT_ID=$(aws sts get-caller-identity --output text --query Account)
 export AWS_REGION=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r '.region')
 ```
@@ -141,7 +142,7 @@ If the _Arn_ contains `TeamRole`, `MasterRole`, `AmazonSSMRoleForInstancesQuickS
 2. Create Two Amazon EKS Clusters in the target AWS Regions
   .
   {{% notice info %}}
-  *Note that it takes approximately 15-20 minutes to create a cluster in Amazon EKS, to speed up you can open a new terminal in Cloud9 IDE and create both in parallel.*
+  *Note that it takes approximately 15-20 minutes to create a cluster in Amazon EKS, theses commands below will create both clusters in parallel.*
   {{% /notice %}}
 
     ```bash
@@ -150,19 +151,24 @@ If the _Arn_ contains `TeamRole`, `MasterRole`, `AmazonSSMRoleForInstancesQuickS
       --version 1.18 \
       --managed \
       --alb-ingress-access \
-      --region=us-east-1
-    ```
+      --region=us-east-1 &
 
-    *In order to speed up, create second cluster using another terminal window.*
-    ```bash  
+    # In order to speed up, we're using '&' to execute in background*
+
     # Create secondary cluster
     eksctl create cluster --name kubefed-cluster \
       --version 1.18 \
       --managed \
       --alb-ingress-access \
-      --region=us-west-1
-
+      --region=us-west-1 &
+    
+    # Wait for completion
+    aws cloudformation wait stack-create-complete --stack-name eksctl-kubefed-cluster-cluster --region us-east-1
+    aws cloudformation wait stack-create-complete --stack-name eksctl-kubefed-cluster-cluster --region us-west-1
     ```
+
+    
+
 
     {{% notice warning %}}
   Do not stop the process (CTRL+C or Command+C), because after the cluster creation your environment will be set up. This step is important to have *kubectl* authenticated in your clusters.
