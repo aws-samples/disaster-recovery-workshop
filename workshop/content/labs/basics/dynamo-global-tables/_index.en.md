@@ -25,7 +25,6 @@ This exercise will show you the steps for using the Global Tables engine for Ama
 
 ### Execution
 {{< tabs name="labs_types" >}} 
-{{< tab name="AWS Console" include="console" />}} 
 {{< tab name="AWS CloudShell" include="cloudshell" />}}  
 {{< /tabs >}}
 
