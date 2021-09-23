@@ -110,8 +110,8 @@ If the _Arn_ contains `TeamRole`, `MasterRole`, `AmazonSSMRoleForInstancesQuickS
 1. Install kubectl, eksctl and helm
 
     ```bash
-    # Install JSON Processor
-    sudo yum install jq openssl -y
+    # Install dependencies
+    sudo yum install jq openssl bash-completion -y
     export AWSACCOUNT=$(aws sts get-caller-identity | jq -r '.Account')
     export ROLE_ARN=$(aws sts get-caller-identity | jq -r '.Arn')
 
