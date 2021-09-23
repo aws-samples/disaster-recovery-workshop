@@ -13,103 +13,290 @@ hidden: true
 
 #### Create resources across multiple regions
 
-1.  Create two VPC environments in two distinct regions with different CIDR (e.g. 10.0.0.0/16 and 172.16.0.0/16) with interconnectivity using the CloudFormation template below:
+1. Create a EC2 **Key Pair** for access the EC2 instance in each region.
 
-    | Region: N.Virginia (us-east-1) | Region: Sao Paulo (sa-east-1) |
-    |-|-|
-    |[![Launch Stack](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/quickcreate?templateUrl=https%3A%2F%2Fdr-on-aws-workshop.s3.us-east-2.amazonaws.com%2Froute53-vpc-cfn-template.yaml\&stackName=route53lab) | [![Launch Stack](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home?region=sa-east-1#/stacks/quickcreate?templateUrl=https%3A%2F%2Fdr-on-aws-workshop.s3.us-east-2.amazonaws.com%2Froute53-vpc-cfn-template.yaml\&stackName=route53lab) |
+   ```bash
+   aws ec2 create-key-pair --key-name us-east-1-keypair --query 'KeyMaterial' --output text > us-east-1-keypair.pem --region us-east-1
+   aws ec2 create-key-pair --key-name us-west-1-keypair --query 'KeyMaterial' --output text > us-west-1-keypair.pem --region us-west-1
+   ```     
 
-    1b. Get the ID of the VPCs created in both regions:
+2. Create two VPC environments in two distinct regions with different CIDR (e.g. 10.0.0.0/16 and 172.16.0.0/16) with interconnectivity using the CloudFormation template below:
 
-         aws cloudformation describe-stacks --stack-name route53lab --region us-east-1 | jq -r .Stacks[0].Outputs[1].OutputValue
 
-         aws cloudformation describe-stacks --stack-name route53lab --region sa-east-1 | jq -r .Stacks[0].Outputs[1].OutputValue
+    ```bash
+    # Create VPC and Subnets in N. Virginia
+    aws cloudformation create-stack \
+      --template-url https://dr-on-aws-workshop.s3.us-east-2.amazonaws.com/route53-vpc-cfn-template.yaml \
+      --stack-name route53lab --parameters \
+      ParameterKey=EnvironmentName,ParameterValue=DR-Workshop \
+      ParameterKey=VpcCIDR,ParameterValue=10.0.0.0/16 \
+      ParameterKey=PublicSubnet1CIDR,ParameterValue=10.0.1.0/24 \
+      ParameterKey=KeyName,ParameterValue=us-east-1-keypair \
+      --region us-east-1
 
-    Create a VPC peering between the two VPCs from Different Regions
+    # Create VPC and Subnets in N. California
+    aws cloudformation create-stack \
+      --template-url https://dr-on-aws-workshop.s3.us-east-2.amazonaws.com/route53-vpc-cfn-template.yaml \
+      --stack-name route53lab --parameters \
+      ParameterKey=EnvironmentName,ParameterValue=DR-Workshop \
+      ParameterKey=VpcCIDR,ParameterValue=10.1.0.0/16 \
+      ParameterKey=PublicSubnet1CIDR,ParameterValue=10.1.1.0/24 \
+      ParameterKey=KeyName,ParameterValue=us-west-1-keypair \
+      --region us-west-1
 
-         aws ec2 create-vpc-peering-connection --vpc-id <vpcId da primeira região> --peer-vpc-id <vpcId da segunda região> --peer-region sa-east-1
+    # Wait for CloudFormation stacks be completed
+    aws cloudformation wait stack-create-complete \
+      --stack-name route53lab --region us-east-1
 
-         aws ec2 accept-vpc-peering-connection --vpc-peering-connection-id <id do peering do passo anterior> --region sa-east-1
+    aws cloudformation describe-stacks --stack-name route53lab \
+      --region us-east-1 | jq -r ".Stacks[].StackStatus"
 
-2.  Create a Private Hosted Zone for the customer.internal domain by associating the VPC in sa-east-1
+    aws cloudformation wait stack-create-complete --stack-name route53lab \
+      --region us-west-1
 
+    aws cloudformation describe-stacks --stack-name route53lab \
+      --region us-west-1 | jq -r ".Stacks[].StackStatus"
     ```
-    aws route53 create-hosted-zone --name customer.internal --caller-reference 2021-03-15-22:28 --hosted-zone-config PrivateZone=true --vpc VPCRegion=sa-east-1,VPCId=<ID da VPC da região de Sao Paulo>
 
-    ```
+   {{% notice note %}}
+   *Please wait about 5 minutes to resources be created on both regions.*
+   {{% /notice %}}
 
-3.  Associate sa-east-1 VPC with Private Hosted Zone to share DNS records
+#### Create a VPC Peering to connect both regions
 
-    ```
-    aws route53 associate-vpc-with-hosted-zone --hosted-zone-id <Id do Hosted Zone criado no passo anterior> --vpc VPCRegion=sa-east-1,VPCId=<Id da VPC de N. Virginia>
+1. Get the VPC ID of the VPC's created on previous step.
 
-    ```
+    ```bash
+    export VPC_ID_PRIMARY=$(aws cloudformation describe-stacks --stack-name route53lab --region us-east-1 | jq -r .Stacks[0].Outputs[0].OutputValue)
 
-4.  Create a CloudWatch alarm-based health check for Route53 to identify if the endpoint is healthy. Run the following CloudFormation template with the name of hc-reliability stack and following values:
+    export VPC_ID_SECONDARY=$(aws cloudformation describe-stacks --stack-name route53lab --region us-west-1 | jq -r .Stacks[0].Outputs[0].OutputValue)
 
-*   Protocol: HTTP
-*   IP Address: Private IP of the primary instance of the previously provisioned environment
-*   Port: 80
-*   Path: Keep Empty
-*   Lambda Subnet: Choose the VPC Private Subnet from the Previously Provisioned Environment
-*   Lambda VPC: Choose the VPC from the Previously Provisioned Environment
-
-| Region: Sao Paulo (sa-east-1) |
-|-|
-[![Launch Stack](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home?region=sa-east-1#/stacks/quickcreate?templateUrl=https%3A%2F%2Fdr-on-aws-workshop.s3.us-east-2.amazonaws.com%2Froute53-private-hosted-zone.json\&stackName=hc-confiabilidade) |
-
-4.1. Get the healthcheck id and replace it in the following policy from step 5.
-
-```
-    aws cloudformation describe-stacks --stack-name hc-confiabilidade --region sa-east-1 | jq -r .Stacks[0].Outputs[0].OutputValue
-
+    echo PRIMARY VPC = $VPC_ID_PRIMARY
+    echo SECONDARY VPC = $VPC_ID_SECONDARY
     
-```
+    ```
 
-1.  Set the routing policy by creating a politica.json file with the following content:
+2. Create a VPC peering between the two VPCs from different AWS Regions.
 
-        {
-            "AWSPolicyFormatVersion":"2015-10-01",
-            "RecordType":"A",
-            "StartRule":"site_switch",
-            "Endpoints":{
-                "my_ec2":{
-                    "Type":"value",
-                    "Value":"<IP privado da instância da região primária>"
-                },
-                "my_bkp_ec2":{
-                    "Type":"value",
-                    "Value":"<IP privado da instância da região secundária>"
-                }
+    ```bash
+    # Request VPC Peering
+    export PEERING_ID=$(aws ec2 create-vpc-peering-connection \
+      --vpc-id $VPC_ID_PRIMARY --region us-east-1 \
+      --peer-vpc-id $VPC_ID_SECONDARY  --peer-region us-west-1 | \
+      jq -r ".VpcPeeringConnection.VpcPeeringConnectionId")
+
+    # Wait a few seconds
+    sleep 10
+
+    # Accept VPC Peering
+    aws ec2 accept-vpc-peering-connection \
+      --vpc-peering-connection-id $PEERING_ID \
+      --region us-west-1
+    ```
+
+#### Create private DNS entries
+
+1. Create a Route53 - Private Hosted Zone for the anycompany.internal DNS entries by associating the PRIMARY VPC in **us-east-1**.
+
+    ```bash
+    export HOSTED_ZONE_ID=$(aws route53 create-hosted-zone --name anycompany.internal \
+      --caller-reference $(date "+%Y%m%d%H%M%S") \
+      --hosted-zone-config PrivateZone=true \
+      --vpc VPCRegion=us-east-1,VPCId=$VPC_ID_PRIMARY |\
+      jq -r ".HostedZone.Id")
+    ```
+
+2. Associate **N. California** VPC with Private Hosted Zone to share DNS records
+
+    ```bash
+    aws route53 associate-vpc-with-hosted-zone \
+      --hosted-zone-id $HOSTED_ZONE_ID \
+      --vpc VPCRegion=us-west-1,VPCId=$VPC_ID_SECONDARY
+    ```
+
+#### Create Route53 Failover Policy
+
+1. Get the private IP of both Web Servers.
+
+    ```bash
+    export WEBSERVER_PRIMARY_IP=$(aws ec2 describe-instances \
+      --region us-east-1 \
+      --filters \
+      "Name=instance-state-name,Values=running" \
+      "Name=tag-value,Values=WebServerInstance" \
+      --query 'Reservations[*].Instances[*].[PublicIpAddress]' \
+      --output text)
+
+    export WEBSERVER_SECONDARY_IP=$(aws ec2 describe-instances \
+      --region us-west-1 \
+      --filters \
+      "Name=instance-state-name,Values=running" \
+      "Name=tag-value,Values=WebServerInstance" \
+      --query 'Reservations[*].Instances[*].[PublicIpAddress]' \
+      --output text)      
+
+    echo PRIMARY WEB SERVER = $WEBSERVER_PRIMARY_IP
+    echo SECONDARY WEB SERVER = $WEBSERVER_SECONDARY_IP  
+    ```
+
+2. Let's create the health check for our primary endpoint that will be in **us-east-1**
+    ```bash
+    # Health check policy
+    cat > health-check-config.json << EOF
+    {
+      "Type": "HTTP",
+      "Port": 80,
+      "ResourcePath": "/index.html",
+      "IPAddress": "$WEBSERVER_PRIMARY_IP",
+      "RequestInterval": 30,
+      "FailureThreshold": 3
+    } 
+    EOF
+    ```
+
+    ```bash
+    # Create Healthcheck for Route53
+    export HEALTH_ID=$(aws route53 create-health-check \
+      --caller-reference $(date "+%Y%m%d%H%M%S") \
+      --health-check-config file://health-check-config.json |\
+      jq -r ".HealthCheck.Id")
+    ```
+    
+    *The healthcheck will be active in 30 seconds.*
+
+3. Creating our primary endpoint using Failover routing policy.
+
+    ```bash
+    # Failover policy
+    cat > failover-policy.json << EOF
+    {
+        "AWSPolicyFormatVersion":"2015-10-01",
+        "RecordType":"A",
+        "StartRule":"site_switch",
+        "Endpoints":{
+            "WEBSERVER_PRIMARY":{
+                "Type":"value",
+                "Value":"$WEBSERVER_PRIMARY_IP"
             },
-            "Rules":{
-                "site_switch":{
-                    "RuleType":"failover",
-                    "Primary":{
-                        "EndpointReference":"my_ec2",
-                        "HealthCheck": "<healthcheck obtido no comando anterior>"
-                    },
-                    "Secondary":{
-                        "EndpointReference":"my_bkp_ec2"
-                    }
+            "WEBSERVER_SECONDARY":{
+                "Type":"value",
+                "Value":"$WEBSERVER_SECONDARY_IP"
+            }
+        },
+        "Rules":{
+            "site_switch":{
+                "RuleType":"failover",
+                "Primary":{
+                    "EndpointReference":"WEBSERVER_PRIMARY",
+                    "HealthCheck": "$HEALTH_ID"
+                },
+                "Secondary":{
+                    "EndpointReference":"WEBSERVER_SECONDARY"
                 }
             }
         }
+    }
+    EOF
+    ```
 
-    ![Política de Roteamento](/images/route53-policy.png)
+    ```bash
+    # Create traffic policy
+    export TRAFFIC_ID=$(aws route53 create-traffic-policy --name failover-policy \
+      --document file://failover-policy.json | jq -r ".TrafficPolicy.Id")
+    
+    # Associate traffic policy to Private Hosted Zone
+    aws route53 create-traffic-policy-instance \
+      --hosted-zone-id $HOSTED_ZONE_ID --name service.anycompany.internal \
+      --ttl 60 --traffic-policy-id $TRAFFIC_ID \
+      --traffic-policy-version 1
+    ```
 
-        aws route53 create-traffic-policy --name minha_politica --document file://politica.json
+    You just created a policy similar to the image below:
+    ![Route Policy](/images/route53-policy.png)
+    
+#### Test the failover policy
 
-    <!---->
+1. Open a second terminal and access one EC2 instance by SSH
+    
+    Select *Actions* and select *Split into columns*
+    ![Cloudshell](/images/cloudshell-split-columns.png)
 
-        aws route53 create-traffic-policy-instance --hosted-zone-id <Id do Hosted Zone criado no passo 2> --name service.customer.internal --ttl 60 --traffic-policy-id <Id do Traffic Policy criado no passo anterior> --traffic-policy-version 1
 
-2.  Once DNS entries that use the failover policy between resources in different regions are configured, simply trigger the alarm that indicates the health check failure of the primary environment that we can see that the DNS entry for the service.customer.internal endpoint will be switched to the other region.
+    Using the second terminal, execute:
+    ```bash
+    # GET EC2 IP in N. Virginia
+    export EC2_CLIENT_IP=$(aws ec2 describe-instances \
+      --region us-east-1 \
+      --filters \
+      "Name=instance-state-name,Values=running" \
+      "Name=tag-value,Values=EC2Client" \
+      --query 'Reservations[*].Instances[*].[PublicIpAddress]' \
+      --output text)
+    
+    # Access EC2 instance by SSH
+    chmod 400 us-east-1-keypair.pem
+    ssh -i us-east-1.pem ec2-user@$EC2_CLIENT_IP   
+    ```
+
+    *Answer 'yes' to add this EC2 instance to "Known hosts" file.
+
+2. Try to access the website using "service.anycompany.internal"
+
+    ```bash
+    # Check the DNS answer
+    dig +short service.anycompany.internal
+
+    # Access the Web Server
+    curl service.anycompany.internal
+    ```
+
+3. Using the first terminal, remove the inbound rule to primary Web Server
+
+    ```bash
+    # Get security group id of Web Server Primary
+    export SG_ID_PRIMARY=$(aws ec2 describe-instances \
+      --region us-east-1 \
+      --filters \
+      "Name=instance-state-name,Values=running" \
+      "Name=tag-value,Values=WebServerInstance" \
+      --query 'Reservations[*].Instances[*].NetworkInterfaces[*].Groups[*].GroupId' \
+      --output text)
+
+    # Revoke the inbound rule for **port 80**
+    aws ec2 revoke-security-group-ingress \
+      --group_id $SG_ID_PRIMARY \
+      --ip-permissions FromPort=80,IpProtocol=tcp,ToPort=80,IpRanges=[{CidrIp=0.0.0.0/0}]
+    ```
+
+4. On second terminal, try to access the website again
+
+   After 1 minute the DNS will answer the Secondary Web Server IP.
+
+    ```bash
+    # Check the DNS answer
+    dig +short service.anycompany.internal
+
+    # Access the Web Server
+    curl service.anycompany.internal
+    ```
 
 #### Cleaning up
 
-1.  Go to the CloudFormation Console in the Region **Sao Paulo**
-2.  Select the **Stack** created.
-3.  Click the button above **Delete**
-4.  Confidence the button **Delete stack**
-5.  Repeat steps 1 through 4 for the region **California** to erase the second **Stack**.
+Delete all the resources    
+
+```bash
+# Delete VPC Peering Connection
+aws ec2 delete-vpc-peering-connection --vpc-peering-connection-id $PEERING_ID
+
+# Delete Cloudformation Stack
+aws cloudformation delete-stack --stack-name route53lab --region us-east-1
+aws cloudformation delete-stack --stack-name route53lab --region us-west-1
+
+# Wait for conclusion
+aws cloudformation wait stack-delete-complete --stack-name route53lab --region us-east-1
+aws cloudformation wait stack-delete-complete --stack-name route53lab --region us-west-1
+
+# Delete KeyPair
+aws ec2 delete-key-pair --key-name us-east-1-keypair --region us-east-1
+aws ec2 delete-key-pair --key-name us-west-1-keypair --region us-west-1
+```

@@ -1,12 +1,12 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description:  This template deploys two VPCs in different regions, each with a public and private subnets. It deploys an internet gateway, with a default
-  route on the public subnets. 
+Description:  This template deploys one VPC and create a public subnet with two EC2 instances. It deploys an internet gateway, with a default
+  route on the public subnet. 
 
 Parameters:
   EnvironmentName:
     Description: An environment name that is prefixed to resource names
     Type: String
-    Default: confiabilidade
+    Default: DR-Workshop
 
   VpcCIDR:
     Description: Please enter the IP range (CIDR notation) for this VPC
@@ -17,11 +17,6 @@ Parameters:
     Description: Please enter the IP range (CIDR notation) for the public subnet in the first Region
     Type: String
     Default: 10.0.1.0/24
-
-  PrivateSubnet1CIDR:
-    Description: Please enter the IP range (CIDR notation) for the private subnet in the first Region
-    Type: String
-    Default: 10.0.2.0/24
 
   KeyName: 
     Description : Name of an existing EC2 KeyPair to enable SSH access to the instance
@@ -81,16 +76,6 @@ Resources:
         - Key: Name
           Value: !Sub ${EnvironmentName} - Public Subnet
 
-  PrivateSubnet1:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId: !Ref VPC
-      AvailabilityZone: !Select [ 0, !GetAZs  '' ]
-      CidrBlock: !Ref PrivateSubnet1CIDR
-      MapPublicIpOnLaunch: false
-      Tags:
-        - Key: Name
-          Value: !Sub ${EnvironmentName} - Private Subnet
 
   NatGatewayEIP:
     Type: AWS::EC2::EIP
@@ -112,21 +97,6 @@ Resources:
         - Key: Name
           Value: !Sub ${EnvironmentName} Public Routes
 
-  PrivateRouteTable:
-    Type: AWS::EC2::RouteTable
-    Properties:
-      VpcId: !Ref VPC
-      Tags:
-        - Key: Name
-          Value: !Sub ${EnvironmentName} Private Routes
-
-  DefaultPrivateRoute1:
-    Type: AWS::EC2::Route
-    Properties:
-      RouteTableId: !Ref PrivateRouteTable
-      DestinationCidrBlock: 0.0.0.0/0
-      NatGatewayId: !Ref NatGateway1
-
   DefaultPublicRoute:
     Type: AWS::EC2::Route
     DependsOn: InternetGatewayAttachment
@@ -141,16 +111,10 @@ Resources:
       RouteTableId: !Ref PublicRouteTable
       SubnetId: !Ref PublicSubnet1
 
-  PrivateSubnet1RouteTableAssociation:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      RouteTableId: !Ref PrivateRouteTable
-      SubnetId: !Ref PrivateSubnet1
-
   InstanceSecurityGroup1:
     Type: AWS::EC2::SecurityGroup
     Properties:
-        GroupDescription: Allow http to client host
+        GroupDescription: Allow HTTP and SSH to Web Server host
         VpcId:
            Ref: VPC
         SecurityGroupIngress:
@@ -174,21 +138,23 @@ Resources:
       SecurityGroupIds: 
         - !GetAtt InstanceSecurityGroup1.GroupId
       KeyName: !Ref KeyName
-      SubnetId: !Ref PrivateSubnet1
+      SubnetId: !Ref PublicSubnet1
       UserData:
-        Fn::Base64: !Sub |
+        Fn::Base64: !Sub 
+         - |
           #!/bin/bash
           yum update -y
           yum install httpd -y
           service httpd start
           chkconfig httpd on
           cd /var/www/html
-          echo "<html><h1>Bem vindos ao AnyCompany Portal!! </h1></html>" > index.html
+          echo "<html><h1>Welcome to Example Portal !! </h1><h2>Hosted in ${AWS_REGION}</h2</html>" > index.html
+         - AWS_REGION: !Ref 'AWS::Region'
 
   InstanceSecurityGroup2:
     Type: AWS::EC2::SecurityGroup
     Properties:
-        GroupDescription: Allow http to client host
+        GroupDescription: Allow SSH to Client host
         VpcId:
            Ref: VPC
         SecurityGroupIngress:
@@ -197,7 +163,7 @@ Resources:
           ToPort: 22
           CidrIp: 0.0.0.0/0  
 
-  Cliente:
+  EC2Client:
     Type: AWS::EC2::Instance
     Properties:
       ImageId: !FindInMap 
@@ -216,10 +182,6 @@ Outputs:
     Description: A reference to the created VPC
     Value: !Ref VPC
 
-  PublicSubnets:
+  PublicSubnet:
     Description: A list of the public subnets
     Value: !Ref PublicSubnet1
-
-  PrivateSubnets:
-    Description: A list of the private subnets
-    Value: !Ref PrivateSubnet1

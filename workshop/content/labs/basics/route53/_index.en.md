@@ -1,10 +1,10 @@
 ---
 title: "Amazon Route 53 - Failover Policy in Private Hosted Zone"
-menutitle: "Route 53 - Failover Policy in Private Hosted Zone"
+menutitle: "Route 53 - Failover in Private DNS"
 chapter: false
 weight: 1
 pre: "<b></b>"
-tags: [Active-Active]
+tags: [Warm-Standby]
 type: Lab
 awsServices:
  - Amazon Route53
@@ -27,6 +27,8 @@ This exercise will show you the steps for you to quickly configure DNS-based fai
 **Estimated Duration:** 40 minutes
 
 **Approximate Cost**: 3 USD
+
+### Solution Overview
 
 ![Route 53 - Architecture](/images/route53-lab-architecture.png)
 
