@@ -108,16 +108,16 @@ hidden: true
 
     ```
 
-2.  Create a sample private API in each region using the corresponding VPC Endpoint.
+3. Create a sample private API in each region using the corresponding VPC Endpoint.
 
     *   Access the **Amazon API Gateway** console
     *   Select **Create API**
     *   In the list of types, select **REST API Private** and click **Import**.
     *   Click **OK**.
     *   Select the option **Example API** and click **Import.**
-    *   On the API edit screen, click **Settings** below **Documentation**.
-    *   Click on the text box for **VPC Endpoints** and select the previously created endpoint, click **Save Changes**.
-    *   Click **Resource Policy** and click the Example button to **Source VPC Allowlist**, adjust the policy by including the VPC Endpoint Id as below, and click **Save**:
+    *   On the API edit screen (left side menu), click **Settings** below **Documentation**.
+    *   Click on the text box for **VPC Endpoint IDs** and select the previously created endpoint (copy this VPC-Endpoint ID for next steps), click **Save Changes**.
+    *   On left menu, click **Resource Policy** and click the Example button to **Source VPC Allowlist**, adjust the policy by including the VPC Endpoint Id as below, and click **Save**:
 
     <!---->
 
@@ -131,7 +131,7 @@ hidden: true
                     "Resource": "execute-api:/*",
                     "Condition": {
                         "StringNotEquals": {
-                            "aws:sourceVpce": "vpce-0f8bb1576e7b08d8a"
+                            "aws:sourceVpce": "<<replace by VPC-Endpoint created>>"
                         }
                     }
                 },
@@ -145,8 +145,35 @@ hidden: true
         }
 
     *   Deploy the API by creating a new stage called **prod**.
+    
+    {{% notice warning %}}
+   *Repeat step 3 for N. California (us-west-1).*
+   {{% /notice %}}
 
-3.  Create a certificate in ACM in each region
+
+
+4. Create a certificate in ACM in each region
+
+    Create certificate authority configuration file
+
+    ```
+    cat <<EOT > ca_config.txt
+    {
+      "KeyAlgorithm":"RSA_2048",
+      "SigningAlgorithm":"SHA256WITHRSA",
+      "Subject":{
+        "Country":"US",
+        "Organization":"Example Corp",
+        "OrganizationalUnit":"Sales",
+        "State":"WA",
+        "Locality":"Seattle",
+        "CommonName":"www.example.com"
+      }
+    }
+    EOT
+    ```
+
+    Create certificate authority in both regions
 
     ```
     aws acm-pca create-certificate-authority \
@@ -163,14 +190,14 @@ hidden: true
 
     ```
 
-    3a. Install a certificate for the CA created in the previous step.
+    Install a certificate for the CA created in the previous step.
 
     *   Sign in to the AWS console, access **Certificate Manager**.
     *   In **Private CAs**, select the previously created CA and select the menu **Actions -> Install CA certificate**.
     *   Click **Next**.
     *   Click **Confirm and Install**.
 
-    3b. Request a private certificate for the private API domain.
+    Request a private certificate for the private API domain.
 
     *   Sign in to the AWS console, access **Certificate Manager**
     *   In **Certificate Manager**, click **Getting Started**, select **Request a private certificate** and click **Request a certificate**.
@@ -180,7 +207,7 @@ hidden: true
     *   Click **Confirm and request**.
     *   Copy the ARN into the details of the certificate created for use in the next step.
 
-4.  Create a custom domain in API Gateway
+5. Create a custom domain in API Gateway
 
 *   Access the service **Amazon API Gateway** via the AWS console
 *   Click **Custom domain names** on the left menu
@@ -196,7 +223,7 @@ hidden: true
         *   The stage where the API was published (**prod**)
     *   Click **Save**.
 
-5.  Create NLB pointing to the VPC endpoints in each region. Repeat the commands below by swapping us-east-1 for us-west-1 and its features.
+6. Create NLB pointing to the VPC endpoints in each region. Repeat the commands below by swapping us-east-1 for us-west-1 and its features.
 
     ```
     aws elbv2 create-load-balancer --name api-nlb --type network --scheme internal --subnet-mappings SubnetId=<Id da Subnet privada> --region us-east-1
@@ -223,7 +250,7 @@ hidden: true
 
     ```
 
-6.  Create a VPC peering between the two VPCs from Different Regions
+7. Create a VPC peering between the two VPCs from Different Regions
 
          aws ec2 create-vpc-peering-connection --vpc-id <vpcId da primeira região> --peer-vpc-id <vpcId da segunda região> --peer-region us-west-1 --region us-east-1
 
@@ -235,14 +262,14 @@ hidden: true
     |—|—|—|
     | Public/Private | Destination: 172.16.0.0/16, Target: PCX-xxxxx | Destination: 10.0.0.0/16, Target: PCX-YYYYY|
 
-7.  Create a Private Hosted Zone for the internal domain example.com associating the VPC on us-east-1
+8. Create a Private Hosted Zone for the internal domain example.com associating the VPC on us-east-1
 
     ```
     aws route53 create-hosted-zone --name example.com --caller-reference 2021-03-15-22:28 --hosted-zone-config PrivateZone=true --vpc VPCRegion=us-east-1,VPCId=<ID da VPC da região de Sao Paulo>
 
     ```
 
-8.  Associate the us-west-1 VPC with Private Hosted Zone to share DNS records
+9. Associate the us-west-1 VPC with Private Hosted Zone to share DNS records
 
     ```
     aws route53 associate-vpc-with-hosted-zone --hosted-zone-id <Id do Hosted Zone criado no passo anterior> --vpc VPCRegion=us-west-1,VPCId=<Id da VPC de N. California>
@@ -251,7 +278,7 @@ hidden: true
 
 #### Set up Health Check
 
-1.  Create a CloudWatch alarm-based health check for Route53 to identify if the endpoint is healthy. Run the following CloudFormation template with the name of hc-reliability stack and following values:
+1. Create a CloudWatch alarm-based health check for Route53 to identify if the endpoint is healthy. Run the following CloudFormation template with the name of hc-reliability stack and following values:
 
     *   Open the service **CloudWatch** on the AWS console.
     *   Click on the menu **Synthetics** -> **Canaries**
@@ -271,7 +298,7 @@ hidden: true
     *   Expand **VPC Settings** and select the VPC, Private Subnet, and Security Group from the us-east-1 region.
     *   Click **Create canary**.
 
-2.  Create Route53 health check pointing to the alarm created by the canary from the previous step.
+2. Create Route53 health check pointing to the alarm created by the canary from the previous step.
 
     *   Open the service **Route 53** on the AWS console.
     *   Expand side menu and select option **Health checks**.
@@ -284,7 +311,7 @@ hidden: true
     *   Click **Create health check**.
     *   Copy the health check ID to be used in Route 53 traffic policy.
 
-3.  Set the routing policy by creating a politica.json file with the following content:
+3. Set the routing policy by creating a politica.json file with the following content:
 
         {
             "AWSPolicyFormatVersion":"2015-10-01",
@@ -324,12 +351,12 @@ hidden: true
 
 #### Testing Cross-Region Routing
 
-1.  Once DNS entries that use the failover policy between resources in different regions have been configured, simply trigger the alarm that indicates the failure in the health check of the primary environment that we can see that the DNS entry for the api.example.com endpoint will be switched to the other region.
+1. Once DNS entries that use the failover policy between resources in different regions have been configured, simply trigger the alarm that indicates the failure in the health check of the primary environment that we can see that the DNS entry for the api.example.com endpoint will be switched to the other region.
 
 #### Cleaning up
 
-1.  Go to the CloudFormation Console in the Region **Sao Paulo**
-2.  Select the **Stack** created.
-3.  Click the button above **Delete**
-4.  Confidence the button **Delete stack**
-5.  Repeat steps 1 through 4 for the region **California** to erase the second **Stack**.
+1. Go to the CloudFormation Console in the Region **N. Virginia**
+2. Select the **Stack** created.
+3. Click the button above **Delete**
+4. Confidence the button **Delete stack**
+5. Repeat steps 1 through 4 for the region **N. California** to erase the second **Stack**.
