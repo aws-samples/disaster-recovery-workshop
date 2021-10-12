@@ -41,4 +41,5 @@ Esse exercício irá mostrar os passos para você configurar rapidamente suas ap
 
 Com esse exercício, foi possivel entender como configurar uma api privada no Amazon API Gateway, fazer o deploy da API em mais de uma região e criar uma política de roteamento para seus registros de DNS associados aos endpoints de sua API.
 
-[Alternativa para Custom Domain Name](https://georgemao.medium.com/enabling-private-apis-with-custom-domain-names-aws-api-gateway-df1b62b0ba7c)
+**Referências:**
+- [Alternativa para Custom Domain Name](https://georgemao.medium.com/enabling-private-apis-with-custom-domain-names-aws-api-gateway-df1b62b0ba7c)

@@ -1,24 +1,24 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description:  This template deploys two VPCs in different regions, each with a public and private subnets. It deploys an internet gateway, with a default
-  route on the public subnets. 
+Description:  This template deploys one VPC with a public and private subnets. It deploys an internet gateway, with a default
+  route on the public subnet. 
 
 Parameters:
   EnvironmentName:
     Description: An environment name that is prefixed to resource names
     Type: String
-    Default: api-confiabilidade
+    Default: apigwlab
 
   VpcCIDR:
     Description: Please enter the IP range (CIDR notation) for this VPC
     Type: String
     Default: 10.0.0.0/16
 
-  PublicSubnet1CIDR:
+  PublicSubnetCIDR:
     Description: Please enter the IP range (CIDR notation) for the public subnet in the Region
     Type: String
     Default: 10.0.1.0/24
 
-  PrivateSubnet1CIDR:
+  PrivateSubnetCIDR:
     Description: Please enter the IP range (CIDR notation) for the private subnet in the Region
     Type: String
     Default: 10.0.2.0/24
@@ -27,11 +27,6 @@ Parameters:
     Description : Name of an existing EC2 KeyPair to enable SSH access to the instance
     Type: AWS::EC2::KeyPair::KeyName
     ConstraintDescription : must be the name of an existing EC2 KeyPair (Required).
-
-  SSHLocation: 
-    Description : Origin IP CIDR
-    Type: String
-    Default: 0.0.0.0/0
 
 Mappings:
   RegionMap:
@@ -70,23 +65,23 @@ Resources:
       InternetGatewayId: !Ref InternetGateway
       VpcId: !Ref VPC
 
-  PublicSubnet1:
+  PublicSubnet:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref VPC
       AvailabilityZone: !Select [ 0, !GetAZs '' ]
-      CidrBlock: !Ref PublicSubnet1CIDR
+      CidrBlock: !Ref PublicSubnetCIDR
       MapPublicIpOnLaunch: true
       Tags:
         - Key: Name
           Value: !Sub ${EnvironmentName} - Public Subnet
 
-  PrivateSubnet1:
+  PrivateSubnet:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref VPC
       AvailabilityZone: !Select [ 0, !GetAZs  '' ]
-      CidrBlock: !Ref PrivateSubnet1CIDR
+      CidrBlock: !Ref PrivateSubnetCIDR
       MapPublicIpOnLaunch: false
       Tags:
         - Key: Name
@@ -98,11 +93,11 @@ Resources:
     Properties:
       Domain: VPC
 
-  NatGateway1:
+  NatGateway:
     Type: AWS::EC2::NatGateway
     Properties:
       AllocationId: !GetAtt NatGatewayEIP.AllocationId
-      SubnetId: !Ref PublicSubnet1
+      SubnetId: !Ref PublicSubnet
 
   PublicRouteTable:
     Type: AWS::EC2::RouteTable
@@ -120,12 +115,12 @@ Resources:
         - Key: Name
           Value: !Sub ${EnvironmentName} Private Routes
 
-  DefaultPrivateRoute1:
+  DefaultPrivateRoute:
     Type: AWS::EC2::Route
     Properties:
       RouteTableId: !Ref PrivateRouteTable
       DestinationCidrBlock: 0.0.0.0/0
-      NatGatewayId: !Ref NatGateway1
+      NatGatewayId: !Ref NatGateway
 
   DefaultPublicRoute:
     Type: AWS::EC2::Route
@@ -135,19 +130,19 @@ Resources:
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref InternetGateway
 
-  PublicSubnet1RouteTableAssociation:
+  PublicSubnetRouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       RouteTableId: !Ref PublicRouteTable
-      SubnetId: !Ref PublicSubnet1
+      SubnetId: !Ref PublicSubnet
 
-  PrivateSubnet1RouteTableAssociation:
+  PrivateSubnetRouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       RouteTableId: !Ref PrivateRouteTable
-      SubnetId: !Ref PrivateSubnet1
+      SubnetId: !Ref PrivateSubnet
 
-  InstanceSecurityGroup2:
+  InstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
         GroupDescription: Allow http to client host
@@ -171,7 +166,7 @@ Resources:
           ToPort: 443
           CidrIp: 0.0.0.0/0
 
-  Cliente:
+  EC2Client:
     Type: AWS::EC2::Instance
     Properties:
       ImageId: !FindInMap 
@@ -180,9 +175,9 @@ Resources:
         - AMI
       InstanceType: t3.small
       SecurityGroupIds: 
-        - !GetAtt InstanceSecurityGroup2.GroupId
+        - !GetAtt InstanceSecurityGroup.GroupId
       KeyName: !Ref KeyName
-      SubnetId: !Ref PublicSubnet1
+      SubnetId: !Ref PublicSubnet
 
 
 Outputs:
@@ -190,10 +185,14 @@ Outputs:
     Description: A reference to the created VPC
     Value: !Ref VPC
 
-  PrivateSubnets:
-    Description: A list of the private subnets
-    Value: !Ref PrivateSubnet1
+  PrivateSubnet:
+    Description: Private subnet
+    Value: !Ref PrivateSubnet
 
+  PublicSubnet:
+    Description: Public subnet
+    Value: !Ref PublicSubnet
+  
   SecurityGroup:
     Description: A reference to the security group 
     Value: !Ref VpceSecurityGroup

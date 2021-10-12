@@ -13,7 +13,7 @@ hidden: true
     ![CloudShell](/images/console-cloudshell2.png)
 2. Create a EC2 **Key Pair** for each region
    ```
-   aws ec2 create-key-pair --key-name sa-east-1-keypair --query 'KeyMaterial' --output text > sa-east-1.pem --region sa-east-1
+   aws ec2 create-key-pair --key-name us-east-1-keypair --query 'KeyMaterial' --output text > us-east-1.pem --region us-east-1
    aws ec2 create-key-pair --key-name us-west-1-keypair --query 'KeyMaterial' --output text > us-west-1.pem --region us-west-1
    ```     
 
@@ -21,49 +21,97 @@ hidden: true
 
 1.  Create VPC. **Note**: Before you run AWS CloudFormation, for each region you use.
 
-    | Region: Sao Paulo (sa-east-1) | Region: N. California (us-west-1) |
-    |-|-|
-    |[![Launch Stack](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home?region=sa-east-1#/stacks/quickcreate?templateUrl=https%3A%2F%2Fdr-on-aws-workshop.s3.us-east-2.amazonaws.com%2Fapigw-api-cfn-template.yaml\&stackName=api-vpc) |[![Launch Stack](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home?region=us-west-1#/stacks/quickcreate?templateUrl=https%3A%2F%2Fdr-on-aws-workshop.s3.us-east-2.amazonaws.com%2Fapigw-api-cfn-template.yaml\&stackName=api-vpc) |
+    ```bash
+    # Create VPC and Subnets in N. Virginia (10.0.0.0/16)
+    aws cloudformation create-stack \
+      --template-url https://dr-on-aws-workshop.s3.us-east-2.amazonaws.com/apigw-api-cfn-template.yaml \
+      --stack-name apigwlab --parameters \
+      ParameterKey=EnvironmentName,ParameterValue=DR-Workshop \
+      ParameterKey=VpcCIDR,ParameterValue=10.0.0.0/16 \
+      ParameterKey=PublicSubnetCIDR,ParameterValue=10.0.1.0/24 \
+      ParameterKey=PrivateSubnetCIDR,ParameterValue=10.0.2.0/24 \
+      ParameterKey=KeyName,ParameterValue=us-east-1-keypair \
+      --region us-east-1
 
-    2b. Get the VPC IDs, private subnets, and security groups created in both regions:
+    # Create VPC and Subnets in N. California (10.1.0.0/16)
+    aws cloudformation create-stack \
+      --template-url https://dr-on-aws-workshop.s3.us-east-2.amazonaws.com/apigw-api-cfn-template.yaml \
+      --stack-name apigwlab --parameters \
+      ParameterKey=EnvironmentName,ParameterValue=DR-Workshop \
+      ParameterKey=VpcCIDR,ParameterValue=10.1.0.0/16 \
+      ParameterKey=PublicSubnetCIDR,ParameterValue=10.1.1.0/24 \
+      ParameterKey=PrivateSubnetCIDR,ParameterValue=10.1.2.0/24 \
+      ParameterKey=KeyName,ParameterValue=us-west-1-keypair \
+      --region us-west-1
 
+    # Wait for CloudFormation stacks be completed
+    aws cloudformation wait stack-create-complete \
+      --stack-name apigwlab --region us-east-1
+
+    aws cloudformation describe-stacks --stack-name apigwlab \
+      --region us-east-1 | jq -r ".Stacks[].StackStatus"
+
+    aws cloudformation wait stack-create-complete --stack-name apigwlab \
+      --region us-west-1
+
+    aws cloudformation describe-stacks --stack-name apigwlab \
+      --region us-west-1 | jq -r ".Stacks[].StackStatus"
     ```
-     aws cloudformation describe-stacks --stack-name api-vpc --region sa-east-1 | jq -r .Stacks[0].Outputs[0].OutputValue
-     aws cloudformation describe-stacks --stack-name api-vpc --region sa-east-1 | jq -r .Stacks[0].Outputs[1].OutputValue
-     aws cloudformation describe-stacks --stack-name api-vpc --region sa-east-1 | jq -r .Stacks[0].Outputs[2].OutputValue
 
-     aws cloudformation describe-stacks --stack-name api-vpc --region us-west-1 | jq -r .Stacks[0].Outputs[0].OutputValue
-     aws cloudformation describe-stacks --stack-name api-vpc --region us-west-1 | jq -r .Stacks[0].Outputs[1].OutputValue
-     aws cloudformation describe-stacks --stack-name api-vpc --region us-west-1 | jq -r .Stacks[0].Outputs[2].OutputValue
-     
-    ```
+    {{% notice note %}}
+   *Please wait about 5 minutes to resources be created on both regions.*
+   {{% /notice %}}
+
 
 #### Create connectivity to resources
 
-1.  Create VPC endpoints on VPCs created in the previous step.
+1. Get the VPCs, subnets, and security groups created on previous step.
+
+    ```
+    # VPC ID - Primary Region
+    export VPC_ID_PRIMARY=$(aws cloudformation describe-stacks --stack-name apigwlab --region us-east-1 | jq -r .Stacks[0].Outputs[1].OutputValue)
+
+    # Private Subnet - Primary Region
+    export PRIVATE_SUBNET_PRIMARY=$(aws cloudformation describe-stacks --stack-name apigwlab --region us-east-1 | jq -r .Stacks[0].Outputs[0].OutputValue)
+
+    # Security Group - Primary Region
+    export PRIVATE_SG_PRIMARY=$(aws cloudformation describe-stacks --stack-name apigwlab --region us-east-1 | jq -r .Stacks[0].Outputs[2].OutputValue)
+
+    # VPC ID - Secondary Region
+    export VPC_ID_SECONDARY=$(aws cloudformation describe-stacks --stack-name apigwlab --region us-west-1 | jq -r .Stacks[0].Outputs[1].OutputValue)
+
+    # Private Subnet - Primary Region
+    export PRIVATE_SUBNET_SECONDARY=$(aws cloudformation describe-stacks --stack-name apigwlab --region us-west-1 | jq -r .Stacks[0].Outputs[0].OutputValue)
+
+    # Security Group - Secondary Region
+    export PRIVATE_SG_SECONDARY=$(aws cloudformation describe-stacks --stack-name apigwlab --region us-west-1 | jq -r .Stacks[0].Outputs[2].OutputValue)l
+    ```
+
+2. Create VPC endpoints on VPCs created in the previous step.
 
     ```
     aws ec2 create-vpc-endpoint \
-    --vpc-id <VPC ID - Region 1> \
+    --vpc-id $VPC_ID_PRIMARY \
     --vpc-endpoint-type Interface \
-    --service-name com.amazonaws.sa-east-1.execute-api \
-    --subnet-id <Private Subnet - Region 1> \
-    --security-group-id <Security Group - Region 1 to enable HTTPS> \
-    --region sa-east-1
+    --service-name com.amazonaws.us-east-1.execute-api \
+    --subnet-id $PRIVATE_SUBNET_PRIMARY \
+    --security-group-id $PRIVATE_SG_PRIMARY \
+    --region us-east-1
 
     aws ec2 create-vpc-endpoint \
-    --vpc-id <VPC ID - Region 1> \
+    --vpc-id $VPC_ID_SECONDARY \
     --vpc-endpoint-type Interface \
     --service-name com.amazonaws.us-west-1.execute-api \
-    --subnet-id <Private Subnet - Region 1> \
-    --security-group-id <Security Group - Region 1 to enable HTTPS> \
+    --subnet-id $PRIVATE_SUBNET_SECONDARY \
+    --security-group-id $PRIVATE_SG_SECONDARY \
     --region us-west-1
 
     ```
 
 2.  Create a sample private API in each region using the corresponding VPC Endpoint.
 
-    *   Access the menu **Amazon API Gateway**
+    *   Access the **Amazon API Gateway** console
+    *   Select **Create API**
     *   In the list of types, select **REST API Private** and click **Import**.
     *   Click **OK**.
     *   Select the option **Example API** and click **Import.**
@@ -105,7 +153,7 @@ hidden: true
     --certificate-authority-configuration file://ca_config.txt \
     --certificate-authority-type "ROOT" \
     --idempotency-token 98256344 \
-    --region sa-east-1
+    --region us-east-1
 
     aws acm-pca create-certificate-authority \
     --certificate-authority-configuration file://ca_config.txt \
@@ -148,10 +196,10 @@ hidden: true
         *   The stage where the API was published (**prod**)
     *   Click **Save**.
 
-5.  Create NLB pointing to the VPC endpoints in each region. Repeat the commands below by swapping sa-east-1 for us-west-1 and its features.
+5.  Create NLB pointing to the VPC endpoints in each region. Repeat the commands below by swapping us-east-1 for us-west-1 and its features.
 
     ```
-    aws elbv2 create-load-balancer --name api-nlb --type network --scheme internal --subnet-mappings SubnetId=<Id da Subnet privada> --region sa-east-1
+    aws elbv2 create-load-balancer --name api-nlb --type network --scheme internal --subnet-mappings SubnetId=<Id da Subnet privada> --region us-east-1
 
     aws elbv2 create-target-group \
     --name tg-api-private \
@@ -159,38 +207,38 @@ hidden: true
     --port 443 \
     --target-type ip \
     --vpc-id <Id da VPC> \
-    --region sa-east-1
+    --region us-east-1
 
     aws elbv2 register-targets \
     --target-group-arn <ARN do target group criado no passo anterior> \
     --targets Id=<IP do VPC Endpoint> \
-    --region sa-east-1
+    --region us-east-1
 
     aws elbv2 create-listener \
     --load-balancer-arn <ARN do load balancer> \
     --protocol TLS --port 443 --certificates CertificateArn=<ARN do certificado *.example.com> \
     --ssl-policy ELBSecurityPolicy-2016-08 \
     --default-actions Type=forward,TargetGroupArn=<ARN do target group> \
-    --region sa-east-1
+    --region us-east-1
 
     ```
 
 6.  Create a VPC peering between the two VPCs from Different Regions
 
-         aws ec2 create-vpc-peering-connection --vpc-id <vpcId da primeira região> --peer-vpc-id <vpcId da segunda região> --peer-region us-west-1 --region sa-east-1
+         aws ec2 create-vpc-peering-connection --vpc-id <vpcId da primeira região> --peer-vpc-id <vpcId da segunda região> --peer-region us-west-1 --region us-east-1
 
          aws ec2 accept-vpc-peering-connection --vpc-peering-connection-id <id do peering do passo anterior> --region us-west-1
 
     7.b. Create entries in the routing tables of both VPCs's public and private subnets pointing to VPC peering.
 
-    | Subnet |Region: sa-east-1 | Region: us-west-1 |
+    | Subnet |Region: us-east-1 | Region: us-west-1 |
     |—|—|—|
     | Public/Private | Destination: 172.16.0.0/16, Target: PCX-xxxxx | Destination: 10.0.0.0/16, Target: PCX-YYYYY|
 
-7.  Create a Private Hosted Zone for the internal domain example.com associating the VPC on sa-east-1
+7.  Create a Private Hosted Zone for the internal domain example.com associating the VPC on us-east-1
 
     ```
-    aws route53 create-hosted-zone --name example.com --caller-reference 2021-03-15-22:28 --hosted-zone-config PrivateZone=true --vpc VPCRegion=sa-east-1,VPCId=<ID da VPC da região de Sao Paulo>
+    aws route53 create-hosted-zone --name example.com --caller-reference 2021-03-15-22:28 --hosted-zone-config PrivateZone=true --vpc VPCRegion=us-east-1,VPCId=<ID da VPC da região de Sao Paulo>
 
     ```
 
@@ -220,7 +268,7 @@ hidden: true
         *   Alarm condition: **Greater/Equal**
         *   Threshold: 1
         *   Average over period: **1 minute**
-    *   Expand **VPC Settings** and select the VPC, Private Subnet, and Security Group from the sa-east-1 region.
+    *   Expand **VPC Settings** and select the VPC, Private Subnet, and Security Group from the us-east-1 region.
     *   Click **Create canary**.
 
 2.  Create Route53 health check pointing to the alarm created by the canary from the previous step.
@@ -230,7 +278,7 @@ hidden: true
     *   Click the button **Create health check**.
     *   Appoint the health check. E.g.: hc-api
     *   Select **State of CloudWatch alarm** upon **What to monitor**.
-    *   Select the primary region. E.g. sa-east-1
+    *   Select the primary region. E.g. us-east-1
     *   Select the alarm created by the canary.
     *   Click **Next**.
     *   Click **Create health check**.

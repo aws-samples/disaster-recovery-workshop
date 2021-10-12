@@ -1,6 +1,6 @@
 ---
-title: "Amazon API Gateway + Route53"
-menutitle: "Amazon API Gateway + Route53"
+title: "Amazon API Gateway - Failover for Private APIs"
+menutitle: "API Gateway - Failover for Private APIs"
 chapter: false
 weight: 1
 pre: "<b></b>"
@@ -22,13 +22,13 @@ This exercise shows the steps to quickly set up your APIs in more than one AWS R
 **By the end of this exercise, you will be able to:**
 
 * Set up an API in two or more regions
-* Set up a DNS record to dynamically route customer requests transparently to your APIs
+* Set up a DNS record to dynamically route customer requests transparently to your private APIs
 
 **Estimated Duration:** 40 minutes
 
 **Approximate Cost**: 3 USD
 
-![Arquitetura API Gateway](/images/apigw-lab-architecture.png)
+![Architecture API Gateway](/images/apigw-lab-architecture.png)
 
 ### Execution
 
@@ -40,4 +40,5 @@ This exercise shows the steps to quickly set up your APIs in more than one AWS R
 
 With this exercise, we were able to understand how to set up a private API in Amazon API Gateway, deploy the API to more than one region, and create a routing policy for your DNS records associated with your API endpoints.
 
-[Alternative to Custom Domain Name](https://georgemao.medium.com/enabling-private-apis-with-custom-domain-names-aws-api-gateway-df1b62b0ba7c)
+**References:**
+- [Alternative to Custom Domain Name](https://georgemao.medium.com/enabling-private-apis-with-custom-domain-names-aws-api-gateway-df1b62b0ba7c)
