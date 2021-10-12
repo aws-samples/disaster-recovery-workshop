@@ -80,7 +80,7 @@ hidden: true
     # VPC ID - Secondary Region
     export VPC_ID_SECONDARY=$(aws cloudformation describe-stacks --stack-name apigwlab --region us-west-1 | jq -r .Stacks[0].Outputs[1].OutputValue)
 
-    # Private Subnet - Primary Region
+    # Private Subnet - Secondary Region
     export PRIVATE_SUBNET_SECONDARY=$(aws cloudformation describe-stacks --stack-name apigwlab --region us-west-1 | jq -r .Stacks[0].Outputs[0].OutputValue)
 
     # Security Group - Secondary Region
@@ -144,7 +144,7 @@ hidden: true
             ]
         }
 
-    *   Deploy the API by creating a new stage called **prod**.
+    * Deploy the API, select **Resources >> Actions >> Deploy API**. Creating a new stage called **prod**.
     
     {{% notice warning %}}
    *Repeat step 3 for N. California (us-west-1).*
@@ -215,65 +215,127 @@ hidden: true
 *   In **ACM certificate**, select the previously created certificate.
 *   Click **Create domain name**.
 
-    4th. Add a custom domain mapping to the available apis.
-
-    *   Selecting the newly created custom domain, select the tab **API mappings** and click **Set up API mappings**.
+6. Add a custom domain mapping to the available apis.
+    *   Selecting the newly created custom domain, select the tab **API mappings** and select **Configure API mappings**.
     *   Click the button **Add new mapping**, and select:
         *   The name of the example API (**PetStore**)
         *   The stage where the API was published (**prod**)
     *   Click **Save**.
 
-6. Create NLB pointing to the VPC endpoints in each region. Repeat the commands below by swapping us-east-1 for us-west-1 and its features.
+7. Create NLB pointing to the VPC endpoints in each region. Repeat the commands below by swapping us-east-1 for us-west-1 and its features.
 
-    ```
-    aws elbv2 create-load-balancer --name api-nlb --type network --scheme internal --subnet-mappings SubnetId=<Id da Subnet privada> --region us-east-1
+   Primary Load Balancer and Target Group
 
-    aws elbv2 create-target-group \
+    ```bash
+    # Load Balancer - Primary
+    export LB_ARN_PRIMARY=$(aws elbv2 create-load-balancer \
+    --name api-nlb --type network --scheme internal \
+    --subnet-mappings SubnetId=$PRIVATE_SUBNET_PRIMARY \
+    --region us-east-1 | jq -r .LoadBalancers[0].LoadBalancerArn)
+
+    export TG_ARN_PRIMARY=$(aws elbv2 create-target-group \
     --name tg-api-private \
     --protocol TLS \
     --port 443 \
     --target-type ip \
-    --vpc-id <Id da VPC> \
-    --region us-east-1
+    --vpc-id $VPC_ID_PRIMARY \
+    --region us-east-1 | jq -r .TargetGroups[0].TargetGroupArn)
+
+    export VPC_ENDPOINT_ENI_PRIMARY=$(aws ec2 describe-vpc-endpoints --region us-east-1 | jq -r .VpcEndpoints[0].NetworkInterfaceIds[0])
+
+    export VPC_ENDPOINT_IP_PRIMARY=$(aws ec2 describe-network-interfaces --filters Name=network-interface-id,Values=$VPC_ENDPOINT_ENI_PRIMARY --region us-east-1 | jq -r .NetworkInterfaces[0].PrivateIpAddress)
 
     aws elbv2 register-targets \
-    --target-group-arn <ARN do target group criado no passo anterior> \
-    --targets Id=<IP do VPC Endpoint> \
+    --target-group-arn $TG_ARN_PRIMARY \
+    --targets Id=$VPC_ENDPOINT_IP_PRIMARY \
     --region us-east-1
+
+    export CERT_ARN_PRIMARY=$(aws acm list-certificates --region us-east-1 | jq -r .CertificateSummaryList[0].CertificateArn)
 
     aws elbv2 create-listener \
-    --load-balancer-arn <ARN do load balancer> \
-    --protocol TLS --port 443 --certificates CertificateArn=<ARN do certificado *.example.com> \
+    --load-balancer-arn $LB_ARN_PRIMARY \
+    --protocol TLS --port 443 --certificates CertificateArn=$CERT_ARN_PRIMARY \
     --ssl-policy ELBSecurityPolicy-2016-08 \
-    --default-actions Type=forward,TargetGroupArn=<ARN do target group> \
+    --default-actions Type=forward,TargetGroupArn=$TG_ARN_PRIMARY \
     --region us-east-1
+    ```
 
+    Secondary Load Balancer and Target Group
+
+    ```bash
+    # Load Balancer - Secondary
+    export LB_ARN_SECONDARY=$(aws elbv2 create-load-balancer \
+    --name api-nlb --type network --scheme internal \
+    --subnet-mappings SubnetId=$PRIVATE_SUBNET_SECONDARY \
+    --region us-west-1 | jq -r .LoadBalancers[0].LoadBalancerArn)
+
+    export TG_ARN_SECONDARY=$(aws elbv2 create-target-group \
+    --name tg-api-private \
+    --protocol TLS \
+    --port 443 \
+    --target-type ip \
+    --vpc-id $VPC_ID_SECONDARY \
+    --region us-west-1 | jq -r .TargetGroups[0].TargetGroupArn)
+
+    export VPC_ENDPOINT_ENI_SECONDARY=$(aws ec2 describe-vpc-endpoints --region us-west-1 | jq -r .VpcEndpoints[0].NetworkInterfaceIds[0])
+
+    export VPC_ENDPOINT_IP_SECONDARY=$(aws ec2 describe-network-interfaces --filters Name=network-interface-id,Values=$VPC_ENDPOINT_ENI_SECONDARY --region us-west-1 | jq -r .NetworkInterfaces[0].PrivateIpAddress)
+
+    aws elbv2 register-targets \
+    --target-group-arn $TG_ARN_SECONDARY \
+    --targets Id=$VPC_ENDPOINT_IP_SECONDARY \
+    --region us-west-1
+
+    export CERT_ARN_SECONDARY=$(aws acm list-certificates --region us-west-1 | jq -r .CertificateSummaryList[0].CertificateArn)
+
+    aws elbv2 create-listener \
+    --load-balancer-arn $LB_ARN_SECONDARY \
+    --protocol TLS --port 443 --certificates CertificateArn=$CERT_ARN_SECONDARY \
+    --ssl-policy ELBSecurityPolicy-2016-08 \
+    --default-actions Type=forward,TargetGroupArn=$TG_ARN_SECONDARY \
+    --region us-west-1
     ```
 
 7. Create a VPC peering between the two VPCs from Different Regions
 
-         aws ec2 create-vpc-peering-connection --vpc-id <vpcId da primeira região> --peer-vpc-id <vpcId da segunda região> --peer-region us-west-1 --region us-east-1
+    ```bash
+    # Request VPC Peering
+    export PEERING_ID=$(aws ec2 create-vpc-peering-connection \
+      --vpc-id $VPC_ID_PRIMARY --region us-east-1 \
+      --peer-vpc-id $VPC_ID_SECONDARY  --peer-region us-west-1 | \
+      jq -r ".VpcPeeringConnection.VpcPeeringConnectionId")
 
-         aws ec2 accept-vpc-peering-connection --vpc-peering-connection-id <id do peering do passo anterior> --region us-west-1
+    # Wait a few seconds
+    sleep 10
 
-    7.b. Create entries in the routing tables of both VPCs's public and private subnets pointing to VPC peering.
+    # Accept VPC Peering
+    aws ec2 accept-vpc-peering-connection \
+      --vpc-peering-connection-id $PEERING_ID \
+      --region us-west-1
+    ```
 
-    | Subnet |Region: us-east-1 | Region: us-west-1 |
+    Create entries in the routing tables of both VPCs's public and private subnets pointing to VPC peering.
+
+    | Subnet | Region: us-east-1 | Region: us-west-1 |
     |—|—|—|
-    | Public/Private | Destination: 172.16.0.0/16, Target: PCX-xxxxx | Destination: 10.0.0.0/16, Target: PCX-YYYYY|
+    | Public/Private | Destination: 10.1.0.0/16, Target: PCX-xxxxx | Destination: 10.0.0.0/16, Target: PCX-YYYYY|
 
 8. Create a Private Hosted Zone for the internal domain example.com associating the VPC on us-east-1
 
-    ```
-    aws route53 create-hosted-zone --name example.com --caller-reference 2021-03-15-22:28 --hosted-zone-config PrivateZone=true --vpc VPCRegion=us-east-1,VPCId=<ID da VPC da região de Sao Paulo>
-
+    ```bash
+    export HOSTED_ZONE_ID=$(aws route53 create-hosted-zone --name example.com \
+      --caller-reference $(date "+%Y%m%d%H%M%S") \
+      --hosted-zone-config PrivateZone=true \
+      --vpc VPCRegion=us-east-1,VPCId=$VPC_ID_PRIMARY |\
+      jq -r ".HostedZone.Id")
     ```
 
 9. Associate the us-west-1 VPC with Private Hosted Zone to share DNS records
 
-    ```
-    aws route53 associate-vpc-with-hosted-zone --hosted-zone-id <Id do Hosted Zone criado no passo anterior> --vpc VPCRegion=us-west-1,VPCId=<Id da VPC de N. California>
-
+    ```bash
+    aws route53 associate-vpc-with-hosted-zone \
+      --hosted-zone-id $HOSTED_ZONE_ID \
+      --vpc VPCRegion=us-west-1,VPCId=$VPC_ID_SECONDARY
     ```
 
 #### Set up Health Check
@@ -311,7 +373,7 @@ hidden: true
     *   Click **Create health check**.
     *   Copy the health check ID to be used in Route 53 traffic policy.
 
-3. Set the routing policy by creating a politica.json file with the following content:
+3. Set the routing policy by creating a policy.json file with the following content:
 
         {
             "AWSPolicyFormatVersion":"2015-10-01",
@@ -320,11 +382,11 @@ hidden: true
             "Endpoints":{
                 "my_ec2":{
                     "Type":"value",
-                    "Value":"<IP privado da instância da região primária>"
+                    "Value":"<Private IP from primary region>"
                 },
                 "my_bkp_ec2":{
                     "Type":"value",
-                    "Value":"<IP privado da instância da região secundária>"
+                    "Value":"<Private IP from secondary region>"
                 }
             },
             "Rules":{
@@ -332,7 +394,7 @@ hidden: true
                     "RuleType":"failover",
                     "Primary":{
                         "EndpointReference":"my_ec2",
-                        "HealthCheck": "<healthcheck obtido no comando anterior>"
+                        "HealthCheck": "<healthcheck id from previous step>"
                     },
                     "Secondary":{
                         "EndpointReference":"my_bkp_ec2"
@@ -343,11 +405,11 @@ hidden: true
 
     ![Política de Roteamento](/images/apigw-policy.png)
 
-        aws route53 create-traffic-policy --name minha_politica --document file://politica.json
+        aws route53 create-traffic-policy --name my-policy --document file://policy.json
 
     <!---->
 
-        aws route53 create-traffic-policy-instance --hosted-zone-id <Id do Hosted Zone criado no passo 2> --name api.example.com --ttl 60 --traffic-policy-id <Id do Traffic Policy criado no passo anterior> --traffic-policy-version 1
+        aws route53 create-traffic-policy-instance --hosted-zone-id $HOSTED_ZONE_ID --name api.example.com --ttl 60 --traffic-policy-id <Traffic Policy ID from previous step> --traffic-policy-version 1
 
 #### Testing Cross-Region Routing
 
