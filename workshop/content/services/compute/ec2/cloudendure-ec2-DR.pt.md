@@ -1,5 +1,5 @@
 ---
-title: "Amazon EC2 - Backup & Restore usando CloudEndure"
+title: "Amazon EC2 - Recuperação de Falhas usando CloudEndure"
 menutitle: "AWS CloudEndure Disaster Recovery"
 weight: 2
 chapter: true
@@ -7,7 +7,7 @@ pre: "<b></b>"
 awsServices: 
  - Amazon EC2
 tags:
- - Backup & Restore
+ - Pilot Light
 ---
 
 ## Continuidade de negócios dimensionável e econômica para servidores físicos, virtuais e de nuvem
