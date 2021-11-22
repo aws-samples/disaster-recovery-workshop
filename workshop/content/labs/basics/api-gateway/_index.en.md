@@ -1,5 +1,5 @@
 ---
-title: "Amazon API Gateway - Failover for Private APIs"
+title: "Amazon API Gateway - Failover for Private API"
 menutitle: "API Gateway - Failover for Private APIs"
 chapter: false
 weight: 1
