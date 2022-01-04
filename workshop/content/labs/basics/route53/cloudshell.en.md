@@ -20,7 +20,7 @@ hidden: true
    aws ec2 create-key-pair --key-name us-west-1-keypair --query 'KeyMaterial' --output text > us-west-1-keypair.pem --region us-west-1
    ```     
 
-2. Create two VPC environments in two distinct regions with different CIDR (e.g. 10.0.0.0/16 and 172.16.0.0/16) with interconnectivity using the CloudFormation template below:
+2. Create two VPC environments in two distinct regions with different CIDR (e.g. 10.0.0.0/16 and 10.1.0.0/16) with interconnectivity using the CloudFormation template below:
 
 
     ```bash
