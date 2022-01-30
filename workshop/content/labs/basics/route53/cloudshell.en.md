@@ -8,7 +8,7 @@ hidden: true
 
 #### Go to AWS CloudShell
 
-1.  Go to AWS CloudShell, in the top bar of the AWS Console, click the button on the right side of the search bar.
+1.  Go to AWS CloudShell, in the top bar of the AWS Console, click the button on the right side of the search bar in **N. Virginia**.
     ![CloudShell](/images/console-cloudshell2.png)
 
 #### Create resources across multiple regions
@@ -67,12 +67,34 @@ hidden: true
 1. Get the VPC ID of the VPC's created on previous step.
 
     ```bash
-    export VPC_ID_PRIMARY=$(aws cloudformation describe-stacks --stack-name route53lab --region us-east-1 | jq -r .Stacks[0].Outputs[0].OutputValue)
+    # Get VPC ID's
+    export VPC_ID_PRIMARY=$(aws cloudformation describe-stacks \
+      --stack-name route53lab \
+      --region us-east-1 | jq -r .Stacks[0].Outputs[0].OutputValue)
 
-    export VPC_ID_SECONDARY=$(aws cloudformation describe-stacks --stack-name route53lab --region us-west-1 | jq -r .Stacks[0].Outputs[0].OutputValue)
+    export VPC_ID_SECONDARY=$(aws cloudformation describe-stacks \
+      --stack-name route53lab \
+      --region us-west-1 | jq -r .Stacks[0].Outputs[0].OutputValue)
 
     echo PRIMARY VPC = $VPC_ID_PRIMARY
     echo SECONDARY VPC = $VPC_ID_SECONDARY
+
+    # Get Custom Route Table ID's
+    export ROUTE_TABLE_PRIMARY=$(aws ec2 describe-route-tables \
+      --filters \
+      "Name=vpc-id,Values=$VPC_ID_PRIMARY" \
+      "Name=association.main,Values=false" \
+      --query 'RouteTables[*].RouteTableId' \
+      --output text \
+      --region us-east-1)
+
+    export ROUTE_TABLE_SECONDARY=$(aws ec2 describe-route-tables \
+      --filters \
+      "Name=vpc-id,Values=$VPC_ID_SECONDARY" \
+      "Name=association.main,Values=false" \
+      --query 'RouteTables[*].RouteTableId' \
+      --output text \
+      --region us-west-1)  
     
     ```
 
@@ -92,11 +114,24 @@ hidden: true
     aws ec2 accept-vpc-peering-connection \
       --vpc-peering-connection-id $PEERING_ID \
       --region us-west-1
+
+    # Add routes to VPC Peering
+    aws ec2 create-route \
+      --route-table-id $ROUTE_TABLE_PRIMARY \
+      --destination-cidr-block 10.1.0.0/16 \
+      --vpc-peering-connection-id $PEERING_ID \
+      --region us-east-1
+
+    aws ec2 create-route \
+      --route-table-id $ROUTE_TABLE_SECONDARY \
+      --destination-cidr-block 10.0.0.0/16 \
+      --vpc-peering-connection-id $PEERING_ID \
+      --region us-west-1    
     ```
 
 #### Create private DNS entries
 
-1. Create a Route53 - Private Hosted Zone for the anycompany.internal DNS entries by associating the PRIMARY VPC in **us-east-1**.
+1. Create a Route 53 - Private Hosted Zone for the anycompany.internal DNS entries by associating the PRIMARY VPC in **us-east-1**.
 
     ```bash
     export HOSTED_ZONE_ID=$(aws route53 create-hosted-zone --name anycompany.internal \
@@ -114,12 +149,12 @@ hidden: true
       --vpc VPCRegion=us-west-1,VPCId=$VPC_ID_SECONDARY
     ```
 
-#### Create Route53 Failover Policy
+#### Create Route 53 Health Check
 
-1. Get the private IP of both Web Servers.
+1. Get the **public** IP of both Web Servers. This is because Route 53 health checkers are public and they can only monitor hosts with IP addresses that are publicly routable on the internet.
 
     ```bash
-    export WEBSERVER_PRIMARY_IP=$(aws ec2 describe-instances \
+    export WEBSERVER_PRIMARY_PUBLIC_IP=$(aws ec2 describe-instances \
       --region us-east-1 \
       --filters \
       "Name=instance-state-name,Values=running" \
@@ -127,7 +162,7 @@ hidden: true
       --query 'Reservations[*].Instances[*].[PublicIpAddress]' \
       --output text)
 
-    export WEBSERVER_SECONDARY_IP=$(aws ec2 describe-instances \
+    export WEBSERVER_SECONDARY_PUBLIC_IP=$(aws ec2 describe-instances \
       --region us-west-1 \
       --filters \
       "Name=instance-state-name,Values=running" \
@@ -135,11 +170,12 @@ hidden: true
       --query 'Reservations[*].Instances[*].[PublicIpAddress]' \
       --output text)      
 
-    echo PRIMARY WEB SERVER = $WEBSERVER_PRIMARY_IP
-    echo SECONDARY WEB SERVER = $WEBSERVER_SECONDARY_IP  
+    echo PRIMARY WEB SERVER = $WEBSERVER_PRIMARY_PUBLIC_IP
+    echo SECONDARY WEB SERVER = $WEBSERVER_SECONDARY_PUBLIC_IP  
     ```
 
-2. Let's create the health check for our primary endpoint that will be in **us-east-1**
+2. Create the health check policy and save in a file
+
     ```bash
     # Health check policy
     cat > health-check-config.json << EOF
@@ -147,24 +183,55 @@ hidden: true
       "Type": "HTTP",
       "Port": 80,
       "ResourcePath": "/index.html",
-      "IPAddress": "$WEBSERVER_PRIMARY_IP",
+      "IPAddress": "$WEBSERVER_PRIMARY_PUBLIC_IP",
       "RequestInterval": 30,
       "FailureThreshold": 3
     } 
     EOF
     ```
 
+3. Let's create the health check for our primary endpoint that is in **us-east-1**
+
     ```bash
-    # Create Healthcheck for Route53
+    # Create Health check for Route 53
     export HEALTH_ID=$(aws route53 create-health-check \
       --caller-reference $(date "+%Y%m%d%H%M%S") \
       --health-check-config file://health-check-config.json |\
       jq -r ".HealthCheck.Id")
     ```
     
-    *The healthcheck will be active in 30 seconds.*
+   {{% notice note %}}
+   *The health check will be active in 30 seconds.*
+   {{% /notice %}}
+    
 
-3. Creating our primary endpoint using Failover routing policy.
+#### Create Route 53 Failover Policy  
+
+
+1. Get the **private** IP of both Web Servers.
+
+    ```bash
+    export WEBSERVER_PRIMARY_PRIVATE_IP=$(aws ec2 describe-instances \
+      --region us-east-1 \
+      --filters \
+      "Name=instance-state-name,Values=running" \
+      "Name=tag-value,Values=WebServerInstance" \
+      --query 'Reservations[*].Instances[*].[PrivateIpAddress]' \
+      --output text)
+
+    export WEBSERVER_SECONDARY_PRIVATE_IP=$(aws ec2 describe-instances \
+      --region us-west-1 \
+      --filters \
+      "Name=instance-state-name,Values=running" \
+      "Name=tag-value,Values=WebServerInstance" \
+      --query 'Reservations[*].Instances[*].[PrivateIpAddress]' \
+      --output text)      
+
+    echo PRIMARY WEB SERVER = $WEBSERVER_PRIMARY_PRIVATE_IP
+    echo SECONDARY WEB SERVER = $WEBSERVER_SECONDARY_PRIVATE_IP  
+    ```
+
+2. Create the Failover routing policy and save in a file
 
     ```bash
     # Failover policy
@@ -176,11 +243,11 @@ hidden: true
         "Endpoints":{
             "WEBSERVER_PRIMARY":{
                 "Type":"value",
-                "Value":"$WEBSERVER_PRIMARY_IP"
+                "Value":"$WEBSERVER_PRIMARY_PRIVATE_IP"
             },
             "WEBSERVER_SECONDARY":{
                 "Type":"value",
-                "Value":"$WEBSERVER_SECONDARY_IP"
+                "Value":"$WEBSERVER_SECONDARY_PRIVATE_IP"
             }
         },
         "Rules":{
@@ -199,6 +266,11 @@ hidden: true
     EOF
     ```
 
+   {{% notice note %}}
+   *It's being used Private IP to keep the communication through VPC Peering.*
+   {{% /notice %}}
+
+3. Associate the traffic policy to Route53 Private Hosted Zone
     ```bash
     # Create traffic policy
     export TRAFFIC_ID=$(aws route53 create-traffic-policy --name failover-policy \
@@ -222,7 +294,8 @@ hidden: true
     ![Cloudshell](/images/cloudshell-split-columns.png)
 
 
-    Using the second terminal, execute:
+2. Using the second terminal, execute:
+
     ```bash
     # GET EC2 IP in N. Virginia
     export EC2_CLIENT_IP=$(aws ec2 describe-instances \
@@ -235,12 +308,12 @@ hidden: true
     
     # Access EC2 instance by SSH
     chmod 400 us-east-1-keypair.pem
-    ssh -i us-east-1.pem ec2-user@$EC2_CLIENT_IP   
+    ssh -i us-east-1-keypair.pem ec2-user@$EC2_CLIENT_IP   
     ```
 
     *Answer 'yes' to add this EC2 instance to "Known hosts" file.
 
-2. Try to access the website using "service.anycompany.internal"
+3. Try to access the website using "service.anycompany.internal"
 
     ```bash
     # Check the DNS answer
@@ -250,7 +323,12 @@ hidden: true
     curl service.anycompany.internal
     ```
 
-3. Using the first terminal, remove the inbound rule to primary Web Server
+    It's expected a response in HTML from **PRIMARY WEB SERVER** like below:
+    ```html
+    <html><h1>Welcome to Example Portal !! </h1><h2>Hosted in us-east-1</h2</html>
+    ```
+
+4. Now let's provoke an error! Using the first terminal, remove the inbound rule from Security Group of Primary Web Server
 
     ```bash
     # Get security group id of Web Server Primary
@@ -264,13 +342,16 @@ hidden: true
 
     # Revoke the inbound rule for **port 80**
     aws ec2 revoke-security-group-ingress \
-      --group_id $SG_ID_PRIMARY \
+      --group-id $SG_ID_PRIMARY \
       --ip-permissions FromPort=80,IpProtocol=tcp,ToPort=80,IpRanges=[{CidrIp=0.0.0.0/0}]
     ```
 
-4. On second terminal, try to access the website again
+   {{% notice info %}}
+   *After 1 minute, the Health Check will mark the **PRIMARY WEB SERVER** as **UNHEALTHY** and will trigger the failover mechanism.*
+   {{% /notice %}}
 
-   After 1 minute the DNS will answer the Secondary Web Server IP.
+
+5. On second terminal, try to access the website again
 
     ```bash
     # Check the DNS answer
@@ -279,24 +360,34 @@ hidden: true
     # Access the Web Server
     curl service.anycompany.internal
     ```
+    
+    Now the Failover Policy on Route 53 will answer the **SECONDARY WEB SERVER** ip address, so it's expected a response in HTML from **SECONDARY WEB SERVER** like below:
+
+    ```html
+    <html><h1>Welcome to Example Portal !! </h1><h2>Hosted in us-west-1</h2</html>
+    ```
 
 #### Cleaning up
 
-Delete all the resources    
+1. Delete all the resources created during the lab.    
 
-```bash
-# Delete VPC Peering Connection
-aws ec2 delete-vpc-peering-connection --vpc-peering-connection-id $PEERING_ID
+    ```bash
+    # Delete VPC Peering Connection
+    aws ec2 delete-vpc-peering-connection --vpc-peering-connection-id $PEERING_ID
 
-# Delete Cloudformation Stack
-aws cloudformation delete-stack --stack-name route53lab --region us-east-1
-aws cloudformation delete-stack --stack-name route53lab --region us-west-1
+    # Delete Cloudformation Stack
+    aws cloudformation delete-stack --stack-name route53lab --region us-east-1
+    aws cloudformation delete-stack --stack-name route53lab --region us-west-1
 
-# Wait for conclusion
-aws cloudformation wait stack-delete-complete --stack-name route53lab --region us-east-1
-aws cloudformation wait stack-delete-complete --stack-name route53lab --region us-west-1
+    # Wait for Cloudformation stacks conclusion
+    aws cloudformation wait stack-delete-complete --stack-name route53lab --region us-east-1
+    aws cloudformation wait stack-delete-complete --stack-name route53lab --region us-west-1
 
-# Delete KeyPair
-aws ec2 delete-key-pair --key-name us-east-1-keypair --region us-east-1
-aws ec2 delete-key-pair --key-name us-west-1-keypair --region us-west-1
-```
+    # Delete KeyPairs
+    aws ec2 delete-key-pair --key-name us-east-1-keypair --region us-east-1
+    aws ec2 delete-key-pair --key-name us-west-1-keypair --region us-west-1
+
+    # Delete files
+    rm -f us-east-1-keypair.pem us-west-1-keypair.pem health-check-config.json failover-policy.json
+    ```
+
