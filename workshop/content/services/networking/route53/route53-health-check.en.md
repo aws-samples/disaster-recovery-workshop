@@ -1,11 +1,11 @@
 ---
-title: "Amazon Route53 - Health Checks"
+title: "Amazon Route 53 - Health Checks"
 menutitle: "Health Checks"
 weight: 3
 chapter: true
 pre: "<b></b>"
 awsServices:
- - "Amazon Route53"
+ - "Amazon Route 53"
 type: documentation
 ---
 

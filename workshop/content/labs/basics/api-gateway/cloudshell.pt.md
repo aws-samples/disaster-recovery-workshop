@@ -1,6 +1,6 @@
 ---
-title: "Amazon API Gateway + Route53"
-menutitle: "Amazon API Gateway + Route53"
+title: "Amazon API Gateway + Route 53"
+menutitle: "Amazon API Gateway + Route 53"
 weight: 1
 pre: "<b></b>"
 hidden: true
@@ -197,7 +197,7 @@ hidden: true
     ```
 
 #### Configure o Health Check
-1. Criar um health check baseado em alarme do CloudWatch para o Route53 identificar se o endpoint está saudável. Executar o seguinte template de CloudFormation com o nome de stack hc-confiabilidade e seguintes valores:
+1. Criar um health check baseado em alarme do CloudWatch para o Route 53 identificar se o endpoint está saudável. Executar o seguinte template de CloudFormation com o nome de stack hc-confiabilidade e seguintes valores:
 
     - Abrir o serviço **CloudWatch** no console AWS.
     - Clicar no menu **Synthetics** -> **Canaries**

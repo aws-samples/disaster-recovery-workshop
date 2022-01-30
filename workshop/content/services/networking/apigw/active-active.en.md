@@ -9,7 +9,7 @@ awsServices:
 
 In the case of external apis accessible over the internet, a possible configuration that supports an active-active scenario for your apis in different regions may be as shown below.
 
-Supported by Route53 routing policies, you can direct traffic from your apis to more than one infrastructure in different regions, and through weight-routing policies, the service allows you to balance requests according to the infrastructure capacity of each region.
+Supported by Route 53 routing policies, you can direct traffic from your apis to more than one infrastructure in different regions, and through weight-routing policies, the service allows you to balance requests according to the infrastructure capacity of each region.
 
 ![API Gateway Multi-region](/images/route-53-healthcheck.png)
 

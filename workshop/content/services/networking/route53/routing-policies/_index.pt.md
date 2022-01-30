@@ -1,11 +1,11 @@
 ---
-title: "Amazon Route53 - Políticas de Roteamento"
+title: "Amazon Route 53 - Políticas de Roteamento"
 menutitle: "Políticas de Roteamento"
 weight: 3
 chapter: true
 pre: "<b></b>"
 awsServices:
- - "Amazon Route53"
+ - "Amazon Route 53"
 type: Documentation
 ---
 

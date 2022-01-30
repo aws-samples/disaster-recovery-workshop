@@ -1,11 +1,11 @@
 ---
-title: "Amazon Route53 - Simple Routing Policy"
+title: "Amazon Route 53 - Simple Routing Policy"
 menutitle: "Simple"
 weight: 3
 chapter: false
 pre: "<b></b>"
 awsServices:
-  - "Amazon Route53"
+  - "Amazon Route 53"
 tags: 
  - Active-Active
 type: Documentation

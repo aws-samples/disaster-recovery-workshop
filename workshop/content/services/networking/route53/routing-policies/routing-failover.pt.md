@@ -1,11 +1,11 @@
 ---
-title: "Amazon Route53 - Política de Roteamento Failover"
+title: "Amazon Route 53 - Política de Roteamento Failover"
 menutitle: "Failover"
 weight: 3
 chapter: true
 pre: "<b></b>"
 awsServices:
- - "Amazon Route53"
+ - "Amazon Route 53"
 tags: 
  - Pilot Light
 type: Documentation

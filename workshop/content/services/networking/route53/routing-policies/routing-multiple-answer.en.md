@@ -1,11 +1,11 @@
 ---
-title: "Amazon Route53 - Multi-Response Routing Policy"
+title: "Amazon Route 53 - Multi-Response Routing Policy"
 menutitle: "Multi-Response"
 weight: 4
 chapter: false
 pre: "<b></b>"
 awsServices:
-  - "Amazon Route53"
+  - "Amazon Route 53"
 tags: 
  - Active-Active
 type: Documentation

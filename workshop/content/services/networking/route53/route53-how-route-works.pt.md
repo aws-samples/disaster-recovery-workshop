@@ -1,11 +1,11 @@
 ---
-title: "Amazon Route53 - Como o Trafégo de Internet é Roteado"
+title: "Amazon Route 53 - Como o Trafégo de Internet é Roteado"
 menutitle: "Como o trafégo é roteado"
 weight: 2
 chapter: true
 pre: "<b></b>"
 awsServices:
- - "Amazon Route53"
+ - "Amazon Route 53"
 type: Documentation
 ---
 

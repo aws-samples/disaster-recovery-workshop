@@ -1,11 +1,11 @@
 ---
-title: "Amazon Route53 - Routing Policies"
+title: "Amazon Route 53 - Routing Policies"
 menutitle: "Routing Policies"
 weight: 3
 chapter: true
 pre: "<b></b>"
 awsServices:
- - "Amazon Route53"
+ - "Amazon Route 53"
 type: Documentation
 ---
 

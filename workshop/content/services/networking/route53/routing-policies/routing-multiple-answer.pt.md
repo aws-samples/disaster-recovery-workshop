@@ -1,11 +1,11 @@
 ---
-title: "Amazon Route53 - Política de Roteamento de Resposta Múltipla"
+title: "Amazon Route 53 - Política de Roteamento de Resposta Múltipla"
 menutitle: "Resposta Múltipla"
 weight: 4
 chapter: false
 pre: "<b></b>"
 awsServices:
-  - "Amazon Route53"
+  - "Amazon Route 53"
 tags: 
  - Active-Active
 type: Documentation

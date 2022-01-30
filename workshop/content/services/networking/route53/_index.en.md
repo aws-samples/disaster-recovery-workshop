@@ -1,10 +1,10 @@
 ---
-title: "Amazon Route53"
-menutitle: "Amazon Route53"
+title: "Amazon Route 53"
+menutitle: "Amazon Route 53"
 chapter: true
 pre: "<b></b>"
 awsServices:
- - "Amazon Route53"
+ - "Amazon Route 53"
 type: Documentation
 ---
 

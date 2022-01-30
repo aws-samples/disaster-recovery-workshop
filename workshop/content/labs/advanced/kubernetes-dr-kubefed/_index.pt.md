@@ -29,7 +29,7 @@ Esse exercício irá mostrar os passos para configurar e utilizar o [KubeFed](ht
 
 - Configurar o KubeFed para coordenar a configuração de vários clusters Kubernetes
 - Fazer o deploy de uma aplicação que será criada em dois clusters Kubernetes em regiões destintas
-- Utilizar o Route53 para configurar resolução de DNS com healthcheck para as duas regiões
+- Utilizar o Route 53 para configurar resolução de DNS com healthcheck para as duas regiões
 
 **Tempo de Execução Estimado:** 1 hora
 

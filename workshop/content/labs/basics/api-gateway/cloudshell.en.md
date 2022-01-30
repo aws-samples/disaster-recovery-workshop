@@ -1,6 +1,6 @@
 ---
-title: "Amazon API Gateway + Route53"
-menutitle: "Amazon API Gateway + Route53"
+title: "Amazon API Gateway + Route 53"
+menutitle: "Amazon API Gateway + Route 53"
 weight: 1
 pre: "<b></b>"
 hidden: true
@@ -340,7 +340,7 @@ hidden: true
 
 #### Set up Health Check
 
-1. Create a CloudWatch alarm-based health check for Route53 to identify if the endpoint is healthy. Run the following CloudFormation template with the name of hc-reliability stack and following values:
+1. Create a CloudWatch alarm-based health check for Route 53 to identify if the endpoint is healthy. Run the following CloudFormation template with the name of hc-reliability stack and following values:
 
     *   Open the service **CloudWatch** on the AWS console.
     *   Click on the menu **Synthetics** -> **Canaries**
