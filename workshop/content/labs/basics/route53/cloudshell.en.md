@@ -387,6 +387,18 @@ hidden: true
     aws ec2 delete-key-pair --key-name us-east-1-keypair --region us-east-1
     aws ec2 delete-key-pair --key-name us-west-1-keypair --region us-west-1
 
+    # Delete Route53 Health Check 
+    aws route53 delete-health-check --health-check-id $HEALTH_ID
+    export TRAFFIC_POLICY_INSTANCE_ID=$(aws route53 list-traffic-policy-instances-by-hosted-zone --hosted-zone-id $HOSTED_ZONE_ID --query 'TrafficPolicyInstances[*].Id' --output text)
+    aws route53 delete-traffic-policy-instance --id $TRAFFIC_POLICY_INSTANCE_ID
+    
+    # Wait a few seconds
+    sleep 10
+
+    # Detele Route53 Traffic Policy and and Private Hosted Zone
+    aws route53 delete-traffic-policy --id $TRAFFIC_ID --traffic-policy-version 1
+    aws route53 delete-hosted-zone --id $HOSTED_ZONE_ID
+
     # Delete files
     rm -f us-east-1-keypair.pem us-west-1-keypair.pem health-check-config.json failover-policy.json
     ```
