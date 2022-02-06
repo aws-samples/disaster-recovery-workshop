@@ -12,7 +12,7 @@ hidden: true
 1. Sign in to the **AWS console**, change the region to N. Virginia (us-east-1) and access **AWS CloudShell**, in the top bar of the console.
     ![CloudShell](/images/console-cloudshell2.png)
 2. Create a EC2 **Key Pair** for each region by using the commands bellow.
-   ```
+   ```bash
    aws ec2 create-key-pair --key-name us-east-1-keypair --query 'KeyMaterial' --output text > us-east-1.pem --region us-east-1
    aws ec2 create-key-pair --key-name us-west-1-keypair --query 'KeyMaterial' --output text > us-west-1.pem --region us-west-1
    ```     
@@ -67,32 +67,39 @@ hidden: true
 
 1. Get the VPCs, subnets, and security groups created on previous step.
 
-    ```
+    ```bash
     # VPC ID - Primary Region
     export VPC_ID_PRIMARY=$(aws cloudformation describe-stacks --stack-name apigwlab --region us-east-1 | jq -r .Stacks[0].Outputs[1].OutputValue)
+    echo export VPC_ID_PRIMARY=$VPC_ID_PRIMARY >> ~/.bashrc #persist the variable on terminal 
 
     # Private Subnet - Primary Region
     export PRIVATE_SUBNET_PRIMARY=$(aws cloudformation describe-stacks --stack-name apigwlab --region us-east-1 | jq -r .Stacks[0].Outputs[0].OutputValue)
+    echo export PRIVATE_SUBNET_PRIMARY=$PRIVATE_SUBNET_PRIMARY >> ~/.bashrc #persist the variable on terminal
 
     # Security Group - Primary Region
     export PRIVATE_SG_PRIMARY=$(aws cloudformation describe-stacks --stack-name apigwlab --region us-east-1 | jq -r .Stacks[0].Outputs[2].OutputValue)
+    echo export PRIVATE_SG_PRIMARY=$PRIVATE_SG_PRIMARY >> ~/.bashrc #persist the variable on terminal
 
     # VPC ID - Secondary Region
     export VPC_ID_SECONDARY=$(aws cloudformation describe-stacks --stack-name apigwlab --region us-west-1 | jq -r .Stacks[0].Outputs[1].OutputValue)
+    echo export VPC_ID_SECONDARY=$VPC_ID_SECONDARY >> ~/.bashrc #persist the variable on terminal
 
     # Private Subnet - Secondary Region
     export PRIVATE_SUBNET_SECONDARY=$(aws cloudformation describe-stacks --stack-name apigwlab --region us-west-1 | jq -r .Stacks[0].Outputs[0].OutputValue)
+    echo export PRIVATE_SUBNET_SECONDARY=$PRIVATE_SUBNET_SECONDARY >> ~/.bashrc #persist the variable on terminal
 
     # Security Group - Secondary Region
     export PRIVATE_SG_SECONDARY=$(aws cloudformation describe-stacks --stack-name apigwlab --region us-west-1 | jq -r .Stacks[0].Outputs[2].OutputValue)
+    echo export PRIVATE_SG_SECONDARY=$PRIVATE_SG_SECONDARY >> ~/.bashrc #persist the variable on terminal
 
     # Define the HostName as the Account Number.
     export HOST=$(aws sts get-caller-identity --query "Account" --output text)
+    echo export HOST=$HOST >> ~/.bashrc #persist the variable on terminal
     ```
 
 2. Create VPC endpoints on VPCs created in the previous step.
 
-    ```
+    ```bash
     aws ec2 create-vpc-endpoint \
     --vpc-id $VPC_ID_PRIMARY \
     --vpc-endpoint-type Interface \
@@ -102,6 +109,7 @@ hidden: true
     --region us-east-1
 
     export PRIMARY_VPCENDPOINT_ID=$(aws ec2 describe-vpc-endpoints --region us-east-1| jq -r ".VpcEndpoints[].VpcEndpointId")
+    echo export PRIMARY_VPCENDPOINT_ID=$PRIMARY_VPCENDPOINT_ID >> ~/.bashrc #persist the variable on terminal
 
     aws ec2 create-vpc-endpoint \
     --vpc-id $VPC_ID_SECONDARY \
@@ -112,7 +120,7 @@ hidden: true
     --region us-west-1
 
     export SECONDARY_VPCENDPOINT_ID=$(aws ec2 describe-vpc-endpoints --region us-west-1| jq -r ".VpcEndpoints[].VpcEndpointId")
-
+    echo export SECONDARY_VPCENDPOINT_ID=$SECONDARY_VPCENDPOINT_ID >> ~/.bashrc #persist the variable on terminal
     ```
 
 3. Create a sample private API in each region using the corresponding VPC Endpoint.
@@ -161,8 +169,8 @@ hidden: true
 
 4. Create a certificate in AWS Certificate Manager (ACM) in each region.
 
-    Create certificate authority configuration file using AWS CloudShell.
-    ```
+    Return to the Primary region (**us-east-1**) and create certificate authority configuration file using AWS CloudShell.
+    ```bash
     cat <<EOT > ca_config.txt
     {
       "KeyAlgorithm":"RSA_2048",
@@ -180,23 +188,29 @@ hidden: true
     ```
 
     Create certificate authority on primary and secondary regions by executing the following command.
-    ```
-    export PRIMARY_PRIVATE_CA_ARN=$(aws acm-pca create-certificate-authority \
+    ```bash
+    aws acm-pca create-certificate-authority \
      --certificate-authority-configuration file://ca_config.txt \
      --certificate-authority-type "ROOT" \
      --idempotency-token 98256344 \
-     --region us-east-1 | jq -r ".CertificateAuthorityArn")
+     --region us-east-1 | jq -r ".CertificateAuthorityArn"
+    
+    export PRIMARY_PRIVATE_CA_ARN=$(aws acm-pca list-certificate-authorities --region us-east-1 | jq -r ".CertificateAuthorities[].Arn")
+    echo export PRIMARY_PRIVATE_CA_ARN=$PRIMARY_PRIVATE_CA_ARN >> ~/.bashrc #persist the variable on terminal
 
-    export SECONDARY_PRIVATE_CA_ARN=$(aws acm-pca create-certificate-authority \
+    aws acm-pca create-certificate-authority \
      --certificate-authority-configuration file://ca_config.txt \
      --certificate-authority-type "ROOT" \
      --idempotency-token 98256344 \
-     --region us-west-1 | jq -r ".CertificateAuthorityArn")
+     --region us-west-1 | jq -r ".CertificateAuthorityArn"
+    
+    export SECONDARY_PRIVATE_CA_ARN=$(aws acm-pca list-certificate-authorities --region us-west-1 | jq -r ".CertificateAuthorities[].Arn")
+    echo export SECONDARY_PRIVATE_CA_ARN=$SECONDARY_PRIVATE_CA_ARN >> ~/.bashrc #persist the variable on terminal
     ```
 
     Import a certificate authority for primary region.
 
-    ```
+    ```bash
     aws acm-pca get-certificate-authority-csr \
     --certificate-authority-arn $PRIMARY_PRIVATE_CA_ARN \
     --output text \
@@ -210,6 +224,7 @@ hidden: true
      --template-arn arn:aws:acm-pca:::template/RootCACertificate/V1 \
      --validity Value=10,Type=YEARS \
      --region us-east-1 | jq -r ".CertificateArn")
+    echo export PRIMARY_CERTIFICATE_ARN=$PRIMARY_CERTIFICATE_ARN >> ~/.bashrc #persist the variable on terminal
 
     # Wait a few seconds
     sleep 10
@@ -233,7 +248,7 @@ hidden: true
 
     Import a certificate authority for secondary region.
 
-    ```
+    ```bash
     aws acm-pca get-certificate-authority-csr \
     --certificate-authority-arn $SECONDARY_PRIVATE_CA_ARN \
     --output text \
@@ -247,6 +262,7 @@ hidden: true
      --template-arn arn:aws:acm-pca:::template/RootCACertificate/V1 \
      --validity Value=10,Type=YEARS \
      --region us-west-1 | jq -r ".CertificateArn")
+    echo export SECONDARY_CERTIFICATE_ARN=$SECONDARY_CERTIFICATE_ARN >> ~/.bashrc #persist the variable on terminal
     
     # Wait a few seconds
     sleep 10
@@ -270,7 +286,7 @@ hidden: true
 
     Request a Certificate for both regions.
 
-    ```
+    ```bash
     aws acm request-certificate \
     --domain-name "*.example.com" \
     --subject-alternative-names $HOST".example.com" \
@@ -286,19 +302,42 @@ hidden: true
     --output json
     ```
 
+    Get the Private CA cert (for client to trust on the Private CA)
+    ```bash
+    aws acm-pca get-certificate-authority-certificate --certificate-authority-arn $PRIMARY_PRIVATE_CA_ARN --region us-east-1 | jq -r ".Certificate" > example_primary.pem
+    ```
+    
+    ```bash
+    aws acm-pca get-certificate-authority-certificate --certificate-authority-arn $SECONDARY_PRIVATE_CA_ARN --region us-west-1 | jq -r ".Certificate" > example_secondary.pem
+    ```
+
+
+    {{% notice warning %}}
+   *Wait a minute to the certificate issue process. The certificate status needs to change from "Pending validation" to "Issued". You can verify the status on AWS Certificate Manager console.*
+   {{% /notice %}}
+
 5. Create a custom domain in API Gateway (primary and secondary regions)
 
     Get some environment info by creating some environment variables.
 
-    ```
+    ```bash
     export PRIMARY_CERT_ARN=$(aws acm list-certificates --region us-east-1 | jq -r ".CertificateSummaryList[].CertificateArn")
+    echo export PRIMARY_CERT_ARN=$PRIMARY_CERT_ARN >> ~/.bashrc #persist the variable on terminal
     export SECONDARY_CERT_ARN=$(aws acm list-certificates --region us-west-1 | jq -r ".CertificateSummaryList[].CertificateArn")
+    echo export SECONDARY_CERT_ARN=$SECONDARY_CERT_ARN >> ~/.bashrc #persist the variable on terminal
     export PRIMARY_API_ID=$(aws apigateway get-rest-apis --region us-east-1 | jq -r ".items[].id")
+    echo export PRIMARY_API_ID=$PRIMARY_API_ID >> ~/.bashrc #persist the variable on terminal
     export SECONDARY_API_ID=$(aws apigateway get-rest-apis --region us-west-1 | jq -r ".items[].id")
+    echo export SECONDARY_API_ID=$SECONDARY_API_ID >> ~/.bashrc #persist the variable on terminal
+
+    echo $PRIMARY_CERT_ARN
+    echo $SECONDARY_CERT_ARN
+    echo $PRIMARY_API_ID
+    echo $SECONDARY_API_ID
     ```
     
     Create a custom domain and API mapping in API Gateway.
-    ```
+    ```bash
     aws apigatewayv2 create-domain-name \
     --domain-name $HOST".example.com" \
     --region us-east-1 \
@@ -322,7 +361,7 @@ hidden: true
     --region us-west-1
     ```
 
-7. Create NLB pointing to the VPC endpoints in each region. 
+6. Create a Network Load Balancer (NLB) pointing to the VPC endpoints in each region. We will also attach an SSL certificate, created on the previous steps, to allow the https communication.
 
    Primary Load Balancer and Target Group.
 
@@ -332,6 +371,7 @@ hidden: true
     --name api-nlb --type network --scheme internal \
     --subnet-mappings SubnetId=$PRIVATE_SUBNET_PRIMARY \
     --region us-east-1 | jq -r .LoadBalancers[0].LoadBalancerArn)
+    echo export LB_ARN_PRIMARY=$LB_ARN_PRIMARY >> ~/.bashrc #persist the variable on terminal
 
     export TG_ARN_PRIMARY=$(aws elbv2 create-target-group \
     --name tg-api-private \
@@ -340,10 +380,14 @@ hidden: true
     --target-type ip \
     --vpc-id $VPC_ID_PRIMARY \
     --region us-east-1 | jq -r .TargetGroups[0].TargetGroupArn)
+    echo export TG_ARN_PRIMARY=$TG_ARN_PRIMARY >> ~/.bashrc #persist the variable on terminal
 
     export VPC_ENDPOINT_ENI_PRIMARY=$(aws ec2 describe-vpc-endpoints --region us-east-1 | jq -r .VpcEndpoints[0].NetworkInterfaceIds[0])
+    echo export VPC_ENDPOINT_ENI_PRIMARY=$VPC_ENDPOINT_ENI_PRIMARY >> ~/.bashrc #persist the variable on terminal
 
     export VPC_ENDPOINT_IP_PRIMARY=$(aws ec2 describe-network-interfaces --filters Name=network-interface-id,Values=$VPC_ENDPOINT_ENI_PRIMARY --region us-east-1 | jq -r .NetworkInterfaces[0].PrivateIpAddress)
+    echo export VPC_ENDPOINT_IP_PRIMARY=$VPC_ENDPOINT_IP_PRIMARY >> ~/.bashrc #persist the variable on terminal
+
 
     aws elbv2 register-targets \
     --target-group-arn $TG_ARN_PRIMARY \
@@ -366,6 +410,7 @@ hidden: true
     --name api-nlb --type network --scheme internal \
     --subnet-mappings SubnetId=$PRIVATE_SUBNET_SECONDARY \
     --region us-west-1 | jq -r .LoadBalancers[0].LoadBalancerArn)
+    echo export LB_ARN_SECONDARY=$LB_ARN_SECONDARY >> ~/.bashrc #persist the variable on terminal
 
     export TG_ARN_SECONDARY=$(aws elbv2 create-target-group \
     --name tg-api-private \
@@ -374,10 +419,13 @@ hidden: true
     --target-type ip \
     --vpc-id $VPC_ID_SECONDARY \
     --region us-west-1 | jq -r .TargetGroups[0].TargetGroupArn)
+    echo export TG_ARN_SECONDARY=$TG_ARN_SECONDARY >> ~/.bashrc #persist the variable on terminal
 
     export VPC_ENDPOINT_ENI_SECONDARY=$(aws ec2 describe-vpc-endpoints --region us-west-1 | jq -r .VpcEndpoints[0].NetworkInterfaceIds[0])
+    echo export VPC_ENDPOINT_ENI_SECONDARY=$VPC_ENDPOINT_ENI_SECONDARY >> ~/.bashrc #persist the variable on terminal
 
     export VPC_ENDPOINT_IP_SECONDARY=$(aws ec2 describe-network-interfaces --filters Name=network-interface-id,Values=$VPC_ENDPOINT_ENI_SECONDARY --region us-west-1 | jq -r .NetworkInterfaces[0].PrivateIpAddress)
+    echo export VPC_ENDPOINT_IP_SECONDARY=$VPC_ENDPOINT_IP_SECONDARY >> ~/.bashrc #persist the variable on terminal
 
     aws elbv2 register-targets \
     --target-group-arn $TG_ARN_SECONDARY \
@@ -402,6 +450,7 @@ hidden: true
       jq -r ".VpcPeeringConnection.VpcPeeringConnectionId"
     
     export PEERING_ID=$(aws ec2 describe-vpc-peering-connections | jq -r ".VpcPeeringConnections[].VpcPeeringConnectionId")
+    echo export PEERING_ID=$PEERING_ID >> ~/.bashrc #persist the variable on terminal
 
     # Wait a few seconds
     sleep 10
@@ -414,15 +463,19 @@ hidden: true
 
 9. Adjust the VPC Route Table, on both regions, to use VPC Peering.
 
-    ```
+    ```bash
     #Creating some environment Variables
     export RT_PRIMARY_PRIVATE=$(aws ec2 describe-route-tables --region us-east-1 --filter 'Name=tag:Name,Values=DR-Workshop Private Routes' | jq -r ".RouteTables[].Associations[].RouteTableId")
+    echo export RT_PRIMARY_PRIVATE=$RT_PRIMARY_PRIVATE >> ~/.bashrc #persist the variable on terminal
     
     export RT_PRIMARY_PUBLIC=$(aws ec2 describe-route-tables --region us-east-1 --filter 'Name=tag:Name,Values=DR-Workshop Public Routes' | jq -r ".RouteTables[].Associations[].RouteTableId")
+    echo export RT_PRIMARY_PUBLIC=$RT_PRIMARY_PUBLIC >> ~/.bashrc #persist the variable on terminal
     
     export RT_SECONDARY_PRIVATE=$(aws ec2 describe-route-tables --region us-west-1 --filter 'Name=tag:Name,Values=DR-Workshop Private Routes' | jq -r ".RouteTables[].Associations[].RouteTableId")
+    echo export RT_SECONDARY_PRIVATE=$RT_SECONDARY_PRIVATE >> ~/.bashrc #persist the variable on terminal
     
     export RT_SECONDARY_PUBLIC=$(aws ec2 describe-route-tables --region us-west-1 --filter 'Name=tag:Name,Values=DR-Workshop Public Routes' | jq -r ".RouteTables[].Associations[].RouteTableId")
+    echo export RT_SECONDARY_PUBLIC=$RT_SECONDARY_PUBLIC >> ~/.bashrc #persist the variable on terminal
 
     #Adding routes to the current Route Tables (Primary and Secondary regions)
     aws ec2 create-route --route-table-id $RT_PRIMARY_PRIVATE \
@@ -456,6 +509,7 @@ hidden: true
       jq -r ".HostedZone.Id"
     
     export HOSTED_ZONE_ID=$(aws route53 list-hosted-zones | jq -r ".HostedZones[].Id")
+    echo export HOSTED_ZONE_ID=$HOSTED_ZONE_ID >> ~/.bashrc #persist the variable on terminal
     ```
 
 11. Associate the us-west-1 VPC with Private Hosted Zone to share DNS records.
@@ -468,7 +522,7 @@ hidden: true
 
 #### Set up Health Check
 
-1. Create a CloudWatch alarm-based health check for Route53 to identify if the endpoint is healthy.
+1. Create a CloudWatch alarm-based health check for Route53 to identify if the endpoint is healthy. This procedure needs to be executed on Primary Region (us-east-1) only.
 
     *   Open the service **CloudWatch** on the AWS console and change to the primary region (us-east-1).
     *   On the left menu, select **Application monitoring** >> **Synthetics Canaries**
@@ -504,12 +558,33 @@ hidden: true
     *   Click **Create health check**.
     *   Copy the health check ID to be used in Route 53 traffic policy.
 
-3. To create a routing policy, first, we will create a *policy.json* file using **CloudShell**:
+3. As a pre requisite for the next step, let's install dig command on Cloud Shell.  
 
-    ```
+   ```bash
+   sudo yum install -y bind-utils
+   ```
+
+
+3. To create a routing policy, first, we will create a *policy.json* file using **CloudShell**:
+    
+    ```bash
     # Get the Route53 Health Check Id
     export HEALTH_CHECK_ID=$(aws route53 list-health-checks | jq -r ".HealthChecks[].Id")
+    echo export HEALTH_CHECK_ID=$HEALTH_CHECK_ID >> ~/.bashrc #persist the variable on terminal
+
+    # Get the Load Balancer DNS Name
+    export PRIMARY_NLB_DNS=$(aws elbv2 describe-load-balancers | jq -r ".LoadBalancers[].DNSName")
+    echo export PRIMARY_NLB_DNS=$PRIMARY_NLB_DNS >> ~/.bashrc #persist the variable on terminal
     
+    export SECONDARY_NLB_DNS=$(aws elbv2 describe-load-balancers --region us-west-1 | jq -r ".LoadBalancers[].DNSName")
+    echo export SECONDARY_NLB_DNS=$SECONDARY_NLB_DNS >> ~/.bashrc #persist the variable on terminal
+
+    # Get the Load Balancer IP Address
+    export PRIMARY_NLB_IP=$(dig +short $PRIMARY_NLB_DNS)
+    echo export PRIMARY_NLB_IP=$PRIMARY_NLB_IP >> ~/.bashrc #persist the variable on terminal
+    export SECONDARY_NLB_IP=$(dig +short $SECONDARY_NLB_DNS)
+    echo export SECONDARY_NLB_IP=$SECONDARY_NLB_IP >> ~/.bashrc #persist the variable on terminal
+
     # Create the Policy.json file
     cat << EOF > policy.json
         {
@@ -519,11 +594,11 @@ hidden: true
             "Endpoints":{
                 "my_ec2":{
                     "Type":"value",
-                    "Value":"$VPC_ENDPOINT_IP_PRIMARY"
+                    "Value":"$PRIMARY_NLB_IP"
                 },
                 "my_bkp_ec2":{
                     "Type":"value",
-                    "Value":"$VPC_ENDPOINT_IP_SECONDARY"
+                    "Value":"$SECONDARY_NLB_IP"
                 }
             },
             "Rules":{
@@ -545,6 +620,7 @@ hidden: true
     aws route53 create-traffic-policy --name my-policy --document file://policy.json
 
     export TRAFFIC_POLICY_ID=$(aws route53 list-traffic-policies | jq -r ".TrafficPolicySummaries[].Id")
+    echo export TRAFFIC_POLICY_ID=$TRAFFIC_POLICY_ID >> ~/.bashrc #persist the variable on terminal
 
     # Create Route53 Traffic Policy Instance
     aws route53 create-traffic-policy-instance --hosted-zone-id $HOSTED_ZONE_ID --name $HOST.example.com --ttl 60 --traffic-policy-id $TRAFFIC_POLICY_ID --traffic-policy-version 1
@@ -553,8 +629,7 @@ hidden: true
 
 
 #### Testing Cross-Region Routing
-
-1. Once DNS entries that use the failover policy between resources in different regions have been configured, we will trigger the alarm that indicates the failure in the health check of the primary environment that we can see that the DNS entry for the petstore.example.com endpoint will be switched to the other region.
+Once DNS entries that use the failover policy between resources in different regions have been configured, we will trigger the alarm that indicates the failure in the health check of the primary environment that we can see that the DNS entry for the <account_number>.example.com endpoint will be switched to the other region.
 
 1. Open a second terminal and access one EC2 instance by SSH
     
@@ -571,15 +646,39 @@ hidden: true
       "Name=tag-value,Values=EC2Client" \
       --query 'Reservations[*].Instances[*].[PublicIpAddress]' \
       --output text)
+    echo export EC2_CLIENT_IP=$EC2_CLIENT_IP >> ~/.bashrc #persist the variable on terminal
+    
+    # Copy the Private CA cert (previouly created) to the client instance
+    chmod 400 us-east-1.pem
+    scp -i us-east-1.pem example*.pem ec2-user@$EC2_CLIENT_IP:/home/ec2-user/
     
     # Access EC2 instance by SSH
-    chmod 400 us-east-1.pem
     ssh -i us-east-1.pem ec2-user@$EC2_CLIENT_IP   
     ```
 
     {{% notice info %}}
    *Answer 'yes' to add this EC2 instance to "Known hosts" file.
    {{% /notice %}}
+
+2. Let's install the CA Certificate on the client machine. Remember that we are using Private CA and client needs to trust the Certificate Authority.
+
+   Let's create the CA certificate file on the cliente instance.
+
+   ```bash
+   sudo cp example_primary.pem /etc/pki/ca-trust/source/anchors/
+   sudo cp example_secondary.pem /etc/pki/ca-trust/source/anchors/
+   cd /etc/pki/ca-trust/source/anchors/
+   sudo chown root:root example_primary.pem
+   sudo chmod 600 example_primary.pem
+   sudo chown root:root example_secondary.pem
+   sudo chmod 600 example_secondary.pem
+   sudo update-ca-trust extract
+   echo $?
+   ```
+    {{% notice info %}}
+   *The command needs to return "0"*
+   {{% /notice %}}
+
 
 2. Try to access the website using "<AccountNumber>.example.com"
 
@@ -588,19 +687,22 @@ hidden: true
     dig +short <AccountNumber>.example.com
 
     # Access the Web Server
-    curl -k https://<AccountNumber>.example.com
+    curl https://<AccountNumber>.example.com
     ```
     {{% notice warning %}}
    *Change the **<<AccountNumber>>** with the AWS Account Number. E.g. 1234123443*
    {{% /notice %}}
 
-3. Using the first terminal, remove the inbound rule to VPC Endpoint.
+3. Now, lets force the system to switch to the Secondary region. Using the **first terminal**, remove the inbound rule to VPC Endpoint. This action will trigger the CloudWatch Alarm (Synthetic Canary) and will trigger the Route53 Health Check to switch the IP of the <account_number>.example.com to the secondary region.
 
     ```bash
-    # Get security group id of Web Server Primary
+    # Get security group id of Primary region
+    export SG_VPCENDPOINT_PRIMARY=$(aws ec2 describe-vpc-endpoints | jq -r ".VpcEndpoints[].Groups[].GroupName")
+    echo export SG_VPCENDPOINT_PRIMARY=$SG_VPCENDPOINT_PRIMARY >> ~/.bashrc #persist the variable on terminal
+    
     export SG_ID_PRIMARY=$(aws ec2 describe-security-groups \
-    --filters "Name=group-name,Values=apigwlab-VpceSecurityGroup-119XHWAQ256WC" |\
-     jq -r ".SecurityGroups[].GroupId")
+    --filters "Name=group-name,Values=$SG_VPCENDPOINT_PRIMARY" | jq -r ".SecurityGroups[].GroupId")
+    echo export SG_ID_PRIMARY=$SG_ID_PRIMARY >> ~/.bashrc #persist the variable on terminal
 
     # Revoke the inbound rule for **port 80**
     aws ec2 revoke-security-group-ingress \
@@ -608,14 +710,14 @@ hidden: true
       --ip-permissions FromPort=443,IpProtocol=tcp,ToPort=443,IpRanges=[{CidrIp=0.0.0.0/0}]
     ```
 
-4. Waite for a couple of minutes and, on the second terminal, try to access the website again
+4. Wait for a couple of minutes and, on the **second terminal**, try to access the website again
 
     ```bash
     # Check the DNS answer
     dig +short <AccountNumber>.example.com
 
     # Access the Web Server
-    curl -k https://<AccountNumber>.example.com
+    curl https://<AccountNumber>.example.com
     ```
     {{% notice warning %}}
    *Change the **<<AccountNumber>>** with the AWS Account Number. E.g. 1234123443*
