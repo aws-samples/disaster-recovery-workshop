@@ -7,7 +7,7 @@ pre: "<b></b>"
 tags: [Active-Active]
 type: Lab
 awsServices:
- - Amazon Route53
+ - Amazon Route 53
 draft: true
 ---
 

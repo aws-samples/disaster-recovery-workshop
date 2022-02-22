@@ -7,7 +7,7 @@ pre: "<b></b>"
 tags: [Warm-Standby]
 type: Lab
 awsServices:
- - Amazon Route53
+ - Amazon Route 53
 ---
 
 ### Objective
@@ -21,8 +21,9 @@ This exercise will show you the steps for you to quickly configure DNS-based fai
 
 **By the end of this exercise, you will be able to:**
 
-*   Configure a failover policy on Amazon Route 53 to enable DNS entry to switch for resources in different regions.
-*   Architect a failover mechanism for private resources in your VPC.
+* Configure a health check on Amo  
+* Configure a failover policy on Amazon Route 53 to enable DNS entry to switch for resources in different regions.
+* Architect a failover mechanism for private resources in your VPC.
 
 **Estimated Duration:** 40 minutes
 
@@ -39,7 +40,7 @@ This exercise will show you the steps for you to quickly configure DNS-based fai
 
 ### Conclusion
 
-With this exercise, it was possible to understand how to configure DNS entries on Route 53 to do dynamic routing between resources in different regions.
+With this exercise, it was possible to understand how to configure DNS entries on Amazon Route 53 to do dynamic routing between resources in different AWS regions.
 For more complex contexts involving on-premises and multi-account environment, the following reference presents a sample architecture that can be applied.
 
 - [Multi region DNS support](https://aws.amazon.com/blogs/architecture/using-route-53-private-hosted-zones-for-cross-account-multi-region-architectures/)

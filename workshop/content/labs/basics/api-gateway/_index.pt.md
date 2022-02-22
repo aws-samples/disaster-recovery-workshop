@@ -1,6 +1,6 @@
 ---
-title: "Amazon API Gateway + Route53"
-menutitle: "Amazon API Gateway + Route53"
+title: "Amazon API Gateway + Route 53"
+menutitle: "Amazon API Gateway + Route 53"
 chapter: false
 weight: 1
 pre: "<b></b>"

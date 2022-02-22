@@ -1,6 +1,6 @@
 ---
-title: "Amazon API Gateway + Route53"
-menutitle: "Amazon API Gateway + Route53"
+title: "Amazon API Gateway + Route 53"
+menutitle: "Amazon API Gateway + Route 53"
 weight: 1
 pre: "<b></b>"
 hidden: true
@@ -521,6 +521,7 @@ hidden: true
     ```
 
 #### Set up Health Check
+
 
 1. Create a CloudWatch alarm-based health check for Route53 to identify if the endpoint is healthy. This procedure needs to be executed on Primary Region (us-east-1) only.
 

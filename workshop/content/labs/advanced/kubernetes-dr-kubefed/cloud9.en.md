@@ -366,9 +366,9 @@ Wait until the last command shows that both clusters are `Ready = True` as can b
 
 Simply access the load balancer address for each of the regions through your browser. The container used in the deployment returns `instance_metadata` of the instance on which the container is running. In this metadata it is possible among other information to see which region it is running. For more information on `instance_metadata` access [is documentation](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html).
 
-#### 5. Configure Route53 Failover Between the Two Regions
+#### 5. Configure Route 53 Failover Between the Two Regions
 
-In this step of the exercise we will configure AWS Route53 with previously created DNS entries from our two LoadBalancers in different regions.
+In this step of the exercise we will configure Amazon Route 53 with previously created DNS entries from our two LoadBalancers in different regions.
 
 1. To create a private zone you will need to associate it with a VPC, so let's get the ID from our VPC where we climbed our Cloud9 EC2.
 
@@ -404,7 +404,7 @@ Now that we've created our DNS Zone we'll configure active-passive failover. For
     ```
 
     ```bash
-    # Create Healthcheck for Route53
+    # Create Healthcheck for Route 53
     export HEALTH_ID=$(aws route53 create-health-check --caller-reference $(date "+%Y%m%d%H%M%S") --health-check-config file://create-health-check.json | jq .HealthCheck.Id)
     ```
 

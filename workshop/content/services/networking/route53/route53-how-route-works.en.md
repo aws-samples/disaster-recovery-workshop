@@ -1,11 +1,11 @@
 ---
-title: "Amazon Route53 - How Internet Traffic Is Routed"
+title: "Amazon Route 53 - How Internet Traffic Is Routed"
 menutitle: "How Internet Traffic Is Routed"
 weight: 2
 chapter: true
 pre: "<b></b>"
 awsServices:
- - "Amazon Route53"
+ - "Amazon Route 53"
 type: Documentation
 ---
 

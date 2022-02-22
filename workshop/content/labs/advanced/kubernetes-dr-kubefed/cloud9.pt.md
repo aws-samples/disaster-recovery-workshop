@@ -218,9 +218,9 @@ done
 ```
 Basta acessar o endereço do balanceador de carga de cada uma das regiões pelo seu navegador. O container utilizado no deployment retorna o `instance_metadata` da instancia na qual o container está executando. Nestes metadados é possível dentre outras informações ver qual a região que ele está executando. Para mais informações sobre `instance_metadata` acesse [está documentação](https://docs.aws.amazon.com/pt_br/AWSEC2/latest/UserGuide/ec2-instance-metadata.html).
 
-#### 5. Configurar Route53 failover entre as duas regiões
+#### 5. Configurar Route 53 failover entre as duas regiões
 
-Nesta etapa do exercício iremos configurar o AWS Route53 com as entradas de DNS criadas anteriormente dos nossos dois LoadBalancers em regiões distintas.
+Nesta etapa do exercício iremos configurar o Amazon Route 53 com as entradas de DNS criadas anteriormente dos nossos dois LoadBalancers em regiões distintas.
 
 5.1 Para criar uma zona privada será necessário associa-la a uma VPC, portanto vamos pegar o ID da nossa VPC onde subimos a nossa EC2 do Cloud9.
 
@@ -259,7 +259,7 @@ EOF
 ```
 
 ```bash
-# Criar Healthcheck no Route53
+# Criar Healthcheck no Route 53
 
 export HEALTH_ID=$(aws route53 create-health-check --caller-reference $(date "+%Y%m%d%H%M%S") --health-check-config file://create-health-check.json | jq .HealthCheck.Id)
 ```

@@ -1,11 +1,11 @@
 ---
-title: "Amazon Route53 - Failover Routing Policy"
+title: "Amazon Route 53 - Failover Routing Policy"
 menutitle: "Failover"
 weight: 3
 chapter: true
 pre: "<b></b>"
 awsServices:
- - "Amazon Route53"
+ - "Amazon Route 53"
 tags: 
  - Pilot Light
 type: Documentation

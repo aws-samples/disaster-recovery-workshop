@@ -1,11 +1,11 @@
 ---
-title: "Amazon Route53 - Weighted Routing Policy"
+title: "Amazon Route 53 - Weighted Routing Policy"
 menutitle: "Weighted Routing"
 weight: 3
 chapter: false
 pre: "<b></b>"
 awsServices:
- - "Amazon Route53"
+ - "Amazon Route 53"
 tags: 
  - Warm Standby
 type: Documentation

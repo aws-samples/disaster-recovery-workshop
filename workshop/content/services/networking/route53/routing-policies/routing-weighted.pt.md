@@ -1,11 +1,11 @@
 ---
-title: "Amazon Route53 - Política de Roteamento Ponderado"
+title: "Amazon Route 53 - Política de Roteamento Ponderado"
 menutitle: "Ponderado (Weighted)"
 weight: 3
 chapter: false
 pre: "<b></b>"
 awsServices:
- - "Amazon Route53"
+ - "Amazon Route 53"
 tags: 
  - Warm Standby
 type: Documentation

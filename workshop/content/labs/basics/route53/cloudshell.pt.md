@@ -53,7 +53,7 @@ hidden: true
 
     ```
 
-4. Criar um health check baseado em alarme do CloudWatch para o Route53 identificar se o endpoint está saudável. Executar o seguinte template de CloudFormation com o nome de stack hc-confiabilidade e seguintes valores:
+4. Criar um health check baseado em alarme do CloudWatch para o Route 53 identificar se o endpoint está saudável. Executar o seguinte template de CloudFormation com o nome de stack hc-confiabilidade e seguintes valores:
  
  - Protocol: HTTP
  - IP Address: IP privado da instância primária do ambiente provisionado anteriormente
