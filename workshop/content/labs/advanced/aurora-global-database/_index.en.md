@@ -48,7 +48,7 @@ This lab uses the US East (N. Virginia) /us-east-1 region for the Aurora Global 
 
 ![Seleção de região do AWS Management Console](/images/aurora-2-region-select.png?raw=true)
 
-<h4>Criar o ambiente de laboratório usando AWS CloudFormation </h4>
+<h4>Create the lab environment using AWS CloudFormation </h4>
 
 To simplify the initial lab experience, we created basic models for <a href="https://aws.amazon.com/cloudformation/" target="_blank"> AWS CloudFormation </a> that provision the resources required for the lab environment. These models are designed to deploy a consistent network infrastructure and components used in the lab.
 
