@@ -19,6 +19,7 @@ Visite o workshop sobre este URL: [disaster-recovery.workshop.aws](https://disas
 ## Guia do desenvolvedor
 
 Este workshop é construído usando markdown como um site HTML estático usando [hugo](http://gohugo.io).
+Atenção: Utilize uma versão do Hugo inferior a 0.93 onde o método Page.Dir foi descontinuado de acordo com [#4117](https://github.com/gohugoio/hugo/issues/4117).
 
 ```bash
 brew install hugo
@@ -28,6 +29,7 @@ Clone esse repositório e os submódulos:
 
 ```bash
 git clone https://github.com/aws-samples/disaster-recovery-workshop.git
+cd disaster-recovery-workshop/workshop
 git submodule init
 git submodule update
 ```
@@ -37,7 +39,6 @@ Você encontrará o conteúdo da oficina no [workshop/](workshop/) diretório.
 Você pode iniciar um servidor de desenvolvimento local executando:
 
 ```bash
-cd workshop
 # parameter -D (--buildDrafts) shows content marked as draft
 hugo server -D
 ```
