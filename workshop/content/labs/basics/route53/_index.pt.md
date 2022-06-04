@@ -15,6 +15,8 @@ draft: true
 
 Esse exercício irá mostrar os passos para você configurar rapidamente a funcionalidade de failover baseado em DNS para endpoints existentes em diferentes regiões. 
 
+Aviso: para este laboratório, você deve usar as regiões US-EAST-1 e US-WEST-1. Se você estiver executando um evento da AWS, confirme essas informações com seu instrutor.
+
 **Conhecimentos necessários:** 
 - Uso básico do AWS CLI
 - Conceitos básicos sobre balanceadores de carga
