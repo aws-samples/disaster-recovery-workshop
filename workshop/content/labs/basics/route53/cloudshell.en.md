@@ -15,6 +15,10 @@ hidden: true
 
 1. Create a EC2 **Key Pair** for access the EC2 instance in each region.
 
+   {{% notice info %}}
+   *For lab purposes you will be instructed to access the EC2 instances through SSH. That should keep it simple. Consider using Session Manager within AWS Systems Manager whenever possible as a security best practice.*
+   {{% /notice %}}
+
    ```bash
    aws ec2 create-key-pair --key-name us-east-1-keypair --query 'KeyMaterial' --output text > us-east-1-keypair.pem --region us-east-1
    aws ec2 create-key-pair --key-name us-west-1-keypair --query 'KeyMaterial' --output text > us-west-1-keypair.pem --region us-west-1
