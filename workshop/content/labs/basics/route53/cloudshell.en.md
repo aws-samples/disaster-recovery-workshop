@@ -351,7 +351,7 @@ hidden: true
     ```
 
    {{% notice info %}}
-   *After 1 minute, the Health Check will mark the **PRIMARY WEB SERVER** as **UNHEALTHY** and will trigger the failover mechanism.*
+   *After 2 minutes, the Health Check will mark the **PRIMARY WEB SERVER** as **UNHEALTHY** and will trigger the failover mechanism.*
    {{% /notice %}}
 
 
