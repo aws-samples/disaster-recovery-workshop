@@ -20,8 +20,6 @@ Visite o workshop sobre este URL: [disaster-recovery.workshop.aws](https://disas
 
 Este workshop é construído usando markdown como um site HTML estático usando [hugo](http://gohugo.io).
 
-Atenção: Utilize uma versão do Hugo anterior a 0.93 onde o método Page.Dir foi descontinuado de acordo com [#4117](https://github.com/gohugoio/hugo/issues/4117).
-
 ```bash
 brew install hugo
 ```

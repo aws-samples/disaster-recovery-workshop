@@ -20,8 +20,6 @@ Visit the workshop on this URL: [disaster-recovery.workshop.aws](https://disaste
 
 This workshop is built with markdown as a static HTML site using [hugo](http://gohugo.io).
 
-Warning: Make sure to use Hugo version prior to 0.93 where Page.Dir method has been deprecated according to [#4117](https://github.com/gohugoio/hugo/issues/4117).
-
 ```bash
 brew install hugo
 ```
