@@ -1,0 +1,767 @@
+## Amazon Aurora - Global Database - Primary Region
+## Infrastructure template with an Aurora cluster for lab exercises
+##
+## Dependencies:
+## none
+##
+## License:
+## This sample code is made available under the MIT-0 license. See the LICENSE file.
+
+AWSTemplateFormatVersion: 2010-09-09
+Description: Amazon Aurora - Global Database - Primary Region
+
+## Parameters
+Parameters:
+  LatestAmiId:
+    Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
+    Default: '/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-ebs'
+    Description: Please leave as-is, reserved for internal use.
+
+## Mappings
+Mappings:
+  RegionalSettings:
+    us-east-1:
+      ideType: m5.large
+      supersetType: m5.large
+      nodeType: db.r6g.large
+      name: N. Virginia
+      az1: us-east-1a
+      az2: us-east-1b
+      az3: us-east-1c
+    us-east-2:
+      ideType: m5.large
+      supersetType: m5.large
+      nodeType: db.r6g.large
+      name: Ohio
+      az1: us-east-2c
+      az2: us-east-2a
+      az3: us-east-2b
+    us-west-2:
+      ideType: m5.large
+      supersetType: m5.large
+      nodeType: db.r6g.large
+      name: Oregon
+      az1: us-west-2b
+      az2: us-west-2c
+      az3: us-west-2d
+  NetworkSettings:
+    primary:
+      vpcCidr: 172.30.0.0/16
+      subPub1Cidr: 172.30.0.0/24
+      subPub2Cidr: 172.30.1.0/24
+      subPub3Cidr: 172.30.2.0/24
+      subPrv1Cidr: 172.30.10.0/24
+      subPrv2Cidr: 172.30.11.0/24
+      subPrv3Cidr: 172.30.12.0/24
+    secondary:
+      vpcCidr: 172.31.0.0/16
+      subPub1Cidr: 172.31.0.0/24
+      subPub2Cidr: 172.31.1.0/24
+      subPub3Cidr: 172.31.2.0/24
+      subPrv1Cidr: 172.31.10.0/24
+      subPrv2Cidr: 172.31.11.0/24
+      subPrv3Cidr: 172.31.12.0/24
+  ClusterSettings:
+    global:
+      dbSchema: mylab
+      dbDriver: mysql
+      dbVersion: 5.7.mysql_aurora.2.10.0
+      dbEngine: aurora-mysql
+      dbFamily: aurora-mysql5.7
+    scaling:
+      maxCapacity: 2
+      minCapacity: 1
+      cpuLoadTarget: 30
+    sysbench:
+      dbSchema: sbtpcc
+      runTime: '600'
+      numThreads: '4'
+      numTables: '8'
+      numWarehouses: '2'
+  GDBSettings:
+    superset:
+      username: "admin"
+      password: "AuroraTest123!"
+
+## Resources
+Resources:
+
+## The VPC
+  vpc:
+    Type: "AWS::EC2::VPC"
+    Properties:
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      InstanceTenancy: default
+      CidrBlock: !FindInMap [ NetworkSettings, primary, vpcCidr ]
+      Tags:
+        - Key: Name
+          Value: !Join ['-', ['auroralab-vpc', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+
+## Create an IGW & attach it to the VPC
+  vpcIgw:
+    Type: "AWS::EC2::InternetGateway"
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Join ['-', ['auroralab-igw', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+  attachIgwVpc:
+    Type: "AWS::EC2::VPCGatewayAttachment"
+    Properties:
+      VpcId: !Ref vpc
+      InternetGatewayId: !Ref vpcIgw
+
+## Create a public subnet in each AZ
+  sub1Public:
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      VpcId: !Ref vpc
+      CidrBlock: !FindInMap [ NetworkSettings, primary, subPub1Cidr ]
+      AvailabilityZone: !FindInMap [ RegionalSettings, !Ref "AWS::Region", az1 ]
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Join ['-', ['auroralab-pub-sub-1', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+  sub2Public:
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      VpcId: !Ref vpc
+      CidrBlock: !FindInMap [ NetworkSettings, primary, subPub2Cidr ]
+      AvailabilityZone: !FindInMap [ RegionalSettings, !Ref "AWS::Region", az2 ]
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Join ['-', ['auroralab-pub-sub-2', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+  sub3Public:
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      VpcId: !Ref vpc
+      CidrBlock: !FindInMap [ NetworkSettings, primary, subPub3Cidr ]
+      AvailabilityZone: !FindInMap [ RegionalSettings, !Ref "AWS::Region", az3 ]
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Join ['-', ['auroralab-pub-sub-3', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+
+## Associate the public subnets with a public route table
+  rtbPublic:
+    Type: "AWS::EC2::RouteTable"
+    Properties:
+      VpcId: !Ref vpc
+      Tags:
+        - Key: Name
+          Value: !Join ['-', ['auroralab-public-rtb', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+  rteToIgw:
+    Type: "AWS::EC2::Route"
+    DependsOn: attachIgwVpc
+    Properties:
+      RouteTableId: !Ref rtbPublic
+      DestinationCidrBlock: "0.0.0.0/0"
+      GatewayId: !Ref vpcIgw
+  srta1Public:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Properties:
+      SubnetId: !Ref sub1Public
+      RouteTableId: !Ref rtbPublic
+  srta2Public:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Properties:
+      SubnetId: !Ref sub2Public
+      RouteTableId: !Ref rtbPublic
+  srta3Public:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Properties:
+      SubnetId: !Ref sub3Public
+      RouteTableId: !Ref rtbPublic
+
+## Create a private subnet in each AZ
+  sub1Private:
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      VpcId: !Ref vpc
+      CidrBlock: !FindInMap [ NetworkSettings, primary, subPrv1Cidr ]
+      AvailabilityZone: !FindInMap [ RegionalSettings, !Ref "AWS::Region", az1 ]
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: !Join ['-', ['auroralab-prv-sub-1', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+  sub2Private:
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      VpcId: !Ref vpc
+      CidrBlock: !FindInMap [ NetworkSettings, primary, subPrv2Cidr ]
+      AvailabilityZone: !FindInMap [ RegionalSettings, !Ref "AWS::Region", az2 ]
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: !Join ['-', ['auroralab-prv-sub-2', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+  sub3Private:
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      VpcId: !Ref vpc
+      CidrBlock: !FindInMap [ NetworkSettings, primary, subPrv3Cidr ]
+      AvailabilityZone: !FindInMap [ RegionalSettings, !Ref "AWS::Region", az3 ]
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: !Join ['-', ['auroralab-prv-sub-3', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+
+## Create a NAT Gateway & EIP
+  natEip:
+    Type: "AWS::EC2::EIP"
+    Properties:
+      Domain: vpc
+  vpcNgw:
+    Type: "AWS::EC2::NatGateway"
+    DependsOn: attachIgwVpc
+    Properties:
+      AllocationId: !GetAtt natEip.AllocationId
+      SubnetId: !Ref sub2Public
+
+## Associate the private subnets with a NATed route table
+  rtbNat:
+    Type: "AWS::EC2::RouteTable"
+    Properties:
+      VpcId: !Ref vpc
+      Tags:
+        - Key: Name
+          Value: !Join ['-', ['auroralab-nat-rtb', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+  rteToNgw:
+    Type: "AWS::EC2::Route"
+    Properties:
+      RouteTableId: !Ref rtbNat
+      DestinationCidrBlock: "0.0.0.0/0"
+      NatGatewayId: !Ref vpcNgw
+  srta1Ngw:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref sub1Private
+      RouteTableId: !Ref rtbNat
+  srta2Ngw:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref sub2Private
+      RouteTableId: !Ref rtbNat
+  srta3Ngw:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref sub3Private
+      RouteTableId: !Ref rtbNat
+
+## Create DB subnet group
+  dbSubnets:
+    Type: "AWS::RDS::DBSubnetGroup"
+    Properties:
+      DBSubnetGroupName: !Join ['-', ['auroralab-db-subnet-group', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+
+      DBSubnetGroupDescription: "Aurora Lab subnets allowed for deploying DB instances"
+      SubnetIds: [ !Ref sub1Private, !Ref sub2Private, !Ref sub3Private ]
+      Tags:
+        - Key: Name
+          Value: !Join ['-', ['auroralab-db-subnet-group', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+
+## Create client security group
+  clientSecGroup:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      VpcId: !Ref vpc
+      GroupName: !Join ['-', ['auroralab-workstation-sg', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+      GroupDescription: "Aurora lab workstation security group (firewall)"
+      Tags:
+        - Key: Name
+          Value: !Join ['-', ['auroralab-workstation-sg', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+
+## Create Apache Superset security group
+  supersetSecGroup:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      VpcId: !Ref vpc
+      GroupName: !Join ['-', ['auroralab-ec2-sg', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+      GroupDescription: "Aurora Lab EC2 security group (firewall)"
+      Tags:
+        - Key: Name
+          Value: !Join ['-', ['auroralab-ec2-sg', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+          Description: Allows Default Webport (80) access      
+
+## Create DB security group
+  dbClusterSecGroup:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      VpcId: !Ref vpc
+      GroupName: !Join ['-', ['auroralab-database-sg', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+      GroupDescription: "Aurora lab database security group (firewall)"
+      Tags:
+        - Key: Name
+          Value: !Join ['-', ['auroralab-database-sg', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+          SourceSecurityGroupId: !Ref clientSecGroup
+          Description: "Allows MySQL access from the workstation security group"
+  ruleDbClusterSecGroupIngressSelf:
+    Type: "AWS::EC2::SecurityGroupIngress"
+    Properties:
+      GroupId: !Ref dbClusterSecGroup
+      IpProtocol: -1
+      Description: "Allows all inbound access from sources with the same security group"
+      SourceSecurityGroupId: !Ref dbClusterSecGroup
+  ruledbClusterSecGroupIngressSuperset:
+    Type: "AWS::EC2::SecurityGroupIngress"
+    Properties:
+      GroupId: !Ref dbClusterSecGroup
+      IpProtocol: tcp
+      FromPort: 3306
+      ToPort: 3306
+      Description: "Allows MySQL access from Superset Instance"
+      SourceSecurityGroupId: !Ref supersetSecGroup
+
+## Create NACL to simulate regional failure
+  naclDenyAllAccess:
+    Type: "AWS::EC2::NetworkAcl"
+    Properties: 
+      VpcId: !Ref vpc
+      Tags: 
+        - Key: Name
+          Value: !Join ['-', ['auroralab-denyall-nacl', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+  naclEntryDenyAllEgress:
+    Type: "AWS::EC2::NetworkAclEntry"
+    Properties: 
+      CidrBlock: 0.0.0.0/0
+      Egress: true
+      NetworkAclId: !Ref naclDenyAllAccess
+      Protocol: -1
+      RuleAction: deny
+      RuleNumber: 100
+  naclEntryDenyAllIngress:
+    Type: "AWS::EC2::NetworkAclEntry"
+    Properties: 
+      CidrBlock: 0.0.0.0/0
+      Egress: false
+      NetworkAclId: !Ref naclDenyAllAccess
+      Protocol: -1
+      RuleAction: deny
+      RuleNumber: 100 
+
+## Create a random generated password and store it as a secret for the DB cluster
+  secretClusterAdminUser:
+    Type: "AWS::SecretsManager::Secret"
+    Properties:
+      Description: "Administrator user credentials for DB cluster 'auroralab-mysql-cluster'"
+      GenerateSecretString:
+        SecretStringTemplate: '{"username": "administrator"}'
+        GenerateStringKey: 'password'
+        PasswordLength: 10
+        ExcludeCharacters: '="@/\$`&:{}()[]'
+      Tags:
+        - Key: Name
+          Value: !Join ['-', ['auroralab-cluster-secret', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+
+## Create external integration role
+  roleServiceIntegration:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: !Join ['-', ['auroralab-integrate', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+      Description: "Allows your Aurora DB cluster to integrate with other AWS services, such as Amazon S3 for import/export."
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - "sts:AssumeRole"
+            Principal:
+              Service:
+                - "rds.amazonaws.com"
+      Policies:
+        - PolicyName: inline-policy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "s3:ListBucket"
+                  - "s3:GetObject"
+                  - "s3:GetObjectVersion"
+                  - "s3:AbortMultipartUpload"
+                  - "s3:DeleteObject"
+                  - "s3:ListMultipartUploadParts"
+                  - "s3:PutObject"
+                Resource:
+                  - "arn:aws:s3:::*/*"
+                  - "arn:aws:s3:::*"
+      Tags:
+        - Key: Name
+          Value: !Join ['-', ['auroralab-integrate', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+
+## Create enhanced monitoring role
+  roleEnhancedMonitoring:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: !Join ['-', ['auroralab-monitor', !Sub "${AWS::Region}"]]
+      Description: "Allows your Aurora DB cluster to deliver Enhanced Monitoring metrics."
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - "sts:AssumeRole"
+            Principal:
+              Service:
+                - "monitoring.rds.amazonaws.com"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
+      Tags:
+        - Key: Name
+          Value: !Join ['-', ['auroralab-monitor', !Sub "${AWS::Region}"]]
+
+## Create role for client IDE
+  roleClientIDE:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: !Join ['-', ['auroralab-ide', !Sub "${AWS::Region}"]]
+      Description: "Permits user interaction with AWS APIs from the Cloud9 IDE."
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - "sts:AssumeRole"
+            Principal:
+              Service:
+                - "ec2.amazonaws.com"
+                - "ssm.amazonaws.com"
+                - "cloud9.amazonaws.com"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+        - "arn:aws:iam::aws:policy/AmazonSageMakerFullAccess"
+        - "arn:aws:iam::aws:policy/AWSGlueConsoleSageMakerNotebookFullAccess"
+        - "arn:aws:iam::aws:policy/AWSCloud9SSMInstanceProfile"
+        - "arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess"
+      Policies:
+        - PolicyName: inline-policy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "rds:*"
+                  - "s3:*"
+                  - "ssm:*"
+                  - "kinesis:*"
+                  - "kms:*"
+                  - "sns:*"
+                  - "secretsmanager:*"
+                  - "rds-db:connect"
+                  - "ec2:CreateVpcPeeringConnection"
+                  - "ec2:DescribeVpcPeeringConnections"
+                  - "ec2:AcceptVpcPeeringConnection"
+                  - "ec2:DescribeRegions"
+                  - "iam:AttachRolePolicy"
+                  - "iam:DetachRolePolicy"
+                  - "iam:PutRolePolicy"
+                  - "iam:DeleteRolePolicy"
+                  - "iam:GetRolePolicy"
+                  - "iam:CreatePolicy"
+                  - "iam:DeletePolicy"
+                  - "iam:CreateRole"
+                  - "iam:DeleteRole"
+                  - "iam:ListPolicies"
+                  - "iam:ListRoles"
+                  - "iam:PassRole"
+                Resource: "*"
+      Tags:
+        - Key: Name
+          Value: !Join ['-', ['auroralab-ide', !Sub "${AWS::Region}"]]
+
+  profileClientIDE:
+    Type: "AWS::IAM::InstanceProfile"
+    Properties:
+      InstanceProfileName: !Join ['-', ['auroralab-ide', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]],!Sub "${AWS::Region}"]]
+      Path: /
+      Roles:
+        - Ref: roleClientIDE
+
+## Create the EC2 MySQL Client
+  ec2mysqlclient:
+    Type: "AWS::EC2::Instance"
+    Properties:
+      SubnetId: !Ref sub2Public
+      InstanceType: !FindInMap [ RegionalSettings, !Ref "AWS::Region", supersetType ]
+      SecurityGroupIds: [ !Ref supersetSecGroup ]
+      Tags:
+        - Key: Name
+          Value: !Join ['-', ['auroralab-superset-host', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs:
+            DeleteOnTermination: true
+            VolumeSize: 80
+            VolumeType: gp2
+      ImageId: !Ref LatestAmiId
+      IamInstanceProfile: !Ref profileClientIDE
+      UserData:
+        Fn::Base64:
+          Fn::Join:
+            - "\n"
+            - - !Sub |
+                #!/bin/bash
+                cd /tmp
+
+                # start bootstrap
+                echo "$(date "+%F %T") * running as $(whoami)" >> /debug.log
+
+                # install MariaDB and necessary packages
+                echo "$(date "+%F %T") Updating packages and install Docker" >> /debug.log           
+                sudo yum update -y
+                sudo yum install -y mariadb-server
+
+                mkdir -p /home/ec2-user/.aws
+                touch /home/ec2-user/.aws/config
+                echo \"[default]\" >> /home/ec2-user/.aws/config
+                echo \"region = ${AWS::Region}\" >> /home/ec2-user/.aws/config
+                chown -R ec2-user:ec2-user /home/ec2-user/.aws
+                aws --version >> /debug.log
+                echo \"$(date \"+%F %T\") * configured aws cli\" >> /bootstrap.log
+                echo \"$(date \"+%F %T\") * environment vars initialized\" >> /bootstrap.log
+
+                export SECRETSTRING=`aws secretsmanager get-secret-value --secret-id \"${secretClusterAdminUser}\" --region ${AWS::Region} | jq -r '.SecretString'` && export DBPASS=`echo $SECRETSTRING | jq -r '.password'` && export DBUSER=`echo $SECRETSTRING | jq -r '.username'`
+                echo "export DBPASS=\"$DBPASS\"" >> /home/ec2-user/.bashrc && echo "export DBUSER=$DBUSER" >> /home/ec2-user/.bashrc
+
+                echo \"$(date \"+%F %T\") * signal bootstrap complete\" >> /debug.log
+
+                # export credentials
+              - Fn::Join:
+                  - ""
+                  - - 'export ADMINUSER="'
+                    - !FindInMap [ GDBSettings, superset, username ]
+                    - '"'
+              - Fn::Join:
+                  - ""
+                  - - 'export ADMINPASS="'
+                    - !FindInMap [ GDBSettings, superset, password ]
+                    - '"'
+
+## Create cluster parameter group
+  cpgClusterParams:
+    Type: "AWS::RDS::DBClusterParameterGroup"
+    Properties:
+      Description: !Join ['-', ['auroralab-mysql-cluster-params', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+      Family: !FindInMap [ ClusterSettings, global, dbFamily ]
+      Parameters:
+        innodb_stats_persistent_sample_pages: "256"
+        slow_query_log: "1"
+        long_query_time: "1"
+        log_output: FILE
+      Tags:
+        - Key: Name
+          Value: !Join ['-', ['auroralab-mysql-cluster-params', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+
+## Create Aurora cluster
+  dbCluster:
+    Type: "AWS::RDS::DBCluster"
+    #DependsOn: dbclusterkey
+    DeletionPolicy: Delete
+    Properties:
+      Engine: !FindInMap [ ClusterSettings, global, dbEngine ]
+      EngineVersion: !FindInMap [ ClusterSettings, global, dbVersion ]
+      DBSubnetGroupName: !Ref dbSubnets
+      DBClusterParameterGroupName: !Ref cpgClusterParams
+      DBClusterIdentifier: !Join ['-', ['auroralab-mysql-cluster', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+      BackupRetentionPeriod: 1
+      MasterUsername: !Join ["", ["{{resolve:secretsmanager:", !Ref secretClusterAdminUser, ":SecretString:username}}" ]]
+      MasterUserPassword: !Join ["", ["{{resolve:secretsmanager:", !Ref secretClusterAdminUser, ":SecretString:password}}" ]]
+      DatabaseName: !FindInMap [ ClusterSettings, global, dbSchema ]
+      StorageEncrypted: true
+      VpcSecurityGroupIds: [ !Ref dbClusterSecGroup ]
+      EnableCloudwatchLogsExports: [ error, slowquery ]
+      BacktrackWindow: 0
+      #KmsKeyId: !GetAtt dbclusterkey.Arn
+      EnableIAMDatabaseAuthentication: true
+      AssociatedRoles:
+        - RoleArn: !GetAtt roleServiceIntegration.Arn
+      Tags:
+        - Key: Name
+          Value: !Join ['-', ['auroralab-mysql-cluster', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+
+## Deploy cluster node #1 (may or may not be writer depending which one initializes first)
+  dbNode1:
+    Type: "AWS::RDS::DBInstance"
+    Properties:
+      DBClusterIdentifier: !Ref dbCluster
+      DBInstanceIdentifier: !Join ['-', ['auroralab-mysql-node-1', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+      CopyTagsToSnapshot: true
+      DBInstanceClass: !FindInMap [ RegionalSettings, !Ref "AWS::Region", nodeType ]
+      Engine: !FindInMap [ ClusterSettings, global, dbEngine ]
+      MonitoringInterval: 1
+      MonitoringRoleArn: !GetAtt roleEnhancedMonitoring.Arn
+      PubliclyAccessible: false
+      EnablePerformanceInsights: true
+      PerformanceInsightsRetentionPeriod: 7
+      Tags:
+        - Key: Name
+          Value: !Join ['-', ['auroralab-mysql-node-1', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+
+## Deploy cluster node #2 (may or may not be writer depending which one initializes first)
+  dbNode2:
+    Type: "AWS::RDS::DBInstance"
+    Properties:
+      DBClusterIdentifier: !Ref dbCluster
+      DBInstanceIdentifier: !Join ['-', ['auroralab-mysql-node-2', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+      CopyTagsToSnapshot: true
+      DBInstanceClass: !FindInMap [ RegionalSettings, !Ref "AWS::Region", nodeType ]
+      Engine: !FindInMap [ ClusterSettings, global, dbEngine ]
+      MonitoringInterval: 1
+      MonitoringRoleArn: !GetAtt roleEnhancedMonitoring.Arn
+      PubliclyAccessible: false
+      EnablePerformanceInsights: true
+      PerformanceInsightsRetentionPeriod: 7
+      Tags:
+        - Key: Name
+          Value: !Join ['-', ['auroralab-mysql-node-2', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+
+## Role to overcome current limitations in CFN ScalableTarget implemetation
+## This role is *NOT* actively used by any resource and service, but must be present
+  roleScalableTarget:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: !Join ['-', ['auroralab-scaling', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+      Description: "Role to integrate the Aurora DB cluster with Application AutoScaling for read replica auto scaling."
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - "sts:AssumeRole"
+            Principal:
+              Service:
+                - "rds.application-autoscaling.amazonaws.com"
+      Tags:
+        - Key: Name
+          Value: !Join ['-', ['auroralab-scaling', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+
+## Register the scalable target
+## Bug fix: when the stack name contains uppercase letters,
+## the DB cluster identifier is actually lowercased, but the resource ID
+## still contains uppercase, so you get a mismatch on the scalable target ResourceId
+  dbScalableTarget:
+    Type: "AWS::ApplicationAutoScaling::ScalableTarget"
+    DependsOn: [ dbNode1, dbNode2 ]
+    Properties:
+      ServiceNamespace: rds
+      ScalableDimension: "rds:cluster:ReadReplicaCount"
+      ResourceId: !Join [':', ['cluster', !Ref dbCluster]]
+      MaxCapacity: !FindInMap [ ClusterSettings, scaling, maxCapacity ]
+      MinCapacity: !FindInMap [ ClusterSettings, scaling, minCapacity ]
+      RoleARN: !GetAtt roleScalableTarget.Arn
+
+## Add scaling policy
+  dbScalingPolicy:
+    Type: "AWS::ApplicationAutoScaling::ScalingPolicy"
+    Properties:
+      PolicyName: !Join ['-', ['auroralab-autoscale-readers', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+      PolicyType: TargetTrackingScaling
+      ScalingTargetId: !Ref dbScalableTarget
+      TargetTrackingScalingPolicyConfiguration:
+        PredefinedMetricSpecification:
+          PredefinedMetricType: RDSReaderAverageCPUUtilization
+        ScaleInCooldown: 180
+        ScaleOutCooldown: 180
+        TargetValue: !FindInMap [ ClusterSettings, scaling, cpuLoadTarget ]
+
+## Create sysbench prep SSM document
+  ssmDocSysbenchTest:
+    Type: "AWS::SSM::Document"
+    Properties:
+      DocumentType: Command
+      Name: "auroralab-sysbench-test"
+      Tags:
+        - Key: Name
+          Value: "auroralab-sysbench-test"
+      Content:
+        schemaVersion: '2.2'
+        description: "SysBench Percona TPCC-LIKE Preparation"
+        parameters:
+          clusterEndpoint:
+            type: String
+            description: "Aurora Cluster Endpoint"
+            default: !GetAtt dbCluster.Endpoint.Address
+          dbUser:
+            type: String
+            description: "DB User"
+            default: !Join [ "", [ "{{resolve:secretsmanager:", !Ref secretClusterAdminUser, ":SecretString:username}}" ] ]
+          dbPassword:
+            type: String
+            description: "DB Password"
+            default: !Join [ "", [ "{{resolve:secretsmanager:", !Ref secretClusterAdminUser, ":SecretString:password}}" ] ]
+          dbSchema:
+            type: String
+            description: "DB Schema"
+            default: !FindInMap [ ClusterSettings, sysbench, dbSchema ]
+          dbDriver:
+            type: String
+            description: "DB Driver"
+            default: !FindInMap [ ClusterSettings, global, dbDriver ]
+            allowedValues: [ mysql, pgsql ]
+          runTime:
+            type: String
+            description: "Test Runtime"
+            default: !FindInMap [ ClusterSettings, sysbench, runTime ]
+          numThreads:
+            type: String
+            description: Threads
+            default: !FindInMap [ ClusterSettings, sysbench, numThreads ]
+          numTables:
+            type: String
+            description: Tables
+            default: !FindInMap [ ClusterSettings, sysbench, numTables ]
+          numScale:
+            type: String
+            description: Scale
+            default: !FindInMap [ ClusterSettings, sysbench, numWarehouses ]
+        mainSteps:
+        - action: aws:runShellScript
+          name: SysBenchTpccPrepare
+          inputs:
+            runCommand:
+            - 'echo "DROP SCHEMA IF EXISTS {{ dbSchema }}; CREATE SCHEMA {{ dbSchema }};" | mysql -h{{ clusterEndpoint }} -u{{ dbUser }} -p"{{ dbPassword }}" && cd /home/ec2-user/environment/sysbench-tpcc && ./tpcc.lua --mysql-host={{ clusterEndpoint }} --mysql-user={{ dbUser }} --mysql-password="{{ dbPassword }}" --mysql-db={{ dbSchema }} --threads={{ numThreads }} --tables={{ numTables }} --scale={{ numScale }} --time={{ runTime }} --db-driver={{ dbDriver }} prepare'
+        - action: aws:runShellScript
+          name: SysBenchTpccRun
+          inputs:
+            runCommand:
+            - 'cd /home/ec2-user/environment/sysbench-tpcc && ./tpcc.lua --mysql-host={{ clusterEndpoint }} --mysql-user={{ dbUser }} --mysql-password="{{ dbPassword }}" --mysql-db={{ dbSchema }} --mysql-ignore-errors=all --threads={{ numThreads }} --tables={{ numTables }} --scale={{ numScale }} --time={{ runTime }} --db-driver={{ dbDriver }} run'
+
+
+## Outputs
+Outputs:
+  vpcId:
+    Description: "Aurora Lab VPC"
+    Value: !Ref vpc
+  clientIdeUrl:
+    Description: "EC2"
+    Value: !Sub "https://${AWS::Region}.console.aws.amazon.com/ec2/v2/home?region=${AWS::Region}"
+  clusterName:
+    Description: "Aurora Cluster Name"
+    Value: !Ref dbCluster
+  clusterEndpoint:
+    Description: "Aurora Cluster Endpoint"
+    Value: !GetAtt dbCluster.Endpoint.Address
+  readerEndpoint:
+    Description: "Aurora Reader Endpoint"
+    Value: !GetAtt dbCluster.ReadEndpoint.Address
+  loadTestRunDoc:
+    Description: "Load Test Execution Command Document"
+    Value: !Ref ssmDocSysbenchTest
+  dbSubnetGroup:
+    Description: "Database Subnet Group"
+    Value: !Ref dbSubnets
+  dbSecurityGroup:
+    Description: "Database Security Group"
+    Value: !Ref dbClusterSecGroup
+  secretArn:
+    Description: "Database Credentials Secret ARN"
+    Value: !Ref secretClusterAdminUser
