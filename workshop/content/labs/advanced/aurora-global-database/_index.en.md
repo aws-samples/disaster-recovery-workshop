@@ -12,7 +12,7 @@ awsServices:
 
 ### Objective
 
-These exercises will show you the steps for using the Global Database engine for Amazon Aurora for MySQL databases. If you want more information [click here]({{< ref "/services/databases/aurora" >}} "Amazon Aurora").
+These exercises will show you the steps for using the Global Database engine for Amazon Aurora for MySQL databases. If you want more information <a onclick="window.open ('{{< ref "/services/databases/aurora" >}}', ''); return false" href="javascript:void(0);">click here</a>.
 
 **By the end of this exercise, you will be able to:**
 
@@ -30,13 +30,12 @@ Amazon Aurora <a href="https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGu
 
 This lab contains the following tasks:
 
-1.  Create a Lab Environment in the Ohio Region (us-east-2)
-2.  Create a lab environment in the Virginia Region (us-east-1)
-3.  Create an Aurora Global Cluster
+1.  Create the Lab Environment
+2.  Create an Aurora Global Cluster
 
-# 1. Create a Lab Environment in the Ohio Region (us-east-2)
+# 1. Create the Lab Environment
 
- <h4>Acesse o AWS Management Console </h4>
+ <h4>Access AWS Management Console </h4>
 
 You can access the console at: <a href="https://console.aws.amazon.com/" target="_blank">https://console.aws.amazon.com/</a> or through the single sign-on (SSO) mechanism provided by your organization.
 
@@ -44,21 +43,20 @@ You can access the console at: <a href="https://console.aws.amazon.com/" target=
 
 Labs are designed to work in any of the regions where Amazon Aurora compatible MySQL is available. However, not all Amazon Aurora features and capabilities may be available in all currently supported regions.
 
-This lab uses the US East (N. Virginia) /us-east-1 region for the Aurora Global Database secondary region, in which case we recommend using the Ohio region /us-east-1 for the primary environment.
+This lab uses the US East(N. Virginia)/us-east-1 region for the Aurora Global Database primary region and the US West(Oregon)/us-west-2 region for the secondary environment. Verify that US East(N. Virginia)/us-east-1 region is selected in the console. 
 
-![Seleção de região do AWS Management Console](/images/aurora-2-region-select.png?raw=true)
+![AWS Management Console region select](/images/aurora-2-region-select.png?raw=true)
 
 <h4>Create the lab environment using AWS CloudFormation </h4>
 
-To simplify the initial lab experience, we created basic models for <a href="https://aws.amazon.com/cloudformation/" target="_blank"> AWS CloudFormation </a> that provision the resources required for the lab environment. These models are designed to deploy a consistent network infrastructure and components used in the lab.
+To simplify the initial lab experience, we created basic models for <a href="https://aws.amazon.com/cloudformation/" target="_blank"> AWS CloudFormation </a> that provision the resources required for the lab environment in both regions. These models are designed to deploy a consistent network infrastructure and components used in the lab.
 
 Click  **Launch Stack to create an Aurora Provisioned DB Cluster Automatically**:
 
-<a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/create/review?stackName=auroralab&templateURL=https://s3.amazonaws.com/ams-stack-prod-content-us-east-1/templates/lab_template.yml&param_deployCluster=Yes&param_deployGDB=Yes" target="_blank"><img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png" alt="Launch Stack"></a>
+[![Launch Stack](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png "Launch Stack")](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?stackName=auroralab&templateURL=https://aurora-cloudformation-template-080622.s3.amazonaws.com/code/aurora-gdb-primary-cfn-template.yml)
+
 
 In the field called **Stack Name**, make sure the value `auroralab` is default.
-
-To run the Aurora Global Database Lab, also select **Yes** for the parameter **Enable Aurora Global Database Labs?**
 
 ![Create Stack](/images/aurora-2-create-stack-params.png?raw=true)
 
@@ -66,17 +64,17 @@ Go to the bottom of the page, check the box that says: **I acknowledge that AWS 
 
 ![Create Stack](/images/aurora-2-create-stack-confirm.png?raw=true)
 
-The stack will take approximately 20 minutes to provision. You can monitor the status on the page **Stack detail**. You can monitor the progress of the stack creation process by updating the tab **Events**. The last event on the list will indicate `CREATE_COMPLETE` for the stack feature.
+The stacks will take approximately 20 minutes to provision. You can monitor the status on the page **Stack detail**. You can monitor the progress of the stacks creation process by updating the tab **Events**. The last event on the list will indicate `CREATE_COMPLETE` for the stack feature.
 
 ![Stack Status](/images/aurora-2-stack-status.png?raw=true)
 
-When the stack status is `CREATE_COMPLETE`, click the tab **Outputs**. The values here will be essential for the completion of the rest of the laboratory. Take a moment to save these values in a location where you have easy access to them during the rest of the lab. The names that appear in the column **Key** are referenced directly in the instructions in subsequent steps, using the parameter format: == \[OutputKey] ==.
+When the status from both stacks are `CREATE_COMPLETE`, click the tab **Outputs**. The values from **auroralab** will be essential for the completion of the rest of the laboratory. Take a moment to save these values in a location where you have easy access to them during the rest of the lab. The names that appear in the column **Key** are referenced directly in the instructions in subsequent steps, using the parameter format: == \[OutputKey] ==.
 
 ![Stack Outputs](/images/aurora-2-stack-outputs.png?raw=true)
 
 Now let's check the access to Session Manager, from where we'll run some commands in the following labs.
 
-* [Connect to the Session Manager Workstation ]({{% relref connect %}})
+* <a onclick="window.open ('{{% relref connect %}}', ''); return false" href="javascript:void(0);">Connect to the Session Manager Workstation</a>
 
 {{% notice warning%}}
 Do not proceed without checking access to Session Manager.
@@ -121,12 +119,13 @@ A cluster **global** is a container for several **database clusters**, each loca
 
 Once the lab environment created in step **1. Create a Lab Environment in the Ohio Region (us-east-2)** be finalized, we can continue.
 
-Open the <a href="https://console.aws.amazon.com/rds/home#database:id=auroralab-mysql-cluster;is-cluster=true" target="_blank">Amazon RDS service console</a> on the MySQL DB cluster details page in the region **primary**. If you navigated to the RDS console by means other than the link in this paragraph, click `auroralab-mysql-cluster` in the section **Databases** from the RDS service console, and make sure you are back in the primary region.
+Open the <a href="https://console.aws.amazon.com/rds/home?region=us-east-2#database:id=auroralab-mysql-cluster;is-cluster=true" target="_blank">Amazon RDS service console</a> on the MySQL DB cluster details page in the region **primary**. If you navigated to the RDS console by means other than the link in this paragraph, click `auroralab-mysql-cluster` in the section **Databases** from the RDS service console, and make sure you are back in the primary region.
 
 {{% notice note%}}
 Make sure you're still working on **primary region**, especially if you're following the links above to open the service console on the right screen.
 {{% /notice%}}
 
+<!---
 First, you need to **disable** the resource **Backtrack**. Currently, the database backtrack is not compatible with Aurora global databases, and a cluster with this active resource cannot be converted to a global database. Select the `auroralab-mysql-cluster` and click the button **Modify**.
 
 ![RDS Cluster Modify](/images/aurora-rds-cluster-action-modify.png?raw=true)
@@ -144,6 +143,10 @@ When the modification completes, and the DB cluster is in a state `available` ag
 {{% notice note%}}
 You may need to refresh the browser page after disabling Backtrack before adding a region. If **Add region** appears unavailable, refresh the browser page, or make sure that Backtrack has been disabled correctly.
 {{% /notice%}}
+
+-->
+On the drop-down button **Actions**, choose **Add region**.
+
 ![RDS Cluster Add Region](/images/aurora-rds-cluster-action-add.png?raw=true)
 
 Set the following options on the configuration screen for the secondary DB cluster:
