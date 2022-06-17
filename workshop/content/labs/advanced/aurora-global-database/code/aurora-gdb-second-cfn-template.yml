@@ -464,17 +464,14 @@ Resources:
 
                 mkdir -p /home/ec2-user/.aws
                 touch /home/ec2-user/.aws/config
-                echo \"[default]\" >> /home/ec2-user/.aws/config
-                echo \"region = ${AWS::Region}\" >> /home/ec2-user/.aws/config
+                echo [default] >> /home/ec2-user/.aws/config
+                echo region = ${AWS::Region} >> /home/ec2-user/.aws/config
                 chown -R ec2-user:ec2-user /home/ec2-user/.aws
                 aws --version >> /debug.log
-                echo \"$(date \"+%F %T\") * configured aws cli\" >> /bootstrap.log
-                echo \"$(date \"+%F %T\") * environment vars initialized\" >> /bootstrap.log
+                echo "$(date "+%F %T") * configured aws cli" >> /debug.log
+                echo "$(date "+%F %T") * environment vars initialized" >> /debug.log
 
-                export SECRETSTRING=`aws secretsmanager get-secret-value --secret-id \"${secretClusterAdminUser}\" --region ${AWS::Region} | jq -r '.SecretString'` && export DBPASS=`echo $SECRETSTRING | jq -r '.password'` && export DBUSER=`echo $SECRETSTRING | jq -r '.username'`
-                echo "export DBPASS=\"$DBPASS\"" >> /home/ec2-user/.bashrc && echo "export DBUSER=$DBUSER" >> /home/ec2-user/.bashrc
-
-                echo \"$(date \"+%F %T\") * signal bootstrap complete\" >> /debug.log
+                echo "$(date "+%F %T") * signal bootstrap complete" >> /debug.log
 
                 # export credentials
               - Fn::Join:

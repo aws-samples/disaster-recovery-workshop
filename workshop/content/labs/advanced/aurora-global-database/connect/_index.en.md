@@ -2,7 +2,7 @@
 title: "Connect to Session Manager Workstation"
 menutitle: "Using Session Manager"
 chapter: false
-weight: 1
+weight: 0.1
 pre: "<b></b>"
 tags: [Active-Active]
 type: Lab

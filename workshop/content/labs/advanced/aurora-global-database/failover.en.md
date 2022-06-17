@@ -1,8 +1,8 @@
 ---
 title: "Amazon Aurora - Global Database"
-menutitle: "Aurora - Global Database"
+menutitle: "Fail Over at Aurora Global Database"
 chapter: false
-weight: 1
+weight: 0.2
 pre: "<b></b>"
 tags: [Active-Active]
 type: Lab
