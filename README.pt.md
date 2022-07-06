@@ -28,6 +28,7 @@ Clone esse repositório e os submódulos:
 
 ```bash
 git clone https://github.com/aws-samples/disaster-recovery-workshop.git
+cd disaster-recovery-workshop/workshop
 git submodule init
 git submodule update
 ```
@@ -37,7 +38,6 @@ Você encontrará o conteúdo da oficina no [workshop/](workshop/) diretório.
 Você pode iniciar um servidor de desenvolvimento local executando:
 
 ```bash
-cd workshop
 # parameter -D (--buildDrafts) shows content marked as draft
 hugo server -D
 ```

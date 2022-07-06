@@ -28,6 +28,7 @@ Clone this repository and submodules:
 
 ```bash
 git clone https://github.com/aws-samples/disaster-recovery-workshop.git
+cd disaster-recovery-workshop/workshop
 git submodule init
 git submodule update
 ```
@@ -37,7 +38,6 @@ You'll find the content of the workshop in the [workshop/](workshop/) directory.
 You can start up a local development server by running:
 
 ```bash
-cd workshop
 # parameter -D (--buildDrafts) shows content marked as draft
 hugo server -D
 ```

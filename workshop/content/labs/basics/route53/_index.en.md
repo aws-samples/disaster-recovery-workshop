@@ -14,6 +14,8 @@ awsServices:
 
 This exercise will show you the steps for you to quickly configure DNS-based failover functionality for existing endpoints in different regions.
 
+Warning: For this lab you should use regions US-EAST-1 and US-WEST-1. If you are running an AWS event, please confirm this information with your instructor.
+
 **Required knowledge:**
 
 *   Basic Use of the AWS CLI
