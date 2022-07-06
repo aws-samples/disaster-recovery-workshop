@@ -2,7 +2,7 @@
 title: "Connect to Session Manager Workstation"
 menutitle: "Using Session Manager"
 chapter: false
-weight: 1
+weight: 0.1
 pre: "<b></b>"
 tags: [Active-Active]
 type: Lab
@@ -27,7 +27,7 @@ Selecione a opção **Host Management**:
 ![Get Started Session](1-hostbase.png.png)
  -->
 
-Open the <a href="https://console.aws.amazon.com/systems-manager/session-manager" target="_blank"> Systems Manager: Session Manager Service Console </a>. Click the button **Start session**.
+Open the <a href="https://console.aws.amazon.com/systems-manager/session-manager" target="_blank" > Systems Manager: Session Manager Service Console </a>. Click the button **Start session**.
 
 {{% notice warning%}}
 Make sure you have selected the correct region.
@@ -35,25 +35,27 @@ Make sure you have selected the correct region.
 
 ![Start Session](/images/aurora-1.start-session.png?raw=true)
 
-Select an EC2 instance to establish a session. The workstation is called `auroralab-mysql-workstation`, select it and click **Start session**.
+Select an EC2 instance to establish a session. The workstation is called `auroralab-superset-host-*`, select it and click **Start session**.
 
 ![Connect Instance](/images/aurora-1-connect-session.png?raw=true)
 
 You should see a terminal screen and a prompt when connected to the workstation. Enter the following commands to ensure the connection was successful:
 
 ```shell
-sudo su -l ubuntu
+sudo su -l ec2-user
+aws configure set --region etc
 ```
 
 {{% notice warning%}}
 Linux User Account
 
-By default, Session Manager connects using the user account **ssm-user**. With the above command, you are changing the user account to the user's account **untu**, which has the correct settings required for laboratories. You can always verify the current user's account by typing `whoami`, this command will show the current user's account.
+By default, Session Manager connects using the user account **ssm-user**. With the above command, you are changing the user account to the user's account **ec2-user**, which has the correct settings required for laboratories. You can always verify the current user's account by typing `whoami`, this command will show the current user's account.
 {{% /notice%}}
 
 If you encounter errors while accessing subsequent lab commands, it's likely that the user's account has not been changed with the above command.
 
 ![Terminal Connected](/images/aurora-1-terminal-sudo.png?raw=true)
+
 
 ## 2. Check the lab environment
 
@@ -63,6 +65,6 @@ Let's make sure your workstation has been set up correctly. Type the following c
 tail -n1 /debug.log
 ```
 
-You should see the output: `* bootstrap complete, rebooting`If that's not the output you see, please wait a few more minutes and try again.
+You should see the output: `* signal bootstrap complete`. If that's not the output you see, please wait a few more minutes and try again.
 
-After verifying that the environment is set up correctly, you can proceed to the next lab.
+After verifying that the environment is set up correctly, you can close this tab and continue in the previous one.
