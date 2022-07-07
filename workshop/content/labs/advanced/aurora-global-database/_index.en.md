@@ -43,7 +43,7 @@ You can access the console at: <a href="https://console.aws.amazon.com/" target=
 
 Labs are designed to work in any of the regions where Amazon Aurora compatible MySQL is available. However, not all Amazon Aurora features and capabilities may be available in all currently supported regions.
 
-This lab uses the US East(N. Virginia)/us-east-1 region for the Aurora Global Database primary region and the US West(Oregon)/us-west-2 region for the secondary environment. Verify that US East(N. Virginia)/us-east-1 region is selected in the console. 
+This lab uses the US East(N. Virginia)/us-east-1 region for the Aurora Global Database primary region and the US West(N.California)/us-west-1 region for the secondary environment. Verify that US East(N. Virginia)/us-east-1 region is selected in the console. 
 
 ![AWS Management Console region select](/images/aurora-2-region-select.png?raw=true)
 
@@ -53,7 +53,7 @@ To simplify the initial lab experience, we created basic models for <a href="htt
 
 Click  **Launch Stack to create an Aurora Provisioned DB Cluster in the Primary Region automatically**:
 
-[![Launch Stack](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png "Launch Stack")](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?stackName=auroralab&templateURL=https://aurora-cloudformation-template-080622.s3.amazonaws.com/code/aurora-gdb-primary-cfn-template.yml)
+[![Launch Stack](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png "Launch Stack")](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?stackName=auroralab&templateURL=https://dr-on-aws-workshop.s3.us-east-2.amazonaws.com/aurora-gdb-primary-cfn-template.yml)
 
 
 In the field called **Stack Name**, make sure the value `auroralab` is default.
@@ -80,7 +80,7 @@ Now let's check the access to Session Manager, from where we'll run some command
 Do not proceed without checking access to Session Manager.
 {{% /notice%}}
 
-## Create a lab environment in the Oregon Region (us-west-2)
+## Create a lab environment in the N.California Region (us-west-1)
 
 Using multiple regions:
 
@@ -90,9 +90,9 @@ Let's refer to the region where your current DB cluster is deployed, and you've 
 Let's refer to the region where you will deploy the secondary and read-only DB cluster as **secondary region**.
 {{% /notice%}}
 
-Click **Launch Stack** below to provision a lab environment in the region **US West (Oregon), us-west-2** to support the Aurora Global Database.
+Click **Launch Stack** below to provision a lab environment in the region **US West (N.California), us-west-1** to support the Aurora Global Database.
 
-[![Launch Stack](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png "Launch Stack")](https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/create/review?stackName=auroralab&templateURL=https://aurora-cloudformation-template-080622.s3.amazonaws.com/code/aurora-gdb-second-cfn-template.yml)
+[![Launch Stack](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png "Launch Stack")](https://console.aws.amazon.com/cloudformation/home?region=us-west-1#/stacks/create/review?stackName=auroralab&templateURL=https://dr-on-aws-workshop.s3.us-east-2.amazonaws.com/aurora-gdb-second-cfn-template.yml)
 
 In the field called **Stack Name**, make sure the value `auroralab` is default. Accept all default values for the remaining parameters.
 
@@ -135,7 +135,7 @@ Set the following options on the configuration screen for the secondary DB clust
     *   In **Global database identifier** put `auroralab-mysql-global`
 
 2.  In the section **AWS Region**:
-    *   Choose the **secondary region** from `US West (Oregon)`
+    *   Choose the **secondary region** from `US West (N.California)`
 
 3.  In **Connectivity**, specify where the DB cluster will be deployed with the network information created above:
     *   In **Virtual Private Cloud (VPC)** select `auroralab-vpc-`
@@ -150,10 +150,10 @@ Set the following options on the configuration screen for the secondary DB clust
     *   For **DB instance identifier** choice `auroralab-mysql-node-3`
     *   For **DB cluster identifier** choice `auroralab-mysql-secondary`
     *   For **DB cluster parameter group** select the group with the name of the stack in the name (e.g. `auroralab-[...]`)
-    *   **Mark** the option **Turn on Performance Insights**
-    *   For **Retention period** choice `Default (7 days)`
+    *   Make sure the option **Performance Insights** is turned on
+    *   For **Retention period** choice `7 days (free tier)`
     *   For **Master key** choice `[default] aws/rds`
-    *   **Mark** the option **Enable Enhanced monitoring**
+    *   Make sure the option **Enable Enhanced monitoring** is turned on
     *   For **Granularity** choice `1 second`
     *   For **Monitoring Role** choice `auroralab-monitor-[secondary-region]`
 

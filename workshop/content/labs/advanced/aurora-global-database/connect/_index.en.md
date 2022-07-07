@@ -39,11 +39,11 @@ Select an EC2 instance to establish a session. The workstation is called `aurora
 
 ![Connect Instance](/images/aurora-1-connect-session.png?raw=true)
 
-You should see a terminal screen and a prompt when connected to the workstation. Enter the following commands to ensure the connection was successful:
+You should see a terminal screen and a prompt when connected to the workstation. Enter the following commands to ensure the connection was successful. Choose the region between **us-east-1** and **us-west-2**.
 
 ```shell
 sudo su -l ec2-user
-aws configure set --region etc
+aws configure set region [region]
 ```
 
 {{% notice warning%}}
