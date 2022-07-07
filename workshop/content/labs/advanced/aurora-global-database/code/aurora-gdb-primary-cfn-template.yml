@@ -36,14 +36,14 @@ Mappings:
       az1: us-east-2c
       az2: us-east-2a
       az3: us-east-2b
-    us-west-2:
+    us-west-1:
       ideType: m5.large
       supersetType: m5.large
       nodeType: db.r6g.large
-      name: Oregon
-      az1: us-west-2b
-      az2: us-west-2c
-      az3: us-west-2d
+      name: N.California
+      az1: us-west-1b
+      az2: us-west-1c
+      az3: us-west-1d
   NetworkSettings:
     primary:
       vpcCidr: 172.30.0.0/16
