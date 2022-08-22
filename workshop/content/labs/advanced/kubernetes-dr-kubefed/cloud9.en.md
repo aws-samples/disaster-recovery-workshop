@@ -118,7 +118,7 @@ If the _Arn_ contains `TeamRole`, `MasterRole`, `AmazonSSMRoleForInstancesQuickS
 
     # Install kubectl
     sudo curl --silent --location -o /usr/local/bin/kubectl \
-      https://amazon-eks.s3.us-west-2.amazonaws.com/1.21.2/2021-07-05/bin/linux/amd64/kubectl
+      curl -o kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.23.7/2022-06-29/bin/linux/amd64/kubectl
     sudo chmod +x /usr/local/bin/kubectl
 
     # Bash completion for kubectl
@@ -135,8 +135,9 @@ If the _Arn_ contains `TeamRole`, `MasterRole`, `AmazonSSMRoleForInstancesQuickS
     . /etc/profile.d/bash_completion.sh
     . ~/.bash_completion
 
-    # Install helm (latest installer version)
-    curl -sSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+    # Install helm
+    curl -sSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash -s -- --version v3.8.2
+
     ```
 
 2. Create Two Amazon EKS Clusters in the target AWS Regions
@@ -148,7 +149,7 @@ If the _Arn_ contains `TeamRole`, `MasterRole`, `AmazonSSMRoleForInstancesQuickS
     ```bash
     # Create primary cluster
     eksctl create cluster --name kubefed-cluster \
-      --version 1.18 \
+      --version 1.23 \
       --managed \
       --alb-ingress-access \
       --region=us-east-1 &
@@ -157,7 +158,7 @@ If the _Arn_ contains `TeamRole`, `MasterRole`, `AmazonSSMRoleForInstancesQuickS
 
     # Create secondary cluster
     eksctl create cluster --name kubefed-cluster \
-      --version 1.18 \
+      --version 1.23 \
       --managed \
       --alb-ingress-access \
       --region=us-west-1 &
@@ -165,6 +166,7 @@ If the _Arn_ contains `TeamRole`, `MasterRole`, `AmazonSSMRoleForInstancesQuickS
     # Wait for completion
     aws cloudformation wait stack-create-complete --stack-name eksctl-kubefed-cluster-cluster --region us-east-1
     aws cloudformation wait stack-create-complete --stack-name eksctl-kubefed-cluster-cluster --region us-west-1
+
     ```
 
     
@@ -182,6 +184,7 @@ If the _Arn_ contains `TeamRole`, `MasterRole`, `AmazonSSMRoleForInstancesQuickS
     kubectl config rename-context $(kubectl config get-contexts --no-headers=true -o name | grep us-east-1:$AWSACCOUNT) kubefed-cluster.us-east-1
     kubectl config rename-context $(kubectl config get-contexts --no-headers=true -o name | grep us-west-1:$AWSACCOUNT) kubefed-cluster.us-west-1
     kubectl config get-contexts
+
     ```
 
 #### 2. Set Up KubeFed
@@ -195,12 +198,13 @@ If the _Arn_ contains `TeamRole`, `MasterRole`, `AmazonSSMRoleForInstancesQuickS
     # Add Helm repository and update
     helm repo add kubefed-charts https://raw.githubusercontent.com/kubernetes-sigs/kubefed/master/charts
     helm repo update
+
     ```
 
 2. Install KubeFed
 
     ```bash
-    helm --namespace kube-federation-system upgrade -i kubefed kubefed-charts/kubefed --version=0.7.0 --create-namespace
+    helm --namespace kube-federation-system upgrade -i kubefed kubefed-charts/kubefed --version=0.10.0 --create-namespace
     ```
 
 3. Confirm that controllers and webhooks are running
@@ -222,7 +226,7 @@ If the _Arn_ contains `TeamRole`, `MasterRole`, `AmazonSSMRoleForInstancesQuickS
 
     ```bash
     # Install kubefedctl
-    curl -LO https://github.com/kubernetes-sigs/kubefed/releases/download/v0.7.0/kubefedctl-0.7.0-linux-amd64.tgz
+    curl -LO https://github.com/kubernetes-sigs/kubefed/releases/download/v0.9.1/kubefedctl-0.9.1-linux-amd64.tgz
     tar -zxvf kubefedctl-*.tgz
     chmod u+x kubefedctl
     sudo mv kubefedctl /usr/local/bin/ # make sure the location is in the PATH
@@ -236,6 +240,7 @@ If the _Arn_ contains `TeamRole`, `MasterRole`, `AmazonSSMRoleForInstancesQuickS
 
     # Status list
     kubectl -n kube-federation-system get kubefedclusters
+
     ```
 
     {{< output >}}
@@ -259,6 +264,7 @@ Wait until the last command shows that both clusters are `Ready = True` as can b
 
     # Check if namespace is federated to both clusters
     kubectl get federatednamespace kubefed-minilab -n kubefed-minilab -o=json | jq '.status.clusters'
+
     ```
 
     {{< output >}}
@@ -293,22 +299,22 @@ Wait until the last command shows that both clusters are `Ready = True` as can b
             app: example-app
         spec:
           containers:
-          - image: public.ecr.aws/i9m4f0j6/python-example-app-dr:latest
+          - image: public.ecr.aws/docker/library/httpd:2.4
             name: example-app
             ports:
-              - containerPort: 5000
+              - containerPort: 8080
             livenessProbe:
               httpGet:
-                path: /health
-                port: 5000
+                path: /
+                port: 8080
               initialDelaySeconds: 5
               periodSeconds: 5
               timeoutSeconds: 10
               failureThreshold: 5
             readinessProbe:
               httpGet:
-                path: /health
-                port: 5000
+                path: /
+                port: 8080
               initialDelaySeconds: 5
     EOF
 
@@ -323,7 +329,7 @@ Wait until the last command shows that both clusters are `Ready = True` as can b
       - name: http
         port: 80
         protocol: TCP
-        targetPort: 5000
+        targetPort: 8080
       selector:
         app: example-app
       type: LoadBalancer  
@@ -339,6 +345,7 @@ Wait until the last command shows that both clusters are `Ready = True` as can b
     ```bash
     kubectl apply -f federated_deployment.yaml
     kubectl apply -f federated_service.yaml
+
     ```
 
 4. List the resources of the kubefed-minilab namespace across all clusters (Wait a few minutes until the container is in state `Running`)
