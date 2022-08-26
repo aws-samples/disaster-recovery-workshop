@@ -320,18 +320,18 @@ Wait until the last command shows that both clusters are `Ready = True` as can b
                 memory: "128Mi"
                 cpu: "500m"
             livenessProbe:
-                  httpGet:
-                    path: /
-                    port: 80
-                  initialDelaySeconds: 5
-                  periodSeconds: 5
-                  timeoutSeconds: 10
-                  failureThreshold: 5
-                readinessProbe:
-                  httpGet:
-                    path: /
-                    port: 80
-                  initialDelaySeconds: 5
+              httpGet:
+                path: /
+                port: 80
+              initialDelaySeconds: 5
+              periodSeconds: 5
+              timeoutSeconds: 10
+              failureThreshold: 5
+            readinessProbe:
+              httpGet:
+                path: /
+                port: 80
+              initialDelaySeconds: 5
     EOF
 
     cat << EOF > service.yaml
@@ -545,7 +545,9 @@ Note that we're associating healthcheck with the primary only.
                 app: example-app
             spec:
               containers:
-              - env:
+              - image: public.ecr.aws/b3r7s4o5/eks-hello:1.2
+                name: example-app
+                env:
                 - name: NODE_NAME
                   valueFrom:
                     fieldRef:
@@ -554,8 +556,7 @@ Note that we're associating healthcheck with the primary only.
                   valueFrom:
                     fieldRef:
                       fieldPath: metadata.name
-                image: public.ecr.aws/b3r7s4o5/eks-hello:1.2
-                name: example-app
+                
                 ports:
                 - containerPort: 80
                 resources:
