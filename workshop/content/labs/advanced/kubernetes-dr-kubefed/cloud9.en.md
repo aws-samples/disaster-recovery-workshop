@@ -118,7 +118,7 @@ If the _Arn_ contains `TeamRole`, `MasterRole`, `AmazonSSMRoleForInstancesQuickS
 
     # Install kubectl
     sudo curl --silent --location -o /usr/local/bin/kubectl \
-      curl -o kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.23.7/2022-06-29/bin/linux/amd64/kubectl
+    -o kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.23.7/2022-06-29/bin/linux/amd64/kubectl
     sudo chmod +x /usr/local/bin/kubectl
 
     # Bash completion for kubectl
@@ -299,23 +299,39 @@ Wait until the last command shows that both clusters are `Ready = True` as can b
             app: example-app
         spec:
           containers:
-          - image: public.ecr.aws/docker/library/httpd:2.4
-            name: example-app
+          - name: example-app
+            image: public.ecr.aws/b3r7s4o5/eks-hello:1.2
             ports:
-              - containerPort: 8080
+            - containerPort: 80
+            env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            resources:
+              requests:
+                memory: "64Mi"
+                cpu: "250m"
+              limits:
+                memory: "128Mi"
+                cpu: "500m"
             livenessProbe:
-              httpGet:
-                path: /
-                port: 8080
-              initialDelaySeconds: 5
-              periodSeconds: 5
-              timeoutSeconds: 10
-              failureThreshold: 5
-            readinessProbe:
-              httpGet:
-                path: /
-                port: 8080
-              initialDelaySeconds: 5
+                  httpGet:
+                    path: /
+                    port: 80
+                  initialDelaySeconds: 5
+                  periodSeconds: 5
+                  timeoutSeconds: 10
+                  failureThreshold: 5
+                readinessProbe:
+                  httpGet:
+                    path: /
+                    port: 80
+                  initialDelaySeconds: 5
     EOF
 
     cat << EOF > service.yaml
@@ -329,7 +345,7 @@ Wait until the last command shows that both clusters are `Ready = True` as can b
       - name: http
         port: 80
         protocol: TCP
-        targetPort: 8080
+        targetPort: 80
       selector:
         app: example-app
       type: LoadBalancer  
@@ -529,23 +545,26 @@ Note that we're associating healthcheck with the primary only.
                 app: example-app
             spec:
               containers:
-              - image: public.ecr.aws/i9m4f0j6/python-example-app-dr:latest
-                livenessProbe:
-                  failureThreshold: 5
-                  httpGet:
-                    path: /health
-                    port: 5000
-                  initialDelaySeconds: 5
-                  periodSeconds: 5
-                  timeoutSeconds: 10
+              - env:
+                - name: NODE_NAME
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: spec.nodeName
+                - name: POD_NAME
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.name
+                image: public.ecr.aws/b3r7s4o5/eks-hello:1.2
                 name: example-app
                 ports:
-                - containerPort: 5000
-                readinessProbe:
-                  httpGet:
-                    path: /health
-                    port: 5000
-                  initialDelaySeconds: 5
+                - containerPort: 80
+                resources:
+                  limits:
+                    cpu: 500m
+                    memory: 128Mi
+                  requests:
+                    cpu: 250m
+                    memory: 64Mi
     EOF
     ```
 
