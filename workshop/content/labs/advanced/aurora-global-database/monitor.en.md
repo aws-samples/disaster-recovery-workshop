@@ -20,7 +20,7 @@ We are dividing our monitoring Lab in two main tasks:
 
 2.  Monitoring Cluster Load and Replication Delay
 
-In order to generate load on your **Aurora Database**, we will make usage of an **AWS Systems Manager (SSM) Document**.Before you proceed, please ensure that you have already configured the **Session Manager Workstation** detailed in the [Connect to the Session Manager Workstation ]({{% relref connect %}}) section of this workshop.
+In order to generate load on your **Aurora Database**, we will make usage of an **AWS Systems Manager (SSM) Document**. Before you proceed, please ensure that you have already configured the **Session Manager Workstation** detailed in the [Connect to the Session Manager Workstation ]({{% relref connect %}}) section of this workshop.
 
 ## 1. Generating load your Aurora Database Cluster
 
@@ -35,9 +35,8 @@ Before proceeding, make sure you are Logged to the  **Primary Region**.
 
 ```shell
 aws ssm send-command \
---document-name [loadTestRunDoc] \
---instance-ids [ec2Instance] \
---
+--document-name "auroralab-sysbench-test" \
+--instance-ids [ec2Instance]
 ```
 
 {{% notice info%}}
@@ -46,11 +45,16 @@ aws ssm send-command \
 **AWS Systems Manager** can be used to execute commands on **Managed Instances**, which can be very useful in **EC2** based environments to perform automated tasks. In this workshop, we are using these capabilities do help us launch a preconfigured script by using the **Send-Command** option with the following parameters:
 
   **document-name**: The name of the **SSM Document** to be executed. This document was created by the CloudFormation Stack used in this workshop and it's named **auroralab-sysbench-test**. The
-  **instance-ids** parameter refers to the  EC2 Workspace **InstanceID**  that will be used to prepare the dataset and run the database scripts that will simulate the load.
+  **instance-ids** parameter refers to the EC2 **InstanceID** that you are in.
 
 {{% /notice%}}
 
-Once the SSM Send-Command is executed, you should receive a confirmation from the SSM Service that it ran successfully.The EC2 Workspace Instance will then start to prepare the load testing tasks.Please notice that it can take up to a minute for CloudWatch to reflect this test on it's metrics.
+Once the SSM Send-Command is executed, you should check with the SSM Service that it ran successfully. The `StatusDetails` field will have the value `"Success"`. The EC2 Instance will then start to prepare the load testing tasks. Please notice that it can take up to a minute for CloudWatch to reflect this test on it's metrics.
+
+```shell
+aws ssm list-command-invocations \
+--filters key="DocumentName",value="auroralab-sysbench-test"
+```
 
 ![SSM Command](/images/aurora-ssm-cmd-sysbench.png?raw=true)
 
@@ -72,7 +76,7 @@ Now, we will work with the **Secondary Aurora Database cluster** that was also c
 You will work in the a secondary region in the subsequent steps: **N. Virginia (us-east-1)**. Because you can have multiple browser tabs and command-line sessions open, please pay attention to the Region that your session is logged.
 {{% /notice%}}
 
-To create our Aurora Dashboard, open the <a href="https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#dashboards:" target="_blank">Amazon CloudWatch console</a> in the **Secondary Region** (us-east-1), in the menu  **Dashboards**.
+To create our Aurora Dashboard, open the <a href="https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#dashboards:" target="_blank">Amazon CloudWatch console</a> in the **Secondary Region** (us-west-1), in the menu  **Dashboards**.
 
 
 ![CloudWatch Dashboards Listing](/images/aurora-cw-dash-listing.png?raw=true)
@@ -106,7 +110,7 @@ To import a JSON definition, click at the  **Actions** button on the dashboard a
 
 ![CloudWatch Dashboard Actions](/images/aurora-cw-dash-actions.png)
 
-Next, copy and paste the following JSON code at pop-up text box. If you are not using the recommended AWS Regions (us-east-2 and us-east-1) and the proposed Cluster Identifiers (names), please make sure to update the code below to match your definitions.
+Next, copy and paste the following JSON code at pop-up text box. If you are not using the proposed Cluster Identifiers (names), please make sure to update the code below to match your definitions.
 
 ```json
 {
@@ -124,7 +128,7 @@ Next, copy and paste the following JSON code at pop-up text box. If you are not 
                 ],
                 "view": "timeSeries",
                 "stacked": false,
-                "region": "us-east-1",
+                "region": "us-west-1",
                 "title": "Global DB Replication Lag (max vs. avg, 1min)",
                 "stat": "Average",
                 "period": 60
@@ -141,7 +145,7 @@ Next, copy and paste the following JSON code at pop-up text box. If you are not 
                     [ "AWS/RDS", "AuroraGlobalDBReplicationLag", "DBClusterIdentifier", "auroralab-mysql-secondary" ]
                 ],
                 "view": "singleValue",
-                "region": "us-east-1",
+                "region": "us-west-1",
                 "title": "Global DB Replication Lag (avg, 1min)",
                 "stat": "Average",
                 "period": 60
@@ -159,7 +163,7 @@ Next, copy and paste the following JSON code at pop-up text box. If you are not 
                     [ ".", "AuroraGlobalDBDataTransferBytes", ".", ".", { "label": "Global DB DataTransfer Bytes" } ]
                 ],
                 "view": "singleValue",
-                "region": "us-east-1",
+                "region": "us-west-1",
                 "stat": "Sum",
                 "period": 86400,
                 "title": "Billable Replication Metrics (aggregate, last 24 hr)"
