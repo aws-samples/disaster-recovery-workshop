@@ -315,7 +315,7 @@ Resources:
         SecretStringTemplate: '{"username": "administrator"}'
         GenerateStringKey: 'password'
         PasswordLength: 10
-        ExcludeCharacters: '="@/\$`&:{}()[]'
+        ExcludeCharacters: '="@/\$`&:{}()[]<>^~'
       Tags:
         - Key: Name
           Value: !Join ['-', ['auroralab-cluster-secret', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
@@ -756,4 +756,4 @@ Outputs:
     Value: !Ref dbClusterSecGroup
   secretArn:
     Description: "Database Credentials Secret ARN"
-    Value: !Ref secretClusterAdminUser
+    Value: !GetAtt secretClusterAdminUser.Name
