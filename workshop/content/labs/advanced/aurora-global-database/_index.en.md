@@ -119,7 +119,7 @@ A cluster **global** is a container for several **database clusters**, each loca
 
 Once the lab environments created in the previous steps are finalized, we can continue.
 
-Open the <a href="https://console.aws.amazon.com/rds/home?region=us-east-1#databases:" target="_blank">Amazon RDS service console</a> on the MySQL DB cluster details page in the region **primary**. If you navigated to the RDS console by means other than the link in this paragraph, click `auroralab-mysql-cluster` in the section **Databases** from the RDS service console, and make sure you are back in the primary region.
+Open the <a href="https://console.aws.amazon.com/rds/home?region=us-east-1#databases:" target="_blank">Amazon RDS service console</a> on the MySQL DB cluster details page in the **primary** region. If you navigated to the RDS console by means other than the link in this paragraph, click `auroralab-mysql-cluster` in the section **Databases** from the RDS service console, and make sure you are back in the primary region.
 
 {{% notice note%}}
 Make sure you're still working on **primary region**, especially if you're following the links above to open the service console on the right screen.
@@ -150,7 +150,7 @@ Set the following options on the configuration screen for the secondary DB clust
     *   For **DB instance identifier** choice `auroralab-mysql-node-3`
     *   For **DB cluster identifier** choice `auroralab-mysql-secondary`
     *   For **DB cluster parameter group** select the group with the name of the stack in the name (e.g. `auroralab-[...]`)
-    *   Make sure the option **Performance Insights** is turned on
+    *   Make sure the option **Turn on Performance Insights** is turned on
     *   For **Retention period** choice `7 days (free tier)`
     *   For **Master key** choice `[default] aws/rds`
     *   Make sure the option **Enable Enhanced monitoring** is turned on
@@ -158,7 +158,7 @@ Set the following options on the configuration screen for the secondary DB clust
     *   For **Monitoring Role** choice `auroralab-monitor-[secondary-region]`
 
 {{% notice info%}}
-Notice there is **two** monitoring functions in the list, one for the primary region (one in the upper right corner), the other for the secondary region (normally `us-east-1`). In this step, you need the region **secondary**.
+Notice there are **two** monitoring functions in the list, one for the primary region (one in the upper right corner), the other for the secondary region (normally `us-east-1`). In this step, you need the region **secondary**.
 {{% /notice%}}
 ![RDS Cluster Add Region (1)](/images/aurora-rds-cluster-add-region-1.png?raw=true)
 ![RDS Cluster Add Region (2)](/images/aurora-rds-cluster-add-region-2.png?raw=true)

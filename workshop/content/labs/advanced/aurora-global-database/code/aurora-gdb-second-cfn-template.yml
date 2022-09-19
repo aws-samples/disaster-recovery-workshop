@@ -26,33 +26,27 @@ Mappings:
       nodeType: db.r6g.large
       name: N. Virginia
       az1: us-east-1a
-      az2: us-east-1b
-      az3: us-east-1c
+      az2: us-east-1c
     us-west-1:
       ideType: m5.large
       supersetType: m5.large
       nodeType: db.r6g.large
       name: N.California
-      az1: us-west-1b
+      az1: us-west-1a
       az2: us-west-1c
-      az3: us-west-1d
   NetworkSettings:
     primary:
       vpcCidr: 172.30.0.0/16
       subPub1Cidr: 172.30.0.0/24
       subPub2Cidr: 172.30.1.0/24
-      subPub3Cidr: 172.30.2.0/24
       subPrv1Cidr: 172.30.10.0/24
       subPrv2Cidr: 172.30.11.0/24
-      subPrv3Cidr: 172.30.12.0/24
     secondary:
       vpcCidr: 172.31.0.0/16
       subPub1Cidr: 172.31.0.0/24
       subPub2Cidr: 172.31.1.0/24
-      subPub3Cidr: 172.31.2.0/24
       subPrv1Cidr: 172.31.10.0/24
       subPrv2Cidr: 172.31.11.0/24
-      subPrv3Cidr: 172.31.12.0/24
   ClusterSettings:
     global:
       dbSchema: mylab
@@ -124,16 +118,6 @@ Resources:
       Tags:
         - Key: Name
           Value: !Join ['-', ['auroralab-pub-sub-2', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
-  sub3Public:
-    Type: "AWS::EC2::Subnet"
-    Properties:
-      VpcId: !Ref vpc
-      CidrBlock: !FindInMap [ NetworkSettings, secondary, subPub3Cidr ]
-      AvailabilityZone: !FindInMap [ RegionalSettings, !Ref "AWS::Region", az3 ]
-      MapPublicIpOnLaunch: true
-      Tags:
-        - Key: Name
-          Value: !Join ['-', ['auroralab-pub-sub-3', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
 
 ## Associate the public subnets with a public route table
   rtbPublic:
@@ -160,11 +144,6 @@ Resources:
     Properties:
       SubnetId: !Ref sub2Public
       RouteTableId: !Ref rtbPublic
-  srta3Public:
-    Type: "AWS::EC2::SubnetRouteTableAssociation"
-    Properties:
-      SubnetId: !Ref sub3Public
-      RouteTableId: !Ref rtbPublic
 
 ## Create a private subnet in each AZ
   sub1Private:
@@ -187,16 +166,6 @@ Resources:
       Tags:
         - Key: Name
           Value: !Join ['-', ['auroralab-prv-sub-2', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
-  sub3Private:
-    Type: "AWS::EC2::Subnet"
-    Properties:
-      VpcId: !Ref vpc
-      CidrBlock: !FindInMap [ NetworkSettings, secondary, subPrv3Cidr ]
-      AvailabilityZone: !FindInMap [ RegionalSettings, !Ref "AWS::Region", az3 ]
-      MapPublicIpOnLaunch: false
-      Tags:
-        - Key: Name
-          Value: !Join ['-', ['auroralab-prv-sub-3', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
 
 ## Create a NAT Gateway & EIP
   natEip:
@@ -234,11 +203,6 @@ Resources:
     Properties:
       SubnetId: !Ref sub2Private
       RouteTableId: !Ref rtbNat
-  srta3Ngw:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      SubnetId: !Ref sub3Private
-      RouteTableId: !Ref rtbNat
 
 ## Create DB subnet group
   dbSubnets:
@@ -247,7 +211,7 @@ Resources:
       DBSubnetGroupName: !Join ['-', ['auroralab-db-subnet-group', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
 
       DBSubnetGroupDescription: "Aurora Lab subnets allowed for deploying DB instances"
-      SubnetIds: [ !Ref sub1Private, !Ref sub2Private, !Ref sub3Private ]
+      SubnetIds: [ !Ref sub1Private, !Ref sub2Private ]
       Tags:
         - Key: Name
           Value: !Join ['-', ['auroralab-db-subnet-group', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
@@ -459,8 +423,7 @@ Resources:
 
                 # install MariaDB and necessary packages
                 echo "$(date "+%F %T") Updating packages and install Docker" >> /debug.log           
-                sudo yum update -y
-                sudo yum install -y mariadb-server
+                sudo yum update -y          
 
                 mkdir -p /home/ec2-user/.aws
                 touch /home/ec2-user/.aws/config
@@ -471,6 +434,20 @@ Resources:
                 echo "$(date "+%F %T") * configured aws cli" >> /debug.log
                 echo "$(date "+%F %T") * environment vars initialized" >> /debug.log
 
+                sudo yum remove -y mariadb
+                sudo yum install -y https://repo.percona.com/yum/percona-release-latest.noarch.rpm
+                sudo percona-release disable all
+                sudo percona-release setup pt
+                sudo percona-release setup ps80
+                sudo yum install -y percona-toolkit percona-server-client
+                mysql --version >> /debug.log
+                echo "$(date "+%F %T") * installed Percona tools and client libraries" >> /debug.log
+
+                yum -y install git
+                yum -y install jq
+                export DBCLUSTERPG="${cpgClusterParams}" && echo "export DBCLUSTERPG=$DBCLUSTERPG" >> /home/ec2-user/.bashrc
+
+                chown -R ec2-user:ec2-user /home/ec2-user/environment/*
                 echo "$(date "+%F %T") * signal bootstrap complete" >> /debug.log
 
                 # export credentials
@@ -484,6 +461,7 @@ Resources:
                   - - 'export ADMINPASS="'
                     - !FindInMap [ GDBSettings, superset, password ]
                     - '"'
+
               
 
 ## Create cluster parameter group
