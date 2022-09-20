@@ -35,15 +35,14 @@ Make sure you have selected the correct region.
 
 ![Start Session](/images/aurora-1.start-session.png?raw=true)
 
-Select an EC2 instance to establish a session. The workstation is called `auroralab-superset-host-*`, select it and click **Start session**.
+Select an EC2 instance to establish a session. The workstation is called `auroralab-host-*`, select it and click **Start session**.
 
 ![Connect Instance](/images/aurora-1-connect-session.png?raw=true)
 
-You should see a terminal screen and a prompt when connected to the workstation. Enter the following commands to ensure the connection was successful:
+You should see a terminal screen and a prompt when connected to the workstation. Enter the following commands to change to the **ec2-user** user.
 
 ```shell
 sudo su -l ec2-user
-aws configure set --region etc
 ```
 
 {{% notice warning%}}
