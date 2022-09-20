@@ -31,7 +31,6 @@ Contributors:
 
 Reviewers:
 - Enrico Bergamo, Serverless Specialist
-- Gerson Itiro Hidaka, Enterprise Solutions Architect
 - Maria Ane Dias, Solutions Architect
 - Pedro Gadelha, Solutions Architect
 - Samuel Sousa, Storage Specialist
