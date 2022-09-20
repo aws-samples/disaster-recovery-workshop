@@ -16,7 +16,9 @@ Coordinator:
 - Leonardo Piedade, Solutions Architect (piedadel@amazon.com)
 
 Contributors:
+- Danilo Silveira, Solutions Architect
 - Eduarda Ferreira, Program Manager
+- Gerson Itiro, Solutions Architect
 - Hermes Pimentel, Solutions Architect
 - Ivan Vargas, Solutions Architect
 - Jonas Martinez, Solutions Architect
