@@ -66,7 +66,7 @@ You can simulate a region failure using multiple engines. However, in this case,
 
 Your lab environment contains a <a href="https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html" target="_blank"> VPC Network ACL</a> (NACL) with a **DENY ALL** rule which will block all inbound and outbound traffic from the subnetst tha are assigned to it. This will  emulate a network flaw that will make the **Primary Region Database Cluster** unavailable to your applications.
 
-To perform this network failure simulation, please open the <a href="https://console.aws.amazon.com/vpc/home#acls:sort=networkAclId" target="_blank"> VPC service console </a> in the **Primary Region** and them navigate to the **Network ACLs** section.
+To perform this network failure simulation, please open the <a href="https://console.aws.amazon.com/vpc/home#acls:sort=networkAclId" target="_blank"> VPC service console </a> in the **Primary Region** and then navigate to the **Network ACLs** section.
 You should see a NACL called **auroralab-denyall-nacl**. Notice however that this ACL is currently not associated to any of your VPC Subnets. Review it by checking the box next it's name and check the **Inbound Rules** and **Outbound Rules** tabs at the detail panel at the bottom. You should see that these rules are defined as *DENY* for ALL traffic.
 
 {{% notice warning%}}
@@ -77,7 +77,7 @@ Make sure you're still working in the **Primary Region**, especially if you're f
 
 Switch now to the **Subnet associations** tab in the details pane and click on **Edit subnet associations**.
 
-The **Aurora Database Cluster** is configured to use **private subnets** that were configured for your lab environment .These subnets are named with the `auroralab-prv-sub-` prefix, followed by a number corresponding to the Availability Zone in which they are placed. You may need to enlarge the column **Subnet ID**  to see their full name.
+The **Aurora Database Cluster** is configured to use **private subnets** that were configured for your lab environment. These subnets are named with the `auroralab-prv-sub-` prefix, followed by a number corresponding to the Availability Zone in which they are placed. You may need to enlarge the column **Subnet ID**  to see their full name.
 
 To proceed, select all subnets that start with this prefix `auroralab-prv-sub-`. You can also simply use the search box to filter on any subnet with the name `prv` and select them. Click at **Edit** button to confirm the association of the NACLs to these Subnets.
 
@@ -129,14 +129,14 @@ Once logged in, change to the `ec2-user`.
 sudo su -l ec2-user
 ```
 
-Now, you will need to configure the database credentials on the EC2 workstation in the secondary region. Run the following commands, replacing the `SecretArn` with the  CloudFormation Stack outputs you used to provision the lab environment. The value starts with `arn:aws:secretsmanager:`.
+Now, you will need to configure the database credentials on the EC2 workstation in the secondary region. Run the following commands, replacing the `secretName` with the  CloudFormation Stack outputs you used to provision the lab environment (in the primary region).
 
 ```shell
-CREDS=`aws secretsmanager get-secret-value --secret-id [secretArn] --region us-east-1 | jq -r '.SecretString'`
+CREDS=`aws secretsmanager get-secret-value --secret-id [secretName] --region us-east-1 | jq -r '.SecretString'`
 export DBUSER="`echo $CREDS | jq -r '.username'`"
 export DBPASS="`echo $CREDS | jq -r '.password'`"
-echo "export DBPASS=\"$DBPASS\"" >> /home/ubuntu/.bashrc
-echo "export DBUSER=$DBUSER" >> /home/ubuntu/.bashrc
+echo "export DBPASS=\"$DBPASS\"" >> /home/ec2-user/.bashrc
+echo "export DBUSER=$DBUSER" >> /home/ec2-user/.bashrc
 ```
 
 Run now the command below, replacing the placeholder **\[NewCluster EndPoint]** with the Endpoint Address of the newly promoted DB cluster that you have few steps before:
@@ -164,7 +164,23 @@ As you can see, your database can now serve read and write requests at your **Se
 
 ### Removing the resources created by the Labs
 
-To remove all the resources created during the execution of our lab exercises, let's go to the CloudFormation console at both regions (us-east-1 and us-west-1). Select now the stacks that were used to create our labs and remove them by clicking at the **Delete** button and confirm the removal by selecting **Delete stack**.
+To remove all the resources created during the execution of our lab exercises, first let's go to the RDS console the **Secondary region** (us-west-1). Select the writer instance that you removed from the global database and click **Delete** in the menu.
+
+![CloudFormation](/images/aurora-rds-delete.png?width=50pc)
+
+Confirm the deletion by making sure **Create final snapshot** if not selected and the **I acknowledge...** is selected. Type **delete me** into the field and click **Delete**.
+
+![CloudFormation](/images/aurora-rds-del-confirm.png?width=50pc)
+
+Now, you will be able to go to the CloudFormation console at the **Secondary region** (us-west-1), select the stack that was created in our labs and remove them by clicking at the **Delete** button and confirm the removal by selecting **Delete stack**.
+
+![CloudFormation](/images/aurora-cf-delete.png?width=50pc)
+
+In the **Primary region** (us-east-1), open the <a href="https://console.aws.amazon.com/vpc/home#acls:sort=networkAclId" target="_blank"> VPC service console </a> and then navigate to the **Network ACLs** section. You should see the NACL called **auroralab-denyall-nacl** from earlier. Mark the checkbox in front of the NACL and switch to the **Subnet associations** tab in the details pane and click on **Edit subnet associations**. To proceed, remove all subnets from the field **Selected subnets**. Click at **Save changes** button to confirm.
+
+![CloudFormation](/images/aurora-rds-delete.png?width=50pc)
+
+Now, finally, you will be able to go to the CloudFormation console at the **Primary region** (us-east-1), select the stack that was created in our labs and remove them by clicking at the **Delete** button and confirm the removal by selecting **Delete stack**.
 
 ![CloudFormation](/images/aurora-cf-delete.png?width=50pc)
 

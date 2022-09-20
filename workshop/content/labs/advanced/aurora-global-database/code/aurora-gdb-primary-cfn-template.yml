@@ -754,6 +754,6 @@ Outputs:
   dbSecurityGroup:
     Description: "Database Security Group"
     Value: !Ref dbClusterSecGroup
-  secretArn:
-    Description: "Database Credentials Secret ARN"
+  secretName:
+    Description: "Database Credentials Secret Name"
     Value: !GetAtt secretClusterAdminUser.Name
