@@ -178,7 +178,7 @@ Now, you will be able to go to the CloudFormation console at the **Secondary reg
 
 In the **Primary region** (us-east-1), open the <a href="https://console.aws.amazon.com/vpc/home#acls:sort=networkAclId" target="_blank"> VPC service console </a> and then navigate to the **Network ACLs** section. You should see the NACL called **auroralab-denyall-nacl** from earlier. Mark the checkbox in front of the NACL and switch to the **Subnet associations** tab in the details pane and click on **Edit subnet associations**. To proceed, remove all subnets from the field **Selected subnets**. Click at **Save changes** button to confirm.
 
-![CloudFormation](/images/aurora-rds-delete.png?width=50pc)
+![CloudFormation](/images/aurora-subnet-delete.png?width=50pc)
 
 Now, finally, you will be able to go to the CloudFormation console at the **Primary region** (us-east-1), select the stack that was created in our labs and remove them by clicking at the **Delete** button and confirm the removal by selecting **Delete stack**.
 

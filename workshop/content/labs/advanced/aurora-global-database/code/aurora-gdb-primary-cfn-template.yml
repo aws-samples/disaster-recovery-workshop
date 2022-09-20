@@ -756,4 +756,4 @@ Outputs:
     Value: !Ref dbClusterSecGroup
   secretName:
     Description: "Database Credentials Secret Name"
-    Value: !GetAtt secretClusterAdminUser.Name
+    Value:  !Join ['-', [!Select [0, !Split ['-', !Select ['6', !Split [':', !Ref secretClusterAdminUser]]]], !Select [1, !Split ['-', !Select ['6', !Split [':', !Ref secretClusterAdminUser]]]] ]]  
