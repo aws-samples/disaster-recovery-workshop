@@ -17,7 +17,9 @@ Organizador:
 - Leonardo Piedade, Solutions Architect (piedadel@amazon.com)
 
 Contribuidores:
+- Danilo Silveira, Solutions Architect
 - Eduarda Ferreira, Program Manager
+- Gerson Itiro, Solutions Architect
 - Hermes Pimentel, Solutions Architect
 - Ivan Vargas, Solutions Architect
 - Jonas Martinez, Solutions Architect
@@ -27,6 +29,7 @@ Contribuidores:
 - Natanael Tavares, Solutions Architect
 - Robert da Costa, Solutions Architect
 - Tiago Reichert, Solutions Architect
+
 
 Revisores:
 - Enrico Bergamo, Serverless Specialist
