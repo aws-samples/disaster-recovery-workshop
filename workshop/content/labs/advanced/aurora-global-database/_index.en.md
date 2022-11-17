@@ -114,7 +114,7 @@ The lab environment that was automatically provisioned for you already has an Au
 
 {{% notice info%}}
 'Global Cluster' vs. 'DB Cluster': What's the Difference? <br> One **DB Cluster** exists in just one region. It's a container for up to 16 **database instances** that share the same storage volume. This is the traditional configuration of an Aurora cluster. Whether you're deploying a provisioned, serverless, or multi-master cluster, you're deploying a **DB cluster** in a single region.
-A cluster **global** is a container for several **database clusters**, each located in a different region, which acts as a cohesive database. One **global cluster** consists of a **\[DB] primary cluster** in a particular region that is capable of accepting writes and up to 5 clusters **\[DB] secondary** which are read-only, each in a different region. Each of **database clusters** in a given **global cluster** has its own storage volume, but the data is replicated from **primary cluster** for each of **secondary clusters** asynchronously, using a low-latency, high-throughput replication system developed for this purpose.
+A **global** cluster is a container for several **database clusters**, each located in a different region, which acts as a cohesive database. One **global cluster** consists of a **\[DB] primary cluster** in a particular region that is capable of accepting writes and up to 5 clusters **\[DB] secondary** which are read-only, each in a different region. Each **database cluster** in a given **global cluster** has its own storage volume, but the data is replicated from the **primary cluster** to each of the **secondary clusters** asynchronously, using a low-latency, high-throughput replication system developed for this purpose.
 {{% /notice%}}
 
 Once the lab environments created in the previous steps are finalized, we can continue.
@@ -175,13 +175,13 @@ You will create a global cluster, a secondary DB cluster, and a DB instance in t
 Click **Add region** to create the global cluster.
 
 {{% notice note%}}
-Creating a global cluster based on the existing DB cluster is a transtransparent operation, the current cluster will not be disrupted. You can monitor performance metrics throughout this operation.
+Creating a global cluster based on the existing DB cluster is a transparent operation, the current cluster will not be disrupted. You can monitor performance metrics throughout this operation.
 {{% /notice%}}
 
 The global cluster, including the secondary DB cluster, can take up to 30 minutes to provision.
 
-To connect to the DB cluster and start using it, you must retrieve the database cluster access addresses. Unlike a regular DB cluster, only **Reader Endpoint** is provisioned. THE **Cluster Endpoint** is not created because secondary database clusters contain only readers and cannot accept writes. THE **Reader Endpoint** It will always resolve for one of the database instances and should be used for low-latency read operations in that region. In the RDS console, go to the DB cluster details view by clicking on **cluster detail** for the secondary DB cluster, called `auroralab-mysql-secondary`.
+To connect to the **secondary** DB cluster and start using it, you must retrieve the database cluster access addresses. Unlike a regular DB cluster, only a **Reader Endpoint** is provisioned. The writer **Cluster Endpoint** is not created because secondary database clusters contain only readers and cannot accept writes. The **Reader Endpoint** will always resolve for one of the **secondary** DB cluster instances and should be used for low-latency read operations in that region. In the RDS console, go to the **secondary** DB cluster details view by clicking on the `auroralab-mysql-secondary` link.
 
-The section **Endpoints** on the tab **Connectivity and security** the details page displays the endpoints.
+The **Endpoints** section on the **Connectivity and security** tab of the details page displays the endpoints.
 
 ![RDS Cluster Secondary Endpoints](/images/aurora-rds-cluster-secondary-endpoints.png?raw=true)
