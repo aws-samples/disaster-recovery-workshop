@@ -28,10 +28,13 @@ Before proceeding with these tasks, please make sure that the following prerequi
 
 ## 1. Simulating a failure on your the Primary Region
 
-If you're not already connected to the Session Manager Workstation, connect to it [following these instructions]({{% relref connect %}}) on your  **Primary Region**. Once connected, type one of the following commands, replacing the placeholders appropriately?
+If you're not already connected to the Session Manager Workstation, connect to it [following these instructions]({{% relref connect %}}) on your  **Primary Region**. Once connected, enter the following commands, replacing the placeholders with the Outputs from the CloudFormation stack built at the beginning of this lab.
 
 ```shell
-mysql -h[clusterEndpoint] -u$DBUSER -p"$DBPASS" mylab
+sudo yum install -y jq
+export DBUSER=`aws secretsmanager get-secret-value --secret-id [secretArn] | jq --raw-output '.SecretString' | jq -r .username`
+export DBPASS=`aws secretsmanager get-secret-value --secret-id [secretArn] | jq --raw-output '.SecretString' | jq -r .password`
+mysql -h [clusterEndpoint] -u$DBUSER -p"$DBPASS" mylab
 ```
 {{% notice warning%}}
 Because you can have multiple browser tabs open, make sure you're always operating in the desired region.
@@ -62,6 +65,10 @@ SELECT * FROM failovertest1;
 
 Take note of the query results, you'll use them later to compare.
 
+{{% notice warning%}}
+Do not close your MySQL command line connection to the Aurora database.
+{{% /notice%}}
+
 You can simulate a region failure using multiple engines. However, in this case, you will simulate a long-term, large-scale (albeit infrequent) failure, and the best way to do this is to stop all input/outbound network traffic (incoming and outgoing) to the **Aurora Global Database Primary Database Cluster** node.
 
 Your lab environment contains a <a href="https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html" target="_blank"> VPC Network ACL</a> (NACL) with a **DENY ALL** rule which will block all inbound and outbound traffic from the subnetst tha are assigned to it. This will  emulate a network flaw that will make the **Primary Region Database Cluster** unavailable to your applications.
@@ -79,11 +86,17 @@ Switch now to the **Subnet associations** tab in the details pane and click on *
 
 The **Aurora Database Cluster** is configured to use **private subnets** that were configured for your lab environment. These subnets are named with the `auroralab-prv-sub-` prefix, followed by a number corresponding to the Availability Zone in which they are placed. You may need to enlarge the column **Subnet ID**  to see their full name.
 
-To proceed, select all subnets that start with this prefix `auroralab-prv-sub-`. You can also simply use the search box to filter on any subnet with the name `prv` and select them. Click at **Edit** button to confirm the association of the NACLs to these Subnets.
+To proceed, select all subnets that start with this prefix `auroralab-prv-sub-`. You can also simply use the search box to filter on any subnet with the name `prv` and select them. Click the **Save changes** button to confirm the association of the NACLs to these Subnets.
 
 ![NACLs Edit Subnet Association](/images/aurora-vpc-subassoc-edit.png)
 
-Once configured, these NACL rules will take effect immediately and will make the resources within private subnets inaccessible from the network perspective. Your connection to the database on the **Session Manager Command Line** should eventually be interrupted with an error message indicating that the client has lost connection to the server.
+Once configured, these NACL rules will take effect immediately and will make the resources within private subnets inaccessible from the network perspective. Validate your **Primary Database Cluster** is now inaccessible by entering the following command at the MySQL client command line. You will recieve no response and the command will eventually time out.
+
+```sql
+SHOW STATUS;
+```
+
+Your MySQL client connection to the database on the **Session Manager Command Line** should eventually be interrupted with an error message indicating that the client has lost connection to the server.
 
 ## 2. Promoting the Secondary Database Cluster to Primary
 
@@ -100,7 +113,7 @@ Make sure you're working in the **Secondary Region**, especially if you're follo
 {{% notice info%}}
 Why does the status of my **Primary Database Cluster** and my Database instance still appears as <i> Available </i>?
 
-You may have noticed that on your RDS console id still showing the **Primary Region Database Cluster** and the **Database Instance** as **Available**. Since we are just simulating a disaster event by leveraging NACLs to block all network traffic,this failure simulation is running at the network scope (your VPC and the cluster subnets) only. Therefore,the RDS Aurora Service itself is still running as expected and the internal health checks are still reporting as **healthy** since there is no actual **database failure** at the moment.
+You may have noticed that on your RDS console id still showing the **Primary Region Database Cluster** and the **Database Instance** as **Available**. Since we are just simulating a disaster event by leveraging NACLs to block all network traffic, this failure simulation is running at the network scope (your VPC and the cluster subnets) only. Therefore, the RDS Aurora Service itself is still running as expected and the internal health checks are still reporting as **healthy** since there is no actual **database failure** at the moment.
 {{% /notice%}}
 
 With the **Secondary Cluster** `auroralab-mysql-secondary` selected, click the menu **Actions** and select **Remove from global database**.
